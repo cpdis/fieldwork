@@ -57,7 +57,7 @@ export const PageNo = () => {
 
 /** Source line. `half` keeps it inside the left (OpenAI) half on a Split page. */
 export const Src = ({ children, right, half }: { children: ReactNode; right?: boolean; half?: boolean }) => (
-  <div className={`dk-src ${right ? 'r' : ''} ${half ? 'h' : ''}`}>{children}</div>
+  <div className={`dk-src ${right ? 'rt' : ''} ${half ? 'h' : ''}`}>{children}</div>
 );
 
 /** Standard header: eyebrow, title, optional summary, page number. */

@@ -9,7 +9,7 @@
 .fw .dk-sum { margin: 1cqw 0 0; font-size: 1.3cqw; line-height: 1.42; max-width: 62cqw; text-wrap: pretty; }
 .fw .dk-sum.muted { color: var(--muted); }
 .fw .dk-src { position: absolute; left: 3.6cqw; bottom: 2.2cqw; font: 400 .72cqw/1.4 var(--f-mono); color: var(--muted); letter-spacing: .02em; max-width: 70cqw; }
-.fw .dk-src.r { left: auto; right: 3.6cqw; width: 60cqw; text-align: right; }
+.fw .dk-src.rt { left: auto; right: 3.6cqw; width: 60cqw; text-align: right; }
 .fw .dk-src.h { max-width: 42cqw; }
 .fw .dk-k { font: 500 .8cqw/1 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
 .fw .dk-big { font: 600 5.4cqw/.98 var(--f-sans); letter-spacing: -.045em; text-wrap: balance; }

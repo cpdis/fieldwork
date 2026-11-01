@@ -389,7 +389,7 @@ const DeckStory: Page = () => (
           <div>
             <span className="dk-k">That night</span>
             <b>Proposal drafted</b>
-            <span>“Referencing my previous proposals.” His past work is the template.</span>
+            <span>“Referencing my previous proposals.” Past work is the template.</span>
           </div>
         </Step>
         <Step>
@@ -488,7 +488,7 @@ export const pages: [Page, string][] = [
   ],
   [
     DeckStory,
-    '3 min. Press → to build it up. The point: no integrations, no MCP, just context. He records the site visit, pastes the transcript and the call history, and uses past proposals as the template. Read the last quote with a straight face.',
+    '3 min. Press → to build it up. The point: no integrations, no MCP, just context. Record the site visit, paste the transcript and the call history, and use past proposals as the template. Read the last quote with a straight face.',
   ],
   [
     Live,
