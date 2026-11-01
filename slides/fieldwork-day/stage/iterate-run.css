@@ -41,6 +41,8 @@
 
 /* the teaching line under the chat: what that message bought you */
 .ff-why { position: absolute; left: 0; bottom: 0; width: 27.6cqw; height: 4cqw; display: flex; align-items: center; border-left: .2cqw solid var(--accent); padding-left: .8cqw; font-size: 1.2cqw; line-height: 1.4; color: var(--muted); }
+.ff-why { transition: border-color .3s var(--ease); }
+.ff-why[data-empty] { border-left-color: transparent; }
 .ff-why .ss-states { display: grid; width: 100%; }
 .ff-why .ss-states__item { display: block; }
 

@@ -334,7 +334,7 @@ export const IterateRun = ({ beat, take, live }: { beat: number; take: number; l
       {(s) => (
         <div className="ff-scene">
           <Chat s={s} />
-          <div className="ff-why">
+          <div className="ff-why" data-empty={s.replied === 0 || undefined}>
             <States
               value={String(s.replied - 1)}
               align="start"
