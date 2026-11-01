@@ -24,6 +24,25 @@ Node 20.19+ or 22.12+. In the editor, press `f` to present full screen, or `p` t
   - watch it work (step-through with play)
   - a ticked box is not a verified edit (hands-on)
 
+## The full-day deck
+
+`slides/fieldwork-day/` is the whole course day, 9:00 to 16:00: the opening, eight blocks, two breaks and lunch, about 80 pages.
+
+- `course.ts` holds the settings for one run: cohort, date, venue, instructor, contact and Wi-Fi (shown only when set), and the timetable. The break and lunch pages count down to the times in it, and the block openers and day bar read it too.
+- `blocks/b0-opening.tsx` to `blocks/b8-trust.tsx` hold one block each. Each exports `[page, speaker note]` pairs, so notes can't drift out of line with pages. Notes show in the presenter view (`p`).
+- `kit.tsx` and `kit.css` are the deck's own pieces: the levelling staff, block openers, the day bar, live-demo pages, labs with a room timer, break pages and source lines.
+- `deck.css` styles the pages. `mocks.css` holds the deliberately off-brand examples (other people's documents and sites).
+- Instructor photo: drop `instructor.jpg` (or `.png` / `.webp`) into `slides/fieldwork-day/assets/`. Without it, the intro page shows a monogram.
+
+Conventions on the day:
+
+- **LIVE IN THE APP** pages (black) are cue cards for switching to the ChatGPT and Claude desktop apps. Each one names the page that runs the same demo inside the deck, if the Wi-Fi or an app misbehaves.
+- **Lab** pages have a room timer (Start, +5 min, Reset). It keeps running if you move to another page and back.
+- Interactive pages (buttons, sliders, checkboxes) don't advance the slide when clicked. Use the arrow keys or the space bar to move on.
+- Check menu names and plan details against the live apps before each cohort. The pages that need it say "check names each cohort".
+
+Brand check: `node scripts/brand-check.mjs fieldwork-day`. It exits non-zero on a problem, so it can run in CI.
+
 ## Notes
 
 - `CLAUDE.md` is a symlink to `AGENTS.md`, and `.claude/skills/` links to `.agents/skills/`, so Claude Code and Codex read the same rules. On Windows, clone with `git config core.symlinks true`.
