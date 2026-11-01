@@ -48,6 +48,7 @@ Light only. No dark variant.
 - Display and body: **Instrument Sans** 400–700. Headlines 600, tight tracking (-0.035em).
 - Labels, numbers, eyebrows: **IBM Plex Mono** 400–500, uppercase eyebrows with 0.06em tracking.
 - Field-notes half only: **Newsreader** (serif side label) and **Caveat** (hand annotations). **Source Sans 3** for small Field-notes labels.
+- **Source Sans 3** also stands in for other people's documents shown on a page: a mock email, a form, a client's website.
 - These five families are loaded by `brand.tsx`. Do not add others, and do not fall back to the open-slide default of one font pair.
 - No italic display headings.
 - Sizes are in `cqw` on the 1920 canvas (1cqw = 19.2px): title 3.3cqw, eyebrow 0.95cqw, body 1.2–1.5cqw, cover wordmark 9cqw.
@@ -75,10 +76,14 @@ Primitives in `fieldwork.css` that are used as plain class names: `.steps`, `.ru
 
 ## Motion
 
-- Motion explains; it never decorates. Zoom on a hotspot, step through a run, tick a box.
-- Easing `cubic-bezier(.2,.7,.2,1)`, 350–550ms. Respect `prefers-reduced-motion`.
-- Timers and autoplay run only on the live page: gate them with `useIsActivePage()`.
-- Default slide transition is a plain cut. No morphs, shaders, glows or particle effects.
+- Motion explains; it never decorates. Zoom on a hotspot, step through a run, tick a box, build a bar, move the staff reading.
+- Easing `cubic-bezier(.2,.7,.2,1)` (`var(--ease)`), 250–600ms. Stagger reveals by 90–160ms. Respect `prefers-reduced-motion`.
+- Timers and autoplay run only on the live page: gate them with `useIsActivePage()`. Thumbnails and the presenter view show the finished state.
+- House transition is "rise": hold the outgoing page and fade the next one up 6px over 260ms. A plain cut is also fine. No morphs, shaders, glows or particle effects.
+
+## Checking a deck
+
+`node scripts/brand-check.mjs [deck-id]` scans a deck's `.tsx` and `.css` for colours outside the palette, fonts outside the five families, never-list words, and yellow text (a warning to eyeball). Off-brand examples shown on purpose (the AI-slop site, a client's own site) go in a stylesheet or file marked `brand-check: ignore-colours` (and `ignore-words` where the copy is the point). A single line can carry `brand-check: ignore-line`.
 
 ## Never list
 
