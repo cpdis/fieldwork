@@ -11,6 +11,8 @@
  *   word     a word from the never list (supercharge, unlock, seamless, ✨ …)
  *   accent   yellow text (warning only: fine on ink, never on paper)
  *
+ * Skipped: node_modules, dot-folders and vendor/ (third-party code copied unmodified).
+ *
  * Opt-outs, for pages that show off-brand work on purpose:
  *   a comment "brand-check: ignore-colours" and/or "ignore-words" anywhere in a file
  *   a comment "brand-check: ignore-line" on the line itself
@@ -40,7 +42,8 @@ const base = join(root, 'slides', target ?? '');
 const files = [];
 const walk = (d) => {
   for (const n of readdirSync(d)) {
-    if (n === 'node_modules' || n.startsWith('.')) continue;
+    // vendor/ holds third-party code copied unmodified (e.g. the Stageshow kit); decks restyle it through tokens.
+    if (n === 'node_modules' || n === 'vendor' || n.startsWith('.')) continue;
     const p = join(d, n);
     if (statSync(p).isDirectory()) walk(p);
     else if (/\.(tsx|ts|css)$/.test(n)) files.push(p);

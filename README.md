@@ -35,6 +35,8 @@ Node 20.19+ or 22.12+. In the editor, press `f` to present full screen, or `p` t
 - Instructor photo: drop `instructor.jpg` (or `.png` / `.webp`) into `slides/fieldwork-day/assets/`. Without it, the intro page shows a monogram.
 - Real screenshots and clips: `shots.ts` lists each one (id, source, what to capture, where it's used). Save the file as `slides/fieldwork-day/assets/shots/<id>.<ext>` and the page picks it up; until then the page shows a labelled gap. Clips play muted, only on the current page. `node scripts/shot-list.mjs fieldwork-day` shows what's still missing (`--md` prints a capture list).
 
+- `stage/` (trial branch only): the Block 5 "watch it work" run rebuilt with the [Stageshow](https://benji.org/stageshow) kit, as an extra page after the original. `stage/vendor/` is Stageshow copied unmodified (MIT, see `SOURCE.md`); import single kit files, never `kit/index.ts`, which pulls in an icon package the deck doesn't have and brand marks that aren't MIT. `stage/beats.tsx` lets the clicker step a staged demo one beat at a time.
+
 Conventions on the day:
 
 - **LIVE IN THE APP** pages (black) are cue cards for switching to the ChatGPT and Claude desktop apps. Each one names the page that runs the same demo inside the deck, if the Wi-Fi or an app misbehaves.

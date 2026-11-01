@@ -1,9 +1,11 @@
 /* Block 5 · 13:00 · Agents and computer use (headline block). */
 import type { Page } from '@open-slide/core';
 import { useIsActivePage } from '@open-slide/core';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Chip, Eyebrow, Frame, Hl, Pad, SideLabel, Split, Title } from '@assets/fieldwork/brand';
 import { Head, PageNo, Src, eb, lab, live, opener, usePlay } from '../kit';
+import { BeatSteps } from '../stage/beats';
+import { BEAT_COUNT, QuoteRun } from '../stage/quote-run';
 
 const Open = opener(
   'agents',
@@ -287,6 +289,72 @@ export const WatchItWork: Page = () => {
   );
 };
 
+
+/* ---------- watch it work, staged (trial: Stageshow kit) ---------- */
+// The same run as the page before, built with the Stageshow kit in stage/. Each clicker
+// press plays one beat in both windows; going back shows the previous beat's end.
+const StagedSide = ({ side, beat, live }: { side: 'L' | 'R'; beat: number; live: boolean }) => {
+  const isL = side === 'L';
+  return (
+    <>
+      <SideLabel
+        name={isL ? 'OpenAI · Codex' : 'Claude'}
+        sub={isL ? 'Codex, in ChatGPT desktop' : 'Cowork, in Claude desktop'}
+      />
+      <div className="b5-stage">
+        <QuoteRun
+          side={side}
+          beat={beat}
+          live={live}
+          logs={STEPS.map((s) => s.log)}
+          agent={isL ? 'Codex' : 'Claude'}
+          title={isL ? 'ChatGPT · Codex' : 'Claude · Cowork'}
+        />
+        {isL ? (
+          <span className="tagnote" style={{ right: '1.2cqw', top: '.75cqw' }}>
+            {STEPS[beat].tag}
+          </span>
+        ) : (
+          <span className="handnote" style={{ right: '1.4cqw', bottom: '1.4cqw' }}>
+            {STEPS[beat].hand}
+          </span>
+        )}
+      </div>
+    </>
+  );
+};
+
+export const WatchItWorkStaged: Page = () => {
+  const active = useIsActivePage();
+  const [beat, setBeat] = useState(0);
+  const onBeat = useCallback((b: number) => setBeat(Math.min(b, BEAT_COUNT - 1)), []);
+  return (
+    <Frame label="Watch it work (staged)">
+      <PageNo />
+      <BeatSteps count={BEAT_COUNT - 1} onBeat={onBeat} />
+      <Pad style={{ paddingBottom: 0 }}>
+        <Eyebrow>{eb('agents', 'Agents · watch it work')}</Eyebrow>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '2cqw' }}>
+          <Title>Watch it work</Title>
+          <span className="b5-trial">Trial · Stageshow · next step: clicker</span>
+        </div>
+        <div className="steps" style={{ marginTop: '1cqw' }}>
+          {STEPS.map((s, i) => (
+            <Chip key={s.c} n={i + 1} label={s.c} state={i === beat ? 'on' : i < beat ? 'past' : ''} onClick={() => {}} />
+          ))}
+        </div>
+        <p className="stepnote" style={{ margin: '.8cqw 0 0' }}>
+          {STEPS[beat].note}
+        </p>
+      </Pad>
+      <Split
+        top="17.6cqw"
+        left={<StagedSide side="L" beat={beat} live={active} />}
+        right={<StagedSide side="R" beat={beat} live={active} />}
+      />
+    </Frame>
+  );
+};
 
 /* ---------- connector or screen ---------- */
 const ConnectorOrScreen: Page = () => (
@@ -581,6 +649,10 @@ export const pages: [Page, string][] = [
   [
     WatchItWork,
     '6 min. Press Play, or step with Next. Pause on step 4 (computer use) and step 6 (it waits for you). Codex on the left, Claude on the right, same job.',
+  ],
+  [
+    WatchItWorkStaged,
+    'TRIAL (Stageshow). Same run as the page before; keep one of the two. Each clicker press plays one step in both windows: goal typed, plan, inbox read through the connector, then the camera pushes in while it clicks Download on the portal (computer use), the comparison, and the draft it stops on. Back shows the step before, finished.',
   ],
   [
     ConnectorOrScreen,
