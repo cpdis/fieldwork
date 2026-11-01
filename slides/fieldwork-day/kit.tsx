@@ -632,7 +632,12 @@ export const Shot = ({
       </span>
     </div>
   );
-  const body = <div className={`dk-shot ${f ? '' : 'gap'} ${className}`}>{media}</div>;
+  const body = (
+    <div className={`dk-shot ${f ? '' : 'gap'} ${className}`}>
+      {media}
+      {f && spec?.note && <span className="note">{spec.note}</span>}
+    </div>
+  );
   if (chrome === 'browser') return <Browser url={spec?.show ?? spec?.url ?? ''} style={style}>{body}</Browser>;
   return (
     <div className="dk-shot-wrap" style={style}>

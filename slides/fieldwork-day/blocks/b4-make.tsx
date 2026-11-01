@@ -446,8 +446,8 @@ const TOOLS = [
     id: 'bambi',
     who: 'Bambi Baby · baby-gear stores',
     tool: 'Claude',
-    t: 'Scan to wishlist',
-    d: 'Three in four walk-in shoppers used to leave without a name or an email. Now they scan what they like, and the wishlist and follow-up go out on their own.',
+    t: 'Speed to lead',
+    d: 'Three in four walk-in shoppers used to leave without a name or an email. Now they scan what they like, and the wishlist and the follow-up go out on their own.',
     g: '$60,000 in sales tied to it in the first four days.',
   },
   {
@@ -492,8 +492,8 @@ const RealTools: Page = () => {
         ))}
       </div>
       <Src>
-        Bambi Baby and KANE: Anthropic, Claude for Small Business demos, Sep 2026; results as each business reported them. Thumbnail
-        vote: Anthony Dupont-Cinko, Claude artifacts walkthrough, Oct 2026.
+        Bambi Baby and KANE: Anthropic, Sep 2026, results as each business reported them; the clips are Anthropic’s demos of the
+        same workflows. Thumbnail vote: Anthony Dupont-Cinko, “How to Use Claude Artifacts”, Tenex on YouTube, Sep 2026.
       </Src>
     </Frame>
   );

@@ -403,10 +403,17 @@ const DeckStory: Page = () => (
         </Step>
       </Steps>
     </div>
-    <span className="dk-k b3-photos-cap">From the post</span>
+    <span className="dk-k b3-photos-cap">From the post, on the owner’s phone</span>
     <div className="b3-photos">
-      {['wcd-1', 'wcd-2', 'wcd-3', 'wcd-4'].map((id) => (
-        <Shot key={id} id={id} className="sm" />
+      {[
+        ['wcd-2', 'The ask, with the transcript'],
+        ['wcd-3', 'Every site visit, recorded'],
+        ['wcd-4', 'The scope of work it drafted'],
+      ].map(([id, c]) => (
+        <figure key={id}>
+          <Shot id={id} className="sm" />
+          <figcaption>{c}</figcaption>
+        </figure>
       ))}
     </div>
     <Src>Source: Jameson Haslam (West Coast Deck), public post on X, Oct 2026. Figures as reported in the post.</Src>

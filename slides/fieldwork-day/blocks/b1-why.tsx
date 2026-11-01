@@ -11,10 +11,11 @@ const Open = opener(
 );
 
 /* ---------- real owners, real jobs ---------- */
-type Owner = { id: string; biz: string; where: string; tool: string; did: string; got: string };
+type Owner = { id: string; biz: string; where: string; tool: string; did: string; got: string; pos?: string };
 const OWNERS: Owner[] = [
   {
     id: 'wcd-1',
+    pos: 'center 60%',
     biz: 'West Coast Deck',
     where: 'Deck builder · US',
     tool: 'ChatGPT',
@@ -23,6 +24,7 @@ const OWNERS: Owner[] = [
   },
   {
     id: 'oakcreek',
+    pos: 'left top',
     biz: 'Oak Creek Plumbing & Remodeling',
     where: 'Plumbing · about 20 plumbers',
     tool: 'ChatGPT',
@@ -78,7 +80,7 @@ const Owners: Page = () => {
       <div className="b1-reel">
         {OWNERS.map((o, i) => (
           <div key={o.id} className={`dk-tile ${i === hot ? 'hot' : ''}`}>
-            <Shot id={o.id} className="pic sm" style={{ height: '8.4cqw' }} />
+            <Shot id={o.id} className="pic sm" pos={o.pos ?? 'center top'} style={{ height: '8.4cqw' }} />
             <div className="who">
               <span className="dk-k">{o.where}</span>
               <span className="tl">{o.tool}</span>
@@ -94,7 +96,7 @@ const Owners: Page = () => {
       </div>
       <Src>
         Sources: Jameson Haslam on X, Oct 2026 · CNN, Oct 2025 · Anthropic, Sep 2026 · NAB, Apr and Aug 2026. Results as each
-        business reported them.
+        business reported them. Clips marked “demo” are Anthropic’s own demos of the same workflow.
       </Src>
     </Frame>
   );

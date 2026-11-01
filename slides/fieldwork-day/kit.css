@@ -152,3 +152,4 @@
 .fw .dk-shot.sm .todo .src { display: none; }
 .fw .dk-shot.sm .todo .dk-k { font-size: .6cqw; }
 .fw .dk-shot.sm .todo .u { font-size: .6cqw; }
+.fw .dk-shot .note { position: absolute; left: .5cqw; bottom: .5cqw; font: 500 .62cqw/1 var(--f-mono); letter-spacing: .04em; text-transform: uppercase; color: var(--ink); background: var(--white); padding: .3cqw .45cqw; border: .06cqw solid var(--alu); }
