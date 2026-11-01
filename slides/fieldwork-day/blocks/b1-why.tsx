@@ -79,7 +79,7 @@ const Owners: Page = () => {
       <PageNo />
       <div className="b1-reel">
         {OWNERS.map((o, i) => (
-          <div key={o.id} className={`dk-tile ${i === hot ? 'hot' : ''}`}>
+          <div key={o.id} className={`dk-tile ${i === hot ? 'lit' : ''}`}>
             <Shot id={o.id} className="pic sm" pos={o.pos ?? 'center top'} style={{ height: '8.4cqw' }} />
             <div className="who">
               <span className="dk-k">{o.where}</span>

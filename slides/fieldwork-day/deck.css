@@ -37,7 +37,7 @@
 /* ---------- b1 · why now ---------- */
 .fw .b1-reel { position: absolute; left: 3.6cqw; right: 3.6cqw; top: 10.6cqw; display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 1.1cqw 1.4cqw; }
 .fw .b1-reel .dk-tile { padding: .9cqw; display: grid; gap: .4cqw; align-content: start; transition: box-shadow .4s var(--ease), transform .4s var(--ease); }
-.fw .b1-reel .dk-tile.hot { box-shadow: 0 0 0 .15cqw var(--ink); transform: translateY(-.25cqw); }
+.fw .b1-reel .dk-tile.lit { box-shadow: 0 0 0 .15cqw var(--ink); transform: translateY(-.25cqw); }
 .fw .b1-reel .dk-shot-wrap { margin-bottom: .3cqw; }
 .fw .b1-reel .who { display: flex; justify-content: space-between; align-items: center; gap: .6cqw; }
 .fw .b1-reel .tl { font: 500 .72cqw/1 var(--f-mono); letter-spacing: .04em; text-transform: uppercase; padding: .25cqw .45cqw; border: .08cqw solid var(--ink); white-space: nowrap; }
