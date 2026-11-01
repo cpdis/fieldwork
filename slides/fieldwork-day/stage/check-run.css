@@ -1,0 +1,53 @@
+/*
+ * Block 4 "A checker that can count", staged (check-run.tsx). Drawn at scale 1, so sizes are cqw.
+ * The two tiles keep their mocks.css / deck.css looks (.b4-chk-tile .tile.bad / .good).
+ */
+.ck .ss-stage {
+  --ss-font: var(--f-sans);
+  --ss-mono: var(--f-mono);
+  --ss-accent: var(--ink);
+  --ss-success: var(--ink);
+  --ss-text-strong: var(--ink);
+  --ss-canvas: var(--paper);
+  color: var(--ink);
+}
+.ck-scene { position: relative; width: 92.5cqw; height: 34.8cqw; }
+.ck-lab { position: absolute; left: 0; top: 0; display: flex; align-items: center; gap: .35em; }
+.ck-lab2 { left: 37.4cqw; }
+
+/* ---- the tile: first draft and fixed, stacked ---- */
+.fw .ck .ck-tiles { position: absolute; left: 0; top: 1.8cqw; width: 33cqw; height: 33cqw; display: grid; gap: 0; }
+.fw .ck .ck-tiles .tile { grid-area: 1 / 1; position: relative; animation: none; opacity: 0; transition: opacity .6s var(--ease); }
+.fw .ck .ck-tiles .tile[data-on] { opacity: 1; }
+/* the draft tile's "span" rule is for its subline; the marked words inside the headline keep the headline's size */
+.fw .ck .tile.bad b .ck-m { font-size: inherit; opacity: 1; }
+.ck-font { position: relative; }
+
+.ck-m { position: relative; outline: .12cqw dashed transparent; outline-offset: .25cqw; transition: outline-color .3s var(--ease); }
+.ck-m[data-on] { outline-color: var(--white); }
+.ck-pin { position: absolute; z-index: 1; display: grid; place-items: center; width: 1.6cqw; height: 1.6cqw; border-radius: 50%; background: var(--white); color: var(--ink); box-shadow: 0 0 0 .12cqw var(--ink); font: 600 .85cqw/1 var(--f-mono); font-style: normal; letter-spacing: 0; opacity: 0; transform: scale(.3); transition: opacity .25s var(--ease), transform .45s cubic-bezier(.3, 1.4, .5, 1); }
+.ck-pin[data-on] { opacity: 1; transform: none; }
+.tile > .ck-pin { right: 1.3cqw; top: 1.3cqw; }
+.ck-font > .ck-pin { left: -1.85cqw; top: calc(50% - .8cqw); }
+.ck-m > .ck-pin { right: -1.2cqw; top: -1.3cqw; }
+
+/* ---- the terminal: newest line at the bottom, older ones scroll off the top ---- */
+.ck-term {
+  position: absolute; left: 37.4cqw; right: 0; top: 1.8cqw; height: 24cqw; padding: 1.3cqw 1.6cqw;
+  background: var(--ink); color: var(--paper); font: 400 1.1cqw/1.75 var(--f-mono);
+  --ss-ink-4: color-mix(in srgb, var(--paper) 35%, transparent);
+  --ss-text-strong: var(--paper);
+  --ss-success: var(--paper);
+  --ss-well: var(--ink);
+}
+.ck-lines { height: 100%; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; mask-image: linear-gradient(transparent, black 2.6cqw); }
+.ck-cmd { color: color-mix(in srgb, var(--paper) 70%, transparent); }
+.ck-caret { display: inline-block; width: .6em; height: 1.15em; margin-left: .15em; vertical-align: -.22em; background: var(--paper); }
+.ck-caret[data-blink] { animation: ck-blink 1.05s steps(1) infinite; }
+@keyframes ck-blink { 50% { opacity: 0; } }
+.ck-dim { color: color-mix(in srgb, var(--paper) 55%, transparent); }
+.ck-term .ck-n { display: inline-grid; place-items: center; width: 1.4em; height: 1.4em; margin: 0 .25em 0 .1em; border-radius: 50%; background: var(--paper); color: var(--ink); font-size: .78em; font-weight: 600; vertical-align: .08em; }
+.ck-bad em { margin-left: .6cqw; font-style: normal; color: color-mix(in srgb, var(--paper) 45%, transparent); }
+.ck-sum { color: var(--accent); }
+.ck-fix { display: flex; align-items: center; gap: .6cqw; color: color-mix(in srgb, var(--paper) 80%, transparent); }
+.ck-ok { font-weight: 600; }

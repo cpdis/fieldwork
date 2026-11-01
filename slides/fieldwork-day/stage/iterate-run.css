@@ -1,0 +1,84 @@
+/*
+ * Block 4 "First draft to fifth", staged (iterate-run.tsx). The stage is drawn at scale 1,
+ * so sizes are cqw like the rest of the deck. Kit styles live in @layer stageshow, so these
+ * plain rules win without !important.
+ */
+.ff .ss-stage {
+  --ss-font: var(--f-sans);
+  --ss-mono: var(--f-mono);
+  --ss-accent: var(--ink);
+  --ss-success: var(--ink);
+  --ss-text: var(--muted);
+  --ss-text-strong: var(--ink);
+  --ss-canvas: var(--paper);
+  color: var(--ink);
+}
+.ff-scene { position: relative; width: 92.5cqw; height: 39.375cqw; }
+
+/* ---- the chat on the left ---- */
+.ff-chat { position: absolute; left: 0; top: 0; bottom: 5.2cqw; width: 27.6cqw; display: flex; flex-direction: column; background: var(--white); border: .1cqw solid var(--alu); border-radius: .6cqw; overflow: hidden; }
+.ff-bar { flex: none; height: 2cqw; display: flex; align-items: center; gap: .8cqw; padding: 0 .9cqw; background: var(--paper); border-bottom: .1cqw solid var(--rule); font: 400 .7cqw/1 var(--f-mono); color: var(--muted); }
+.ff-dots { display: flex; gap: .35cqw; }
+.ff-dots i { display: block; width: .6cqw; height: .6cqw; border-radius: 50%; background: var(--alu); }
+.ff-files { margin-left: auto; }
+
+.ff-thread { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; padding: 0 1.1cqw .4cqw; mask-image: linear-gradient(transparent, black 3.5cqw); }
+.ff-me { display: flex; justify-content: flex-end; padding-top: 1cqw; }
+.ff .ff-me p { max-width: 90%; padding: .6cqw .85cqw; border-radius: .7cqw; background: var(--soft); font: 400 1.02cqw/1.38 var(--f-sans); }
+.ff-ai { display: flex; flex-direction: column; padding-top: .8cqw; }
+.ff .ff-ai p { padding-top: .25cqw; font: 400 1cqw/1.42 var(--f-sans); text-wrap: pretty; }
+.ff .ff-ai p.ff-li { padding-left: .9cqw; }
+.ff-st { display: flex; align-items: center; gap: .5cqw; padding-top: .5cqw; font: 400 .78cqw/1 var(--f-mono); color: var(--muted); }
+
+.ff-compose { flex: none; margin: .4cqw .8cqw .8cqw; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: .6cqw; padding: .7cqw .7cqw .7cqw 1cqw; border: .1cqw solid var(--alu); border-radius: .7cqw; background: var(--white); transition: border-color .25s var(--ease); }
+.ff-compose[data-on] { border-color: var(--ink); }
+.ff-input { min-height: 4.2cqw; font: 400 1.02cqw/1.38 var(--f-sans); }
+.ff-ph { color: var(--muted); }
+.ff-caret { display: inline-block; width: .1cqw; height: 1.15em; margin-left: .05cqw; vertical-align: -.22em; background: var(--ink); }
+.ff-send { display: grid; place-items: center; width: 1.9cqw; height: 1.9cqw; border-radius: 50%; background: var(--alu); color: var(--white); transition: background .25s var(--ease); }
+.ff-send svg { width: 1cqw; height: 1cqw; }
+.ff-compose[data-on] .ff-send { background: var(--ink); }
+
+/* the teaching line under the chat: what that message bought you */
+.ff-why { position: absolute; left: 0; bottom: 0; width: 27.6cqw; height: 4cqw; display: flex; align-items: center; border-left: .2cqw solid var(--accent); padding-left: .8cqw; font-size: 1.2cqw; line-height: 1.4; color: var(--muted); }
+.ff-why .ss-states { display: grid; width: 100%; }
+.ff-why .ss-states__item { display: block; }
+
+/* ---- the site on the right ---- */
+.ff-browser { position: absolute; left: 30.4cqw; right: 0; top: 0; bottom: 0; }
+.ff-sites { position: absolute; inset: 0; }
+.ff-site { position: absolute; inset: 0; opacity: 0; transition: opacity .55s var(--ease); }
+.ff-site[data-on] { opacity: 1; }
+/* the mocks fade in when they mount; here every click remounts the stage, so the crossfade above does that job */
+.fw .ff-site > :is(.b4-r0, .b4-rg) { animation: none; }
+.ff-empty { display: grid; place-items: center; background: var(--white); }
+.ff-load { position: absolute; left: 0; top: 0; width: 0; height: .22cqw; background: var(--ink); opacity: 0; transition: opacity .3s var(--ease); }
+.ff-load[data-on] { opacity: 1; animation: ff-load 2.4s cubic-bezier(.2, .7, .3, 1) forwards; }
+@keyframes ff-load { to { width: 86%; } }
+.ff-flash { position: absolute; inset: 0; background: var(--white); opacity: 0; pointer-events: none; transition: opacity .5s ease-out; }
+.ff-flash[data-on] { opacity: .92; transition: none; }
+
+/* message 4: the three problems, pinned on the v3 page */
+.ff-site[data-v='2'] :is(h1, .links, .btn) { position: relative; outline: .12cqw dashed transparent; outline-offset: .35cqw; transition: outline-color .3s var(--ease); }
+.ff-sites[data-pins] .ff-site[data-v='2'] h1,
+.ff-sites:is([data-pins='2'], [data-pins='3']) .ff-site[data-v='2'] .links,
+.ff-sites[data-pins='3'] .ff-site[data-v='2'] .btn { outline-color: var(--ink); }
+.ff-sites[data-pins] .ff-site[data-v='2'] h1::after,
+.ff-sites:is([data-pins='2'], [data-pins='3']) .ff-site[data-v='2'] .links::after,
+.ff-sites[data-pins='3'] .ff-site[data-v='2'] .btn::after {
+  position: absolute; left: -1.2cqw; top: -1.2cqw; width: 1.7cqw; height: 1.7cqw; border-radius: 50%;
+  background: var(--accent); color: var(--ink); box-shadow: 0 0 0 .12cqw var(--ink);
+  font: 600 .9cqw/1.7cqw var(--f-mono); letter-spacing: 0; text-align: center;
+  animation: ff-pop .45s cubic-bezier(.3, 1.4, .5, 1) both;
+}
+.ff-sites[data-pins] .ff-site[data-v='2'] h1::after { content: '1'; }
+.ff-sites:is([data-pins='2'], [data-pins='3']) .ff-site[data-v='2'] .links::after { content: '2'; }
+.ff-sites[data-pins='3'] .ff-site[data-v='2'] .btn::after { content: '3'; }
+/* the nav pin sits left of the links, clear of the first word */
+.ff-sites:is([data-pins='2'], [data-pins='3']) .ff-site[data-v='2'] .links::after { left: -2.4cqw; top: -.35cqw; }
+@keyframes ff-pop { from { opacity: 0; transform: scale(.3); } }
+
+/* message 5: what goes, marked on the v4 page, then faded out */
+.ff-site[data-v='4'] :is(.photo, .svc span:not(.p), .how .x) { outline: .12cqw dashed transparent; outline-offset: .2cqw; transition: opacity .5s var(--ease), outline-color .3s var(--ease); }
+.ff-sites[data-cut] .ff-site[data-v='4'] :is(.photo, .svc span:not(.p), .how .x) { outline-color: var(--bad); text-decoration: line-through; text-decoration-color: var(--bad); }
+.ff-sites[data-cut='2'] .ff-site[data-v='4'] :is(.photo, .svc span:not(.p), .how .x) { opacity: .08; }

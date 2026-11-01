@@ -132,18 +132,6 @@
 .fw .b2-note { font-size: .82cqw; line-height: 1.35; background: var(--soft); padding: .6cqw .8cqw; border-radius: .4cqw; max-width: 88%; }
 
 /* ---------- b3 · context ---------- */
-.fw .b3-sent { position: absolute; left: 3.6cqw; top: 12.6cqw; width: 88cqw; font: 500 2.7cqw/1.25 var(--f-sans); letter-spacing: -.03em; text-wrap: pretty; }
-.fw .b3-sent .w { animation: dk-rowin .3s var(--ease) both; }
-.fw .b3-sent .w.guess { background: var(--accent); padding: 0 .1em; margin-right: .2em; }
-.fw .b3-sent .caret { display: inline-block; width: .12em; height: .9em; background: var(--ink); vertical-align: -.1em; margin-left: .05em; animation: dk-pulse 1s steps(1) infinite; }
-.fw .b3-bars { position: absolute; left: 3.6cqw; top: 24.4cqw; width: 54cqw; display: grid; gap: .9cqw; }
-.fw .b3-bars .bar { display: grid; grid-template-columns: 11cqw minmax(0,1fr) 4cqw; align-items: center; gap: 1cqw; }
-.fw .b3-bars .w { font: 500 1.4cqw/1 var(--f-mono); }
-.fw .b3-bars .track { height: 1.6cqw; background: var(--soft); position: relative; }
-.fw .b3-bars .track i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--ink); animation: b3-grow .6s var(--ease) both; transform-origin: left; }
-@keyframes b3-grow { from { transform: scaleX(0); } }
-.fw .b3-bars .p { font: 500 1cqw/1 var(--f-mono); text-align: right; font-variant-numeric: tabular-nums; }
-.fw .b3-nw-side { position: absolute; left: 63cqw; right: 3.6cqw; top: 24.4cqw; display: grid; gap: 1.4cqw; align-content: start; border-top: .15cqw solid var(--ink); padding-top: 1.1cqw; }
 .fw .rb[disabled] { opacity: .4; cursor: default; }
 
 .fw .b3-rows { display: grid; gap: 0; }
@@ -154,6 +142,8 @@
 .fw .half.fn .b3-rows .x { font: 700 1.45cqw/1 var(--f-hand); color: var(--fn-red); }
 .fw .half.fn .b3-rows .dk-muted { color: var(--muted); font-style: italic; font-size: 1.6cqw; }
 
+/* the staged next-word demo (stage/next-word.tsx); 92.5cqw is a whole 1776px, so the stage draws at scale 1 */
+.fw .b3-nw-stage { position: absolute; left: 3.6cqw; top: 12.6cqw; width: 92.5cqw; }
 .fw .b3-dial { position: absolute; left: 3.6cqw; top: 16cqw; width: 30cqw; display: grid; gap: .6cqw; align-content: start; }
 .fw .b3-dial button { all: unset; box-sizing: border-box; cursor: pointer; display: grid; grid-template-columns: 2.4cqw minmax(0,1fr); grid-template-rows: auto auto; gap: .25cqw .9cqw; padding: .9cqw 1cqw; border: .1cqw solid var(--alu); background: var(--white); transition: background .25s, color .25s, border-color .25s; }
 .fw .b3-dial button i { grid-row: 1 / 3; font: 500 1.6cqw/1 var(--f-mono); font-style: normal; align-self: center; color: var(--muted); }
@@ -164,12 +154,8 @@
 .fw .b3-dial button.on i { color: var(--accent); }
 .fw .b3-dial button.on span { color: rgba(246,246,243,.7); }
 .fw .b3-dial button:focus-visible { outline: .1cqw solid var(--ink); box-shadow: 0 0 0 .3cqw var(--accent); }
-.fw .b3-mail { position: absolute; left: 37cqw; right: 3.6cqw; top: 16cqw; bottom: 5.6cqw; background: var(--white); border: .1cqw solid var(--alu); padding: 1.6cqw 2cqw; display: grid; gap: 1cqw; align-content: start; font-family: var(--f-body2); font-size: 1.22cqw; line-height: 1.5; color: #1c1d20; animation: dk-rowin .35s var(--ease) both; }
-.fw .b3-mail p { white-space: pre-line; }
-.fw .b3-mail .sub { display: grid; gap: .3cqw; border-bottom: .1cqw solid var(--rule); padding-bottom: .9cqw; margin-bottom: .2cqw; }
-.fw .b3-mail .sub b { font-size: 1.35cqw; }
-.fw .b3-mail .new { background: var(--accent); }
-.fw .b3-mail .old { box-shadow: inset 0 -.14cqw 0 var(--ink); }
+/* the staged email (stage/context-mail.tsx); 59.375cqw is a whole 1140px, so the stage draws at scale 1 */
+.fw .b3-mail-stage { position: absolute; left: 37cqw; top: 16cqw; width: 59.375cqw; }
 .fw .b3-mail-key { position: absolute; left: 37cqw; right: 3.6cqw; bottom: 2.6cqw; display: flex; gap: 2.4cqw; font: 400 .8cqw/1 var(--f-mono); color: var(--muted); }
 .fw .b3-mail-key i { display: inline-block; width: 1.4cqw; height: .8cqw; vertical-align: -.05cqw; margin-right: .4cqw; }
 .fw .b3-mail-key i.new { background: var(--accent); }
@@ -218,10 +204,8 @@
 .fw .b4-moves-tip { position: absolute; left: 3.6cqw; right: 3.6cqw; bottom: 5.4cqw; display: flex; gap: 2cqw; align-items: baseline; border-top: .1cqw solid var(--rule); padding-top: 1.1cqw; font-size: 1.3cqw; }
 
 /* iterate: Ridgeline site versions */
-.fw .b4-iter-prompt { position: absolute; left: 3.6cqw; top: 12.2cqw; width: 27cqw; display: grid; gap: 1cqw; align-content: start; animation: dk-rowin .35s var(--ease) both; }
-.fw .b4-iter-prompt p { font: 500 1.9cqw/1.22 var(--f-sans); letter-spacing: -.02em; text-wrap: pretty; }
-.fw .b4-iter-prompt .why { font-size: 1.2cqw; line-height: 1.4; color: var(--muted); border-left: .2cqw solid var(--accent); padding-left: .8cqw; }
-.fw .b4-iter-site { position: absolute; left: 34cqw; right: 3.6cqw; top: 12.2cqw; bottom: 4.6cqw; }
+/* the staged chat and site (stage/iterate-run.tsx); 92.5cqw is a whole 1776px, so the stage draws at scale 1 */
+.fw .b4-iter-stage { position: absolute; left: 3.6cqw; top: 12.2cqw; width: 92.5cqw; }
 
 /* what it makes */
 .fw .b4-makes { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2cqw 1.6cqw; }
@@ -287,6 +271,9 @@
 .fw .b4-bf .nv.vo li::before { content: "→ "; color: var(--ink); }
 .fw .b4-bf-side { position: absolute; left: 71cqw; right: 3.6cqw; top: 12cqw; display: grid; gap: 1.4cqw; border-top: .15cqw solid var(--ink); padding-top: 1cqw; }
 
+/* the staged tile and terminal (stage/check-run.tsx); 92.5cqw is a whole 1776px, so the stage draws at scale 1 */
+.fw .b4-chk-stage { position: absolute; left: 3.6cqw; top: 16.4cqw; width: 92.5cqw; }
+.fw .b4-chk-btns { position: absolute; left: 41cqw; top: 43.4cqw; }
 .fw .b4-chk-tile { position: absolute; left: 3.6cqw; top: 16.4cqw; width: 34cqw; display: grid; gap: .8cqw; }
 .fw .b4-chk-tile .tile { aspect-ratio: 1 / 1; height: 33cqw; padding: 2cqw; display: grid; align-content: space-between; animation: dk-rowin .4s var(--ease) both; }
 .fw .b4-chk-tile .tile.good { background: var(--paper); border: .1cqw solid var(--alu); }
@@ -294,13 +281,6 @@
 .fw .b4-chk-tile .tile.good b { font: 600 3.4cqw/1 var(--f-sans); letter-spacing: -.045em; }
 .fw .b4-chk-tile .tile.good .hl, .fw .b4-pair .ad.good .hl { background: var(--accent); padding: 0 .1em; }
 .fw .b4-chk-tile .tile.good .meta { font: 500 .9cqw/1 var(--f-mono); letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
-.fw .b4-chk-log { position: absolute; left: 41cqw; right: 3.6cqw; top: 18.2cqw; display: grid; gap: 1.2cqw; }
-.fw .b4-chk-log .term { background: var(--ink); color: var(--paper); font: 400 1.15cqw/1.7 var(--f-mono); padding: 1.4cqw 1.6cqw; min-height: 17cqw; display: grid; align-content: start; }
-.fw .b4-chk-log .cmd { color: rgba(246,246,243,.6); margin-bottom: .4cqw; }
-.fw .b4-chk-log .bad { animation: dk-rowin .25s var(--ease) both; }
-.fw .b4-chk-log .bad em { font-style: normal; color: rgba(246,246,243,.45); margin-left: .6cqw; }
-.fw .b4-chk-log .sum { color: var(--accent); margin-top: .5cqw; }
-.fw .b4-chk-log .ok { color: var(--paper); }
 
 .fw .b4-loop { position: absolute; left: 3.6cqw; right: 3.6cqw; top: 18.6cqw; display: grid; grid-template-columns: repeat(4, minmax(0,1fr)) 1.2fr; gap: 1.2cqw; }
 .fw .b4-loop .lp, .fw .b4-loop .out { border: .12cqw solid var(--alu); background: var(--white); padding: 1.2cqw; display: grid; gap: .8cqw; min-height: 9cqw; align-content: start; transition: background .3s, color .3s, border-color .3s; position: relative; }

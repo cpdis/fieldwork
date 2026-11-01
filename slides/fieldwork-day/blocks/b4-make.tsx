@@ -5,6 +5,10 @@ import { useIsActivePage } from '@open-slide/core';
 import { type ReactNode, useEffect, useState } from 'react';
 import { Chip, Frame, Hl, Mark, Pad, SideLabel, Split } from '@assets/fieldwork/brand';
 import { Browser, Head, PageNo, Shot, Src, eb, lab, live, opener, usePlay } from '../kit';
+import { BeatSteps } from '../stage/beats';
+import { BEAT_COUNT as CHECK_BEATS, CheckRun } from '../stage/check-run';
+import { BEAT_COUNT as ITER_BEATS, IterateRun, VERSIONS } from '../stage/iterate-run';
+import { useBeats } from '../stage/staged';
 
 const Open = opener(
   'make',
@@ -184,159 +188,23 @@ const FourMoves: Page = () => {
   );
 };
 
-/* ---------- first draft to fifth: Ridgeline's site ---------- */
-const VERSIONS: { p: string; why: string }[] = [
-  { p: 'Make a website for my surveying business.', why: 'The average of every website. Slogans, stock picture, three cards.' },
-  { p: 'Here is our about.md and price list. Use our real services and prices. No slogans.', why: 'Context first: now it says something true.' },
-  { p: 'Make it calmer, like these three sites (screenshots attached). Left-aligned. Our green.', why: 'References give it a point of view.' },
-  { p: 'Screenshot it. Critique it like a designer. Fix the top three problems.', why: 'The critic loop: hierarchy, phone number, one clear action.' },
-  { p: 'Remove anything that isn’t helping someone book a survey.', why: 'Taking things away is the step most people skip.' },
-];
-
-const RidgelineSite = ({ v }: { v: number }) => {
-  if (v === 0)
-    return (
-      <div className="b4-r0">
-        <div className="nav">
-          <b>Ridgeline Surveying</b>
-          <span>Home · About · Services · Contact</span>
-        </div>
-        <div className="hero">
-          <h1>Welcome to Ridgeline Surveying</h1>
-          <p>Your trusted partner for all your surveying needs. Precision. Excellence. Integrity.</p>
-          <span className="btn">Get Started</span>
-        </div>
-        <div className="img">[ stock photo: man with tripod at sunset ]</div>
-        <div className="cards">
-          {['Accuracy', 'Reliability', 'Experience'].map((c) => (
-            <div key={c}>
-              <i />
-              <b>{c}</b>
-              <span>We deliver {c.toLowerCase()} on every project, every time.</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  if (v === 1)
-    return (
-      <div className="b4-r0 b4-r1">
-        <div className="nav">
-          <b>Ridgeline Surveying</b>
-          <span>Home · Services · Prices · Contact</span>
-        </div>
-        <div className="hero">
-          <h1>Licensed land surveyors in Perth and Peel</h1>
-          <p>Boundary, feature and subdivision surveys for homeowners, builders and developers. Six staff, since 2011.</p>
-          <span className="btn">Get a quote</span>
-        </div>
-        <div className="cards">
-          {[
-            ['Boundary re-establishment', 'from $1,450 + GST'],
-            ['Feature and level survey', 'from $1,900 + GST'],
-            ['Subdivision', 'quoted per lot'],
-          ].map(([c, p]) => (
-            <div key={c}>
-              <i />
-              <b>{c}</b>
-              <span>{p}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  return (
-    <div className={`b4-rg v${v}`}>
-      <div className="nav">
-        <b>
-          <span className="mk" />
-          Ridgeline
-        </b>
-        <span className="links">
-          <span>Services</span>
-          <span>Prices</span>
-          {v >= 3 && <span className="ph">(08) 5550 0142</span>}
-        </span>
-      </div>
-      <div className="hero">
-        <div>
-          <h1>{v >= 3 ? 'Know exactly where your boundary is.' : 'Licensed land surveyors in Perth and Peel'}</h1>
-          <p>
-            {v >= 3
-              ? 'Licensed surveyors for Perth and Peel homeowners and builders. Most boundary surveys done within 7 working days.'
-              : 'Boundary, feature and subdivision surveys for homeowners, builders and developers. Six staff, since 2011.'}
-          </p>
-          <div className="act">
-            <span className="btn">{v >= 3 ? 'Book a survey' : 'Get a quote'}</span>
-            {v === 3 && <span className="btn2">See prices</span>}
-          </div>
-        </div>
-        {v < 5 && <div className="photo">{v >= 3 ? 'photo: a real job, a real peg' : 'photo'}</div>}
-      </div>
-      <div className="svc">
-        {[
-          ['Boundary re-establishment', '$1,450', 'Pegs back in, fence questions answered.'],
-          ['Feature and level survey', '$1,900', 'What your designer needs before plans.'],
-          ['Subdivision', 'Quoted', 'Per lot, from first sketch to new titles.'],
-        ].map(([t, p, d]) => (
-          <div key={t}>
-            <span className="p">{p}</span>
-            <b>{t}</b>
-            {v !== 5 && <span>{d}</span>}
-          </div>
-        ))}
-      </div>
-      {v === 4 && (
-        <div className="how">
-          <span>1 · Book online</span>
-          <span>2 · We survey</span>
-          <span>3 · Plan and report in 7 days</span>
-          <span>Testimonials</span>
-          <span>Our team</span>
-          <span>News</span>
-        </div>
-      )}
-      {v === 5 && (
-        <div className="how">
-          <span>1 · Book online</span>
-          <span>2 · We survey</span>
-          <span>3 · Plan and report in 7 days</span>
-        </div>
-      )}
-    </div>
-  );
-};
-
+/* ---------- first draft to fifth: Ridgeline's site (staged in stage/iterate-run.tsx) ---------- */
 export const FirstToFifth: Page = () => {
   const active = useIsActivePage();
-  const [v, setV] = useState(active ? 0 : 4);
+  const { beat, onBeat, pick, take } = useBeats(ITER_BEATS);
   return (
     <Frame label="First draft to fifth">
+      <BeatSteps count={ITER_BEATS - 1} onBeat={onBeat} />
       <Head eb={eb('make', 'Making things · iterate')} title="First draft to fifth, in five messages">
         <div className="steps" style={{ position: 'absolute', right: '3.6cqw', top: '5.6cqw' }}>
           {VERSIONS.map((_, i) => (
-            <Chip key={i} n={i + 1} label={`v${i + 1}`} state={i === v ? 'on' : i < v ? 'past' : ''} onClick={() => setV(i)} />
+            <Chip key={i} n={i + 1} label={`v${i + 1}`} state={i === beat ? 'on' : i < beat ? 'past' : ''} onClick={() => pick(i)} />
           ))}
         </div>
       </Head>
       <PageNo />
-      <div className="b4-iter-prompt" key={v}>
-        <span className="dk-k">Message {v + 1}</span>
-        <p>“{VERSIONS[v].p}”</p>
-        <span className="why">{VERSIONS[v].why}</span>
-        <div className="pbtns">
-          <button className="rb" type="button" onClick={() => setV((x) => Math.max(0, x - 1))} disabled={v === 0}>
-            Back
-          </button>
-          <button className="rb primary" type="button" onClick={() => setV((x) => Math.min(4, x + 1))} disabled={v === 4}>
-            Next message
-          </button>
-        </div>
-      </div>
-      <div className="b4-iter-site">
-        <Browser url={v < 2 ? 'localhost:3000' : 'ridgeline.example'} style={{ height: '100%' }}>
-          <RidgelineSite v={v === 4 ? 5 : v === 3 ? 4 : v} />
-        </Browser>
+      <div className="b4-iter-stage">
+        <IterateRun beat={beat} take={take} live={active} />
       </div>
       <Src>Ridgeline Surveying, its prices and its phone number are made up. (08) 5550 xxxx is a range set aside for fiction.</Src>
     </Frame>
@@ -662,83 +530,28 @@ const BrandFile: Page = () => (
   </Frame>
 );
 
-const LOG_BAD = [
-  ['✕', 'colour #7c3aed is not in the palette', 'line 12'],
-  ['✕', 'font “Poppins” is not a brand font', 'line 4'],
-  ['✕', 'banned phrase “supercharge”', 'line 31'],
-  ['✕', 'sparkle emoji used as decoration', 'line 31'],
-  ['✕', 'yellow used as text on paper', 'line 40'],
-];
 const Checker: Page = () => {
   const active = useIsActivePage();
-  const [phase, setPhase] = useState<'draft' | 'checking' | 'failed' | 'fixed'>(active ? 'draft' : 'failed');
-  const [lines, setLines] = useState(active ? 0 : LOG_BAD.length);
-  useEffect(() => {
-    if (phase !== 'checking') return;
-    if (lines >= LOG_BAD.length) {
-      setPhase('failed');
-      return;
-    }
-    const t = setTimeout(() => setLines((l) => l + 1), 380);
-    return () => clearTimeout(t);
-  }, [phase, lines]);
-  const fixed = phase === 'fixed';
+  const { beat, onBeat, pick, take } = useBeats(CHECK_BEATS);
   return (
     <Frame label="A checker that can count">
+      <BeatSteps count={CHECK_BEATS - 1} onBeat={onBeat} />
       <Head
         eb={eb('make', 'How this deck was made · 2 of 3')}
         title="A checker that can count"
         sum="Before anything goes out, a small script checks every colour, font and banned word against the brand file. The judgement stays human. The counting doesn't."
       />
       <PageNo />
-      <div className="b4-chk-tile">
-        <span className="dk-k">{fixed ? 'linkedin-tile.html · fixed' : 'linkedin-tile.html · first draft'}</span>
-        {fixed ? (
-          <div className="tile good">
-            <div className="mk">
-              <Mark size="3.4cqw" />
-              <span>Fieldwork</span>
-            </div>
-            <b>
-              One day. Both apps. <span className="hl">Your business.</span>
-            </b>
-            <span className="meta">Perth · December · 12 seats</span>
-          </div>
-        ) : (
-          <div className="tile bad">
-            <b>Supercharge your business with AI ✨</b>
-            <span>Unlock the power of artificial intelligence</span>
-            <span className="yl">Limited seats!</span>
-          </div>
-        )}
+      <div className="b4-chk-stage">
+        <CheckRun beat={beat} take={take} live={active} />
       </div>
-      <div className="b4-chk-log">
-        <div className="term">
-          <span className="cmd">$ brand-check linkedin-tile.html</span>
-          {!fixed &&
-            LOG_BAD.slice(0, lines).map(([m, t, l]) => (
-              <span key={t} className="bad">
-                {m} {t} <em>{l}</em>
-              </span>
-            ))}
-          {!fixed && phase === 'failed' && <span className="sum">5 problems. Not sent.</span>}
-          {fixed && <span className="ok">✓ 0 problems. Ready for a human to look at.</span>}
-        </div>
-        <div className="pbtns">
-          <button
-            className="rb primary"
-            type="button"
-            onClick={() => {
-              setLines(0);
-              setPhase('checking');
-            }}
-          >
-            Run the check
-          </button>
-          <button className="rb" type="button" disabled={phase !== 'failed'} onClick={() => setPhase('fixed')}>
-            Fix and re-check
-          </button>
-        </div>
+      <div className="pbtns b4-chk-btns">
+        <button className="rb primary" type="button" onClick={() => pick(1)}>
+          Run the check
+        </button>
+        <button className="rb" type="button" disabled={beat < 1} onClick={() => pick(2)}>
+          Fix and re-check
+        </button>
       </div>
       <Src right>This deck has one too: node scripts/brand-check.mjs checks every page against the brand file.</Src>
     </Frame>
@@ -961,7 +774,7 @@ export const pages: [Page, string][] = [
   ],
   [
     FirstToFifth,
-    '4 min. Click "Next message" four times and read each message aloud. v1 is what everyone gets. v5 is five plain messages later, no design skill needed. This page is also the backup if the live demo fails.',
+    '4 min. Message 1 types and sends itself as the page opens. Click four times for messages 2 to 5 and read each one aloud while it types; the site on the right changes when the agent finishes. Message 4 pins the three problems it found before fixing them; message 5 marks what it removes. The chips jump to any version. v1 is what everyone gets. v5 is five plain messages later, no design skill needed. This page is also the backup if the live demo fails.',
   ],
   [
     WhatItMakes,
@@ -989,7 +802,7 @@ export const pages: [Page, string][] = [
   ],
   [
     Checker,
-    '3 min. Press "Run the check", let the five problems land, then "Fix and re-check". The real script is in the repo (node scripts/brand-check.mjs) and runs over this deck.',
+    '3 min. Open on the first draft and let the room spot what is wrong with it. Click once: the check is typed and run, and each problem it reports is pinned on the tile as it lands. Click again: the agent fixes the five and the check runs clean. The buttons do the same if you are not using the clicker. The real script is in the repo (node scripts/brand-check.mjs) and runs over this deck.',
   ],
   [
     LooksFirst,

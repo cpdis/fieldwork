@@ -1,88 +1,29 @@
 /* Block 3 · 10:00 · Context is everything. */
 import type { Page } from '@open-slide/core';
-import { Step, Steps } from '@open-slide/core';
-import { useState } from 'react';
-import { Frame, Hl, type Hotspot, InsetWindow, SideLabel, Split } from '@assets/fieldwork/brand';
+import { Step, Steps, useIsActivePage } from '@open-slide/core';
+import { Frame, type Hotspot, InsetWindow, SideLabel, Split } from '@assets/fieldwork/brand';
 import { Head, PageNo, Shot, Src, eb, lab, live, opener, usePlay } from '../kit';
+import { BeatSteps } from '../stage/beats';
+import { ContextMail, LEVELS } from '../stage/context-mail';
+import { NextWordRun, WORDS } from '../stage/next-word';
+import { useBeats } from '../stage/staged';
 
 const Open = opener(
   'context',
   'It only knows what you give it. Give it your business once, in a Project, and every answer after that starts from you instead of from average.',
 );
 
-/* ---------- how it works: the next word ---------- */
-type Cand = [string, number];
-const STEPS_NW: { pick: string; cands: Cand[]; note: string }[] = [
-  {
-    pick: '$',
-    cands: [['$', 58], ['about', 17], ['a', 9], ['approximately', 7], ['just', 4]],
-    note: 'It writes one word at a time, picking a likely next word. Here it is confident.',
-  },
-  {
-    pick: '14,500',
-    cands: [['12,800', 7], ['14,500', 6], ['9,950', 5], ['18,200', 5], ['11,000', 5]],
-    note: 'Now the bars are flat. Many prices look right and none is yours. Flat bars mean it is guessing.',
-  },
-  {
-    pick: 'including',
-    cands: [['including', 41], ['+', 22], ['.', 18], ['plus', 11], ['excluding', 5]],
-    note: 'Back to confident. The sentence sounds more sure of itself than the number deserves.',
-  },
-  {
-    pick: 'GST.',
-    cands: [['GST.', 83], ['all', 8], ['labour', 5], ['materials', 3], ['travel', 1]],
-    note: 'Fluent, confident, and invented. It has never seen your price list. That is the whole problem, and the fix.',
-  },
-];
-
+/* ---------- how it works: the next word (staged in stage/next-word.tsx) ---------- */
 const NextWord: Page = () => {
-  const [n, setN] = useState(0);
-  const done = n >= STEPS_NW.length;
-  const cur = STEPS_NW[Math.min(n, STEPS_NW.length - 1)];
-  const max = Math.max(...cur.cands.map((c) => c[1]));
+  const active = useIsActivePage();
+  const { beat, onBeat, pick, take } = useBeats(WORDS);
   return (
     <Frame label="How it works: one word at a time">
+      <BeatSteps count={WORDS - 1} onBeat={onBeat} />
       <Head eb={eb('context', 'Context · how it works, in ten minutes')} title="It writes one likely word at a time" />
       <PageNo />
-      <div className="b3-sent">
-        <span className="dk-muted">Thanks for having us out on Tuesday. Your quote for the bathroom refit comes to </span>
-        {STEPS_NW.slice(0, n).map((s, i) => (
-          <span key={s.pick} className={`w ${i === 1 ? 'guess' : ''}`}>
-            {s.pick}
-            {s.pick === '$' ? '' : ' '}
-          </span>
-        ))}
-        {!done && <span className="caret" />}
-      </div>
-      <div className="b3-bars">
-        <span className="dk-k">{done ? 'Finished' : `Candidates for the next word · step ${n + 1} of ${STEPS_NW.length}`}</span>
-        {cur.cands.map(([w, p]) => (
-          <div key={`${n}-${w}`} className={`bar ${done && w === cur.pick ? 'picked' : ''}`}>
-            <span className="w">{w}</span>
-            <span className="track">
-              <i style={{ width: `${(p / max) * 100}%`, opacity: done ? 0.25 : 1 }} />
-            </span>
-            <span className="p">{p}%</span>
-          </div>
-        ))}
-      </div>
-      <div className="b3-nw-side">
-        <p className="dk-body" style={{ fontSize: '1.5cqw' }}>
-          {done ? STEPS_NW[STEPS_NW.length - 1].note : cur.note}
-        </p>
-        <div className="pbtns">
-          <button className="rb primary" type="button" onClick={() => setN((x) => Math.min(STEPS_NW.length, x + 1))} disabled={done}>
-            Next word
-          </button>
-          <button className="rb" type="button" onClick={() => setN(0)}>
-            Start again
-          </button>
-        </div>
-        {done && (
-          <p className="dk-body" style={{ fontSize: '1.5cqw' }}>
-            So: <Hl>give it the price list.</Hl> That is what the rest of this block is about.
-          </p>
-        )}
+      <div className="b3-nw-stage" data-osd-interactive>
+        <NextWordRun beat={beat} take={take} live={active} go={pick} />
       </div>
       <Src>Probabilities are illustrative. Real models choose from tens of thousands of word pieces at each step.</Src>
     </Frame>
@@ -142,69 +83,20 @@ const SameIdea: Page = () => {
   );
 };
 
-/* ---------- the context dial ---------- */
-type Seg = [string, number?];
+/* ---------- the context dial (the email is staged in stage/context-mail.tsx) ---------- */
 const DIAL = [
   { k: 'Just the ask', d: '“Write a follow-up email to the client after yesterday’s site visit.”' },
   { k: '+ Your Project', d: 'Who you are, who you work for, how you talk.' },
   { k: '+ The source', d: 'Your notes from the site visit.' },
   { k: '+ An example you liked', d: 'One past email you were happy with.' },
 ];
-const EMAILS: { subj: Seg[]; body: Seg[][] }[] = [
-  {
-    subj: [['Following up on our recent visit']],
-    body: [
-      [['Dear [Client Name],']],
-      [['Thank you for taking the time to meet with us yesterday. It was a pleasure discussing your project, and we are excited about the opportunity to work with you.']],
-      [['We will be in touch shortly with next steps. Please don’t hesitate to reach out if you have any questions.']],
-      [['Best regards,'], ['\n[Your Name]']],
-    ],
-  },
-  {
-    subj: [['Your '], ['boundary survey', 1], [' – next steps']],
-    body: [
-      [['Hi '], ['Anna', 1], [',']],
-      [['Thanks for having us out yesterday. '], ['Ridgeline', 1], [' will prepare a quote for the boundary survey and send it '], ['within two working days', 1], ['.']],
-      [['Any questions in the meantime, just reply to this email.']],
-      [['Cheers,', 1], ['\nJess Tran, Licensed Surveyor', 1]],
-    ],
-  },
-  {
-    subj: [['14 Ashby Rd', 2], [' – '], ['boundary survey', 1], [' next steps']],
-    body: [
-      [['Hi '], ['Anna', 1], [',']],
-      [['Thanks for walking the block with me yesterday. Quick recap: '], ['two of the four boundary pegs are missing (NE and SE corners)', 2], ['. '], ['The eastern fence may sit up to 0.4 m inside your boundary', 2], ['; the survey will confirm it.']],
-      [['I’ll send the quote '], ['by Thursday', 2], [' so we can survey '], ['before your fencer starts on the 21st', 2], ['.']],
-      [['Cheers,', 1], ['\nJess', 1]],
-    ],
-  },
-  {
-    subj: [['14 Ashby Rd', 2], [' – '], ['what we found and what’s next', 3]],
-    body: [
-      [['Hi '], ['Anna', 1], [',']],
-      [['What we found: ', 3], ['two boundary pegs missing (NE and SE corners)', 2], ['. '], ['The eastern fence may sit up to 0.4 m inside your boundary', 2], ['.']],
-      [['What happens next: ', 3], ['quote by Thursday', 2], [', survey next week, '], ['before your fencer starts on the 21st', 2], ['.']],
-      [['What we need from you: ', 3], ['your Certificate of Title, if it’s handy.', 3]],
-      [['Cheers,', 1], ['\nJess', 1]],
-    ],
-  },
-];
-
-const Segs = ({ segs, level }: { segs: Seg[]; level: number }) => (
-  <>
-    {segs.map(([t, k], i) => (
-      <span key={i} className={k ? (k === level ? 'new' : 'old') : ''}>
-        {t}
-      </span>
-    ))}
-  </>
-);
 
 export const ContextDial: Page = () => {
-  const [lv, setLv] = useState(0);
-  const e = EMAILS[lv];
+  const active = useIsActivePage();
+  const { beat: lv, onBeat, pick, take } = useBeats(LEVELS);
   return (
     <Frame label="The context dial">
+      <BeatSteps count={LEVELS - 1} onBeat={onBeat} />
       <Head
         eb={eb('context', 'Context · the dial')}
         title="Same ask. Turn up the context"
@@ -214,7 +106,7 @@ export const ContextDial: Page = () => {
       <div className="b3-dial" data-osd-interactive>
         <span className="dk-k">What it knows</span>
         {DIAL.map((d, i) => (
-          <button key={d.k} type="button" className={`${i === lv ? 'on' : ''} ${i < lv ? 'past' : ''}`} onClick={() => setLv(i)}>
+          <button key={d.k} type="button" className={`${i === lv ? 'on' : ''} ${i < lv ? 'past' : ''}`} onClick={() => pick(i)}>
             <i>{i}</i>
             <b>{d.k}</b>
             <span>{d.d}</span>
@@ -224,18 +116,8 @@ export const ContextDial: Page = () => {
           In ChatGPT and in Claude, steps 1 and 3 live in a <b>Project</b>: instructions plus files. You set them once.
         </p>
       </div>
-      <div className="b3-mail" key={lv}>
-        <div className="sub">
-          <span className="dk-k">Subject</span>
-          <b>
-            <Segs segs={e.subj} level={lv} />
-          </b>
-        </div>
-        {e.body.map((p, i) => (
-          <p key={i}>
-            <Segs segs={p} level={lv} />
-          </p>
-        ))}
+      <div className="b3-mail-stage">
+        <ContextMail level={lv} take={take} live={active} />
       </div>
       <div className="b3-mail-key">
         <span>
@@ -481,7 +363,7 @@ export const pages: [Page, string][] = [
   [Open, '10:00 · Block 3 opener. Forty-five minutes, ending in a 20-minute lab. Then the break.'],
   [
     NextWord,
-    '4 min. Click "Next word" four times. Stop on step 2 and make the point: when the bars are flat, it is guessing, and it does not say so. Finish: "It has never seen your price list." That line sets up the whole block.',
+    '4 min. The first word picks itself as the page opens: the bars grow, the highlight lands on "$" fast because it is far ahead. Click three times for the next three words. On the second, the bars are flat and the highlight wanders before it settles on a price: stop there and make the point. When the bars are flat, it is guessing, and it does not say so. The last click ends on "It has never seen your price list." That line sets up the whole block.',
   ],
   [
     SameIdea,
@@ -489,7 +371,7 @@ export const pages: [Page, string][] = [
   ],
   [
     ContextDial,
-    '4 min. Click 0, 1, 2, 3 in order and read the subject line each time. Yellow is what the step you just added changed. At 0 it is a template; at 3 it is an email you would actually send. The made-up business is a surveyor; swap the example for your audience if you like.',
+    '4 min. Level 0 writes itself as the page opens. Click three times for levels 1, 2 and 3: each click attaches that context to the draft and the email rewrites itself. Read the subject line each time. Yellow is what the step you just added changed. At 0 it is a template; at 3 it is an email you would actually send. The dial buttons jump to any level. The made-up business is a surveyor; swap the example for your audience if you like.',
   ],
   [
     WhereContext,
