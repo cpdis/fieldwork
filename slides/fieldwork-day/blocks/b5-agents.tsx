@@ -76,223 +76,8 @@ const STEPS = [
   { c: 'Draft', log: 'Drafted reply · waiting for you', note: 'It drafts the reply and stops. Nothing is sent until you approve it.', hand: 'it waits for you ✓', tag: 'Step 6 · your call' },
 ];
 
-const Cursor = () => (
-  <svg className="cursor" viewBox="0 0 24 24" aria-hidden="true">
-    <path d="M4 2 L4 20 L9 15 L12.5 22 L15.5 20.6 L12 13.8 L19 13.8 Z" fill="#1c1d20" stroke="#fff" strokeWidth="1.4" />
-  </svg>
-);
-
-const RunScreens = ({ step }: { step: number }) => {
-  const [approved, setApproved] = useState(false);
-  useEffect(() => {
-    if (step !== 5) setApproved(false);
-  }, [step]);
-  return (
-    <>
-      <div className="scr" hidden={step !== 0}>
-        <div className="mlab">Your goal</div>
-        <div className="goal">
-          Compare the three conduit quotes in my inbox for 40 m of 50 mm conduit. Best = cheapest that arrives by
-          Friday. Draft a reply to the winner.
-        </div>
-      </div>
-      <div className="scr" hidden={step !== 1}>
-        <div className="mlab">Plan</div>
-        <div className="goal" style={{ background: '#fff', border: '.1cqw solid #dedfd9', display: 'grid', gap: '.4cqw' }}>
-          <span>1. Find the three quotes in email</span>
-          <span>2. Get any missing price from the supplier site</span>
-          <span>3. Compare against “by Friday”, then draft a reply</span>
-        </div>
-      </div>
-      <div className="scr inbox" hidden={step !== 2}>
-        <div className="mlab">Outlook · Inbox</div>
-        <div>
-          <span>Westside Electrical · Quote Q-1182</span>
-          <span className="tag">PDF</span>
-        </div>
-        <div>
-          <span>Coastal Wholesale · Your quote</span>
-          <span className="tag">PDF</span>
-        </div>
-        <div className="hl">
-          <span>Northline Supplies · Price on our trade portal</span>
-          <span className="tag">link</span>
-        </div>
-      </div>
-      <div className="scr portal" hidden={step !== 3}>
-        <div className="mb">
-          <div className="mb-bar">trade.northline.example/quotes</div>
-          <div className="mb-body" style={{ gap: 0, padding: '.4cqw' }}>
-            <div className="row">
-              <span>Q-77 · 50 mm conduit · 40 m</span>
-              <span className="dl">Download quote</span>
-            </div>
-            <div className="row" style={{ color: '#8a8c91' }}>
-              <span>Q-61 · cable tray · 12 m</span>
-              <span className="dl" style={{ opacity: 0.5 }}>
-                Download quote
-              </span>
-            </div>
-          </div>
-        </div>
-        <Cursor />
-      </div>
-      <div className="scr" hidden={step !== 4}>
-        <div className="mlab">Comparison</div>
-        <div className="tbl">
-          {['Supplier', 'Per m', 'Total', 'By Friday?'].map((h) => (
-            <span key={h} className="h">
-              {h}
-            </span>
-          ))}
-          {['Westside', '$8.40', '$336.00', 'Yes', 'Coastal', '$7.95', '$318.00', 'No · 5 days'].map((c, i) => (
-            <span key={`r${i}`}>{c}</span>
-          ))}
-          {['Northline', '$8.10', '$324.00', 'Yes · 1 day'].map((c) => (
-            <span key={c} className="win-row">
-              {c}
-            </span>
-          ))}
-        </div>
-      </div>
-      <div className="scr" hidden={step !== 5}>
-        <div className="mlab">Draft · not sent</div>
-        <div className="draft">
-          <span style={{ color: '#6a6c71' }}>To: Northline Supplies</span>
-          <span>
-            Hi team, we'd like to go ahead with Q-77, 40 m of 50 mm conduit, delivered by Friday. Please confirm and send
-            the invoice.
-          </span>
-          <div className="actions">
-            <button className="go" type="button" disabled={approved} onClick={() => setApproved(true)}>
-              {approved ? 'Approved · demo, nothing sent' : 'Approve and send'}
-            </button>
-            <button type="button">Edit</button>
-          </div>
-        </div>
-      </div>
-    </>
-  );
-};
-
-const RunWindow = ({ side, step }: { side: 'L' | 'R'; step: number }) => {
-  const isL = side === 'L';
-  return (
-    <>
-      <SideLabel
-        name={isL ? 'OpenAI · Codex' : 'Claude'}
-        sub={isL ? 'Codex, in ChatGPT desktop' : 'Cowork, in Claude desktop'}
-      />
-      <div className="win">
-        <div className="win-bar">
-          <span className="dots">
-            <i />
-            <i />
-            <i />
-          </span>
-          <span>{isL ? 'ChatGPT desktop · Codex' : 'Claude desktop · Cowork'}</span>
-        </div>
-        <div className="win-body" style={{ height: '27cqw' }}>
-          <div className="run">
-            <div className="log">
-              <div className="lh">{isL ? 'Codex' : 'Claude'} is working</div>
-              <div className="loglines">
-                {STEPS.slice(0, step + 1).map((s, i) => (
-                  <div key={s.c} className={i === step ? 'now' : 'done'}>
-                    {s.log}
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className={`screen ${step === 3 ? 'at3' : ''}`}>
-              <RunScreens step={step} />
-            </div>
-          </div>
-          {isL ? (
-            <div className="tagnote" style={{ right: '1cqw', top: '1cqw' }}>
-              {STEPS[step].tag}
-            </div>
-          ) : (
-            <div className="handnote" style={{ right: '1.2cqw', bottom: '1.2cqw' }}>
-              {STEPS[step].hand}
-            </div>
-          )}
-        </div>
-      </div>
-    </>
-  );
-};
-
-export const WatchItWork: Page = () => {
-  const active = useIsActivePage();
-  const [step, setStep] = useState(0);
-  const [playing, setPlaying] = useState(false);
-  // Only the live copy of this page plays; thumbnails and the presenter preview stay still.
-  useEffect(() => {
-    if (!playing || !active) return;
-    const id = setInterval(() => {
-      setStep((s) => {
-        if (s >= STEPS.length - 1) {
-          setPlaying(false);
-          return s;
-        }
-        return s + 1;
-      });
-    }, 2800);
-    return () => clearInterval(id);
-  }, [playing, active]);
-  useEffect(() => {
-    if (!active) setPlaying(false);
-  }, [active]);
-  const go = (s: number) => {
-    setPlaying(false);
-    setStep(Math.max(0, Math.min(STEPS.length - 1, s)));
-  };
-  return (
-    <Frame label="Watch it work">
-      <PageNo />
-      <Pad style={{ paddingBottom: 0 }}>
-        <Eyebrow>{eb('agents', 'Agents · watch it work')}</Eyebrow>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '2cqw' }}>
-          <Title>Watch it work</Title>
-          <div className="runbar">
-            <button className="rb" type="button" onClick={() => go(step - 1)}>
-              Back
-            </button>
-            <button
-              className="rb primary"
-              type="button"
-              onClick={() => {
-                if (playing) return setPlaying(false);
-                if (step === STEPS.length - 1) setStep(0);
-                setPlaying(true);
-              }}
-            >
-              {playing ? 'Pause' : 'Play'}
-            </button>
-            <button className="rb" type="button" onClick={() => go(step + 1)}>
-              Next
-            </button>
-          </div>
-        </div>
-        <div className="steps" style={{ marginTop: '1cqw' }}>
-          {STEPS.map((s, i) => (
-            <Chip key={s.c} n={i + 1} label={s.c} state={i === step ? 'on' : i < step ? 'past' : ''} onClick={() => go(i)} />
-          ))}
-        </div>
-        <p className="stepnote" style={{ margin: '.8cqw 0 0' }}>
-          {STEPS[step].note}
-        </p>
-      </Pad>
-      <Split top="17.6cqw" left={<RunWindow side="L" step={step} />} right={<RunWindow side="R" step={step} />} />
-    </Frame>
-  );
-};
-
-
-/* ---------- watch it work, staged (trial: Stageshow kit) ---------- */
-// The same run as the page before, built with the Stageshow kit in stage/. Each clicker
-// press plays one beat in both windows; going back shows the previous beat's end.
+// Built with the Stageshow kit (stage/quote-run.tsx). Each clicker press plays one step in
+// both windows; going back shows the step before, finished.
 const StagedSide = ({ side, beat, live }: { side: 'L' | 'R'; beat: number; live: boolean }) => {
   const isL = side === 'L';
   return (
@@ -324,20 +109,17 @@ const StagedSide = ({ side, beat, live }: { side: 'L' | 'R'; beat: number; live:
   );
 };
 
-export const WatchItWorkStaged: Page = () => {
+export const WatchItWork: Page = () => {
   const active = useIsActivePage();
   const [beat, setBeat] = useState(0);
   const onBeat = useCallback((b: number) => setBeat(Math.min(b, BEAT_COUNT - 1)), []);
   return (
-    <Frame label="Watch it work (staged)">
+    <Frame label="Watch it work">
       <PageNo />
       <BeatSteps count={BEAT_COUNT - 1} onBeat={onBeat} />
       <Pad style={{ paddingBottom: 0 }}>
         <Eyebrow>{eb('agents', 'Agents · watch it work')}</Eyebrow>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '2cqw' }}>
-          <Title>Watch it work</Title>
-          <span className="b5-trial">Trial · Stageshow · next step: clicker</span>
-        </div>
+        <Title>Watch it work</Title>
         <div className="steps" style={{ marginTop: '1cqw' }}>
           {STEPS.map((s, i) => (
             <Chip key={s.c} n={i + 1} label={s.c} state={i === beat ? 'on' : i < beat ? 'past' : ''} onClick={() => {}} />
@@ -648,11 +430,7 @@ export const pages: [Page, string][] = [
   ],
   [
     WatchItWork,
-    '6 min. Press Play, or step with Next. Pause on step 4 (computer use) and step 6 (it waits for you). Codex on the left, Claude on the right, same job.',
-  ],
-  [
-    WatchItWorkStaged,
-    'TRIAL (Stageshow). Same run as the page before; keep one of the two. Each clicker press plays one step in both windows: goal typed, plan, inbox read through the connector, then the camera pushes in while it clicks Download on the portal (computer use), the comparison, and the draft it stops on. Back shows the step before, finished.',
+    '6 min. Each click plays one step in both windows, Codex on the left and Claude on the right, same job. Step 3: no cursor, it reads email through the connector. Step 4: the window zooms in and the cursor clicks Download on the portal; this is computer use, so pause here. Step 6: it stops at the draft. Click Approve to show nothing is sent. Back shows the step before, finished.',
   ],
   [
     ConnectorOrScreen,

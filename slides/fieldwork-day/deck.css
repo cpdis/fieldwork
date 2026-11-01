@@ -602,6 +602,5 @@
 .fw .b4-tools .d { font-size: 1.1cqw; line-height: 1.4; color: var(--muted); }
 .fw .b4-tools .g { font-size: 1.15cqw; line-height: 1.35; font-weight: 600; }
 
-/* Block 5 · watch it work, staged (trial) */
+/* Block 5 · watch it work (Stageshow stage) */
 .fw .b5-stage { position: relative; }
-.fw .b5-trial { font: 500 .8cqw/1 var(--f-mono); letter-spacing: .05em; text-transform: uppercase; color: var(--muted); border: .1cqw solid var(--alu); padding: .45cqw .6cqw; }
