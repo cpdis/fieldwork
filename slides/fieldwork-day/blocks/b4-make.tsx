@@ -4,7 +4,7 @@ import type { Page } from '@open-slide/core';
 import { useIsActivePage } from '@open-slide/core';
 import { type ReactNode, useEffect, useState } from 'react';
 import { Chip, Frame, Hl, Mark, Pad, SideLabel, Split } from '@assets/fieldwork/brand';
-import { Browser, Head, PageNo, Src, eb, lab, live, opener, usePlay } from '../kit';
+import { Browser, Head, PageNo, Shot, Src, eb, lab, live, opener, usePlay } from '../kit';
 
 const Open = opener(
   'make',
@@ -439,6 +439,65 @@ const WhatItMakes: Page = () => (
     />
   </Frame>
 );
+
+/* ---------- real tools, running in real businesses ---------- */
+const TOOLS = [
+  {
+    id: 'bambi',
+    who: 'Bambi Baby · baby-gear stores',
+    tool: 'Claude',
+    t: 'Scan to wishlist',
+    d: 'Three in four walk-in shoppers used to leave without a name or an email. Now they scan what they like, and the wishlist and follow-up go out on their own.',
+    g: '$60,000 in sales tied to it in the first four days.',
+  },
+  {
+    id: 'kane',
+    who: 'KANE · creative agency',
+    tool: 'Claude',
+    t: 'Proposal builder',
+    d: 'Meeting notes in. A fit score, a price from past projects, the proposal and the statement of work out, ready to sign.',
+    g: 'Scoping to signature went from weeks to minutes.',
+  },
+  {
+    id: 'packlab',
+    who: 'A YouTube channel’s team',
+    tool: 'Claude artifact',
+    t: 'Thumbnail vote',
+    d: 'A shared page where the team votes on video thumbnails, so the decision does not get lost in Slack.',
+    g: 'Made in a chat and shared as a link. No code.',
+  },
+];
+const RealTools: Page = () => {
+  const on = usePlay(120);
+  return (
+    <Frame label="Real tools, running in real businesses">
+      <Head
+        eb={eb('make', 'Making things · real tools')}
+        title="Small tools that fit one business"
+        sum="Not apps for sale. Each one fits how one business already works, and none needed a software team."
+      />
+      <PageNo />
+      <div className={`b4-tools ${on ? '' : 'pre'}`}>
+        {TOOLS.map((x, i) => (
+          <div key={x.id} className="dk-fade" style={{ ['--i' as string]: i * 2 }}>
+            <Shot id={x.id} style={{ height: '16.2cqw' }} />
+            <div className="who">
+              <span className="dk-k">{x.who}</span>
+              <span className="tl">{x.tool}</span>
+            </div>
+            <b>{x.t}</b>
+            <span className="d">{x.d}</span>
+            <span className="g">{x.g}</span>
+          </div>
+        ))}
+      </div>
+      <Src>
+        Bambi Baby and KANE: Anthropic, Claude for Small Business demos, Sep 2026; results as each business reported them. Thumbnail
+        vote: Anthony Dupont-Cinko, Claude artifacts walkthrough, Oct 2026.
+      </Src>
+    </Frame>
+  );
+};
 
 /* ---------- pictures ---------- */
 const PARTS = [
@@ -907,6 +966,10 @@ export const pages: [Page, string][] = [
   [
     WhatItMakes,
     '3 min. Both apps make real files. The handwritten note matters for Claude users: when you share an artifact that uses Claude, it runs on the viewer’s usage, not yours.',
+  ],
+  [
+    RealTools,
+    '2 min. Let the clips play. One sentence each: what the tool does, and the number. The point: these are small, one-business tools, made in the same apps they have. Skip this page if the block is running late.',
   ],
   [
     Live,

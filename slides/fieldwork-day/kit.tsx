@@ -7,6 +7,7 @@ import { type Page, useIsActivePage, useSlidePageNumber } from '@open-slide/core
 import { type CSSProperties, type ReactNode, useEffect, useRef, useState } from 'react';
 import { Eyebrow, Frame, Pad, SideLabel, Split, Title } from '@assets/fieldwork/brand';
 import { type BlockId, DAY, LEVELS, blockById, toMin } from './course';
+import { SHOT_BY_ID } from './shots';
 import './kit.css';
 
 /* ---------------- page registry, so pages can point at each other by number ---------------- */
@@ -566,4 +567,76 @@ export const CountUp = ({ to, ms = 1200, fmtN = (n: number) => String(Math.round
     return () => cancelAnimationFrame(raf.current);
   }, [active, to, ms]);
   return <>{fmtN(v)}</>;
+};
+
+/* ---------------- real screenshots and clips ----------------
+ * Files live in assets/shots/<id>.<ext>; shots.ts says what each one is and where it came from.
+ * A missing file renders a labelled gap, so the deck still runs before every capture is in.
+ */
+const SHOT_FILES = import.meta.glob('./assets/shots/*.{png,jpg,jpeg,webp,gif,mp4,webm,mov}', {
+  eager: true,
+  query: '?url',
+  import: 'default',
+}) as Record<string, string>;
+
+const shotFile = (id: string) => {
+  const k = Object.keys(SHOT_FILES).find((key) => key.split('/').pop()?.replace(/\.[^.]+$/, '') === id);
+  return k ? { src: SHOT_FILES[k], video: /\.(mp4|webm|mov)$/i.test(k) } : undefined;
+};
+
+export const hasShot = (id: string) => Boolean(shotFile(id));
+
+export const Shot = ({
+  id,
+  chrome = 'none',
+  fit = 'cover',
+  pos = 'top center',
+  start = 0,
+  style,
+  className = '',
+}: {
+  id: string;
+  chrome?: 'none' | 'browser';
+  fit?: 'cover' | 'contain';
+  pos?: string;
+  /** Video only: where to start, in seconds. */
+  start?: number;
+  style?: CSSProperties;
+  className?: string;
+}) => {
+  const spec = SHOT_BY_ID[id];
+  const f = shotFile(id);
+  const active = useIsActivePage();
+  const v = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    const el = v.current;
+    if (!el) return;
+    if (active) {
+      el.currentTime = start;
+      el.play().catch(() => {});
+    } else el.pause();
+  }, [active, start]);
+  const media = f ? (
+    f.video ? (
+      <video ref={v} src={f.src} muted playsInline loop preload="metadata" style={{ objectFit: fit, objectPosition: pos }} />
+    ) : (
+      <img src={f.src} alt={spec?.alt ?? ''} style={{ objectFit: fit, objectPosition: pos }} />
+    )
+  ) : (
+    <div className="todo">
+      <span className="dk-k">{spec?.kind === 'clip' ? 'Clip to come' : 'Screenshot to come'}</span>
+      <b>{spec?.capture ?? id}</b>
+      <span className="u src">{spec?.url}</span>
+      <span className="u fn">
+        assets/shots/{id}.{spec?.kind === 'clip' ? 'mp4' : 'png'}
+      </span>
+    </div>
+  );
+  const body = <div className={`dk-shot ${f ? '' : 'gap'} ${className}`}>{media}</div>;
+  if (chrome === 'browser') return <Browser url={spec?.show ?? spec?.url ?? ''} style={style}>{body}</Browser>;
+  return (
+    <div className="dk-shot-wrap" style={style}>
+      {body}
+    </div>
+  );
 };

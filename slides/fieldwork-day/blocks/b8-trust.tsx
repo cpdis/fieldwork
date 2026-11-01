@@ -37,7 +37,7 @@ const TickedVsVerified: Page = () => {
       <Head
         eb={eb('trust', 'Trust · checking')}
         title="A ticked box is not a verified edit"
-        sum="From a real review, made anonymous. The checklist said the fixes were done. The document said otherwise. Tick or untick, then check the revised document."
+        sum="A subcontractor sends back their safety plan: “all ten comments fixed”. The checklist is their claim. The revised document is the evidence. Tick or untick, then check it."
       />
       <PageNo />
       <div className="reg b8-reg" data-osd-interactive>
@@ -180,8 +180,8 @@ const ThreeRules: Page = () => {
         ))}
       </div>
       <blockquote className="b8-q">
-        “I keep responsibility for the technical decisions, assumptions, and document approval.”
-        <span className="dk-attr">{COURSE.instructor}, on using AI at work</span>
+        “AI is a productivity and thinking accelerator – not a substitute for professional judgement.”
+        <span className="dk-attr">Tim Gauci, Design + Diplomacy, Melbourne interior design firm · via NAB, Apr 2026</span>
       </blockquote>
     </Frame>
   );
@@ -425,13 +425,13 @@ export const pages: [Page, string][] = [
   [Open, '15:30 · Block 8 opener. Thirty minutes to finish: checking, rules, policy, your number, the regrade, the plan.'],
   [
     TickedVsVerified,
-    '4 min. From a real review, anonymised. Untick two items, then "Check the revised document". The point: the checklist is a claim; the document is the evidence. Have the agent check the document, and you check the agent.',
+    '4 min. A builder checking a subcontractor’s revised safety plan; any trade that reviews other people’s paperwork has this job. Untick two items, then "Check the revised document". The point: the checklist is a claim; the document is the evidence. Have the agent check the document, and you check the agent.',
   ],
   [
     HiddenInstruction,
     '4 min. Read the email out loud first; it looks fine. Then reveal. Ask: what would your Monday brief have done with this? Link back to the never list from Block 7.',
   ],
-  [ThreeRules, '3 min. Three rules, then the quote. Say it in your own words: the tool does the work, you own the decision.'],
+  [ThreeRules, '3 min. Three rules, then the quote from a Melbourne design-firm owner. Say it in your own words: the tool does the work, you own the decision. Ask the room for one example of each rule.'],
   [
     PolicyOnePage,
     '5 min. Show the example, then everyone runs the interview prompt in their Project for five minutes. They finish it at home. Mention the Privacy Act and the APPs in one sentence; no legal advice.',

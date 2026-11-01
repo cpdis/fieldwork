@@ -3,7 +3,7 @@ import type { Page } from '@open-slide/core';
 import { Step, Steps } from '@open-slide/core';
 import { useState } from 'react';
 import { Frame, Hl, type Hotspot, InsetWindow, SideLabel, Split } from '@assets/fieldwork/brand';
-import { Head, PageNo, Src, eb, lab, live, opener, usePlay } from '../kit';
+import { Head, PageNo, Shot, Src, eb, lab, live, opener, usePlay } from '../kit';
 
 const Open = opener(
   'context',
@@ -403,7 +403,13 @@ const DeckStory: Page = () => (
         </Step>
       </Steps>
     </div>
-    <Src>Source: Jameson Haslam (West Coast Deck), public post on X, 2026. Figures as reported in the post.</Src>
+    <span className="dk-k b3-photos-cap">From the post</span>
+    <div className="b3-photos">
+      {['wcd-1', 'wcd-2', 'wcd-3', 'wcd-4'].map((id) => (
+        <Shot key={id} id={id} className="sm" />
+      ))}
+    </div>
+    <Src>Source: Jameson Haslam (West Coast Deck), public post on X, Oct 2026. Figures as reported in the post.</Src>
   </Frame>
 );
 

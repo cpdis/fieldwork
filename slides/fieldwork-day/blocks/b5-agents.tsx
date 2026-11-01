@@ -539,7 +539,7 @@ const DecisionTrail: Page = () => {
           worth more than a tidy one that doesn't.
         </p>
       </div>
-      <Src>A made-up job, built from a real pattern in the instructor's own work.</Src>
+      <Src>A made-up job. The pattern turns up in any business that agrees changes by email and phone.</Src>
     </Frame>
   );
 };

@@ -138,6 +138,10 @@ const WorksWhileYouDont: Page = () => {
         </ul>
         <p className="ft">Read, sort, draft. Nothing sent, nothing booked, nothing paid without you.</p>
       </div>
+      <Src right half>
+        A real one: Mothership Coffee Roasters runs a Monday brief across six cafés from its tills, books, Slack and email
+        (Anthropic, Sep 2026).
+      </Src>
     </Frame>
   );
 };
@@ -337,14 +341,15 @@ const TeamOfAgents: Page = () => {
           <span>A big tender, month-end, research across hundreds of files. Jobs that split cleanly into parts.</span>
         </div>
         <div>
-          <span className="dk-k">The instructor’s scale</span>
+          <span className="dk-k">The right scale</span>
           <span>One agent, plus two or three helpers when a job splits. Not hundreds. That is enough for most small businesses.</span>
         </div>
         <div>
-          <span className="dk-k">Also arriving</span>
-          <span>Voice agents that answer the phone, take the job details and book a callback. A person still approves what they promise.</span>
+          <span className="dk-k">Already here</span>
+          <span>A Sydney mechanic texts back every missed call, and a voice agent called Zoe answers after hours.</span>
         </div>
       </div>
+      <Src right>Leondis Automotive, Sydney: NAB, “AI changing how Australian SMEs get work done”, Jul 2026.</Src>
     </Frame>
   );
 };
@@ -424,7 +429,7 @@ export const pages: [Page, string][] = [
   ],
   [
     TeamOfAgents,
-    '3 min. Demo only. Let it run once. The point is scale: you already have what you need at L5 and L6. Mention voice agents in one sentence.',
+    '3 min. Demo only. Let it run once. The point is scale: you already have what you need at L5 and L6. Read the mechanic example in one sentence: a person still approves what the voice agent promises.',
   ],
   [
     Live,

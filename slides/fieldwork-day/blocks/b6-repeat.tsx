@@ -3,7 +3,7 @@ import type { Page } from '@open-slide/core';
 import { useIsActivePage } from '@open-slide/core';
 import { useEffect, useState } from 'react';
 import { Frame, Hl, SideLabel, Split } from '@assets/fieldwork/brand';
-import { CountUp, Head, PageNo, Src, eb, lab, live, opener, usePlay } from '../kit';
+import { CountUp, Head, PageNo, Shot, Src, eb, lab, live, opener, usePlay } from '../kit';
 
 const Open = opener(
   'repeat',
@@ -260,23 +260,23 @@ const WhereSkills: Page = () => (
   </Frame>
 );
 
-/* ---------- a one-off becomes a method ---------- */
+/* ---------- a firm's method, written down ---------- */
 const OneOff: Page = () => {
   const on = usePlay(100);
   return (
-    <Frame label="A one-off becomes a method">
+    <Frame label="A firm's method, written down">
       <Head
         eb={eb('repeat', 'Repeatable · a real story')}
-        title="One good job, saved as a method"
-        sum="From the instructor's own work: a long document review that went well became a skill, and then everyone's checklist got better."
+        title="One firm’s way of working, written down once"
+        sum="A 13-person accounting firm in Maroochydore wrote down “the InDepth way”. Now anyone on the team can ask how a job is done, and get the firm’s own answer."
       />
       <PageNo />
       <div className={`b6-story ${on ? '' : 'pre'}`}>
         {[
-          ['One long review', 'A long procedure, more than 100 findings, each one tied to a page number you can check.'],
-          ['The method, written down', 'How to read it, what to flag, how to word a finding, what to check twice. Saved as a skill.'],
-          ['The next review', 'Starts from the method instead of a blank page. Same standard, every time.'],
-          ['Shared', 'The lessons became 22 new rows in a colleague’s review checklist.'],
+          ['Write the method down', 'How the firm does each job: the steps, the checks, the standard. In plain words, once.'],
+          ['Ask it how', 'A team member asks how to collate a BAS. The agent steps through the firm’s own process.'],
+          ['Check against it', 'Next: a review agent that checks tax statements against the firm’s standards before they are finalised.'],
+          ['People grow faster', 'An administrator built process and advisory skills much earlier in her career.'],
         ].map(([t, d], i) => (
           <div key={t} className="dk-fade" style={{ ['--i' as string]: i * 2 }}>
             <span className="dk-k">{String(i + 1).padStart(2, '0')}</span>
@@ -285,12 +285,14 @@ const OneOff: Page = () => {
           </div>
         ))}
       </div>
+      <Shot id="indepth" chrome="browser" style={{ position: 'absolute', right: '3.6cqw', width: '38cqw', top: '15.6cqw', height: '24.6cqw' }} />
       <div className="b6-callback">
         <span className="dk-k">Callback</span>
         <p>
           The brand file you wrote before lunch, with “check this against my brand file”? <Hl>That was your first skill.</Hl>
         </p>
       </div>
+      <Src right>Source: NAB, “How Australian small businesses are using AI to save time”, Aug 2026.</Src>
     </Frame>
   );
 };
@@ -461,7 +463,7 @@ export const pages: [Page, string][] = [
   ],
   [
     OneOff,
-    '3 min. Your own story. Keep the details anonymous. End on the callback: they already made a skill this morning.',
+    '3 min. A real firm: an accounting practice that wrote its method down so anyone can ask it. That is a skill. Point at step 3: the same method becomes the checker. End on the callback: they already made a skill this morning.',
   ],
   [
     TestIt,

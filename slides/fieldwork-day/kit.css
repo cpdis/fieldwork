@@ -138,3 +138,17 @@
   .fw .dk-onair i { animation: none; }
 }
 .fw .dk-live .dk-say { background: rgba(246,246,243,.08); box-shadow: inset 0 0 0 .1cqw rgba(246,246,243,.25); color: var(--paper); }
+
+/* real screenshots and clips (kit Shot) */
+.fw .dk-shot-wrap { position: relative; overflow: hidden; border: .1cqw solid var(--alu); background: var(--white); }
+.fw .dk-shot { position: absolute; inset: 0; }
+.fw .dk-shot > img, .fw .dk-shot > video { width: 100%; height: 100%; display: block; }
+.fw .dk-shot.gap { background: repeating-linear-gradient(135deg, var(--soft) 0 .5cqw, var(--paper) .5cqw 1cqw); }
+.fw .dk-shot .todo { position: absolute; inset: 7% 5%; overflow: hidden; display: flex; flex-direction: column; justify-content: center; gap: .5cqw; padding: 1cqw 1.2cqw; background: var(--white); border: .1cqw dashed var(--muted); }
+.fw .dk-shot .todo b { font: 600 1.05cqw/1.25 var(--f-sans); color: var(--ink); }
+.fw .dk-shot .todo .u { font: 400 .72cqw/1.3 var(--f-mono); color: var(--muted); overflow-wrap: anywhere; }
+.fw .dk-shot.sm .todo { gap: .3cqw; padding: .5cqw .7cqw; }
+.fw .dk-shot.sm .todo b { font-size: .8cqw; }
+.fw .dk-shot.sm .todo .src { display: none; }
+.fw .dk-shot.sm .todo .dk-k { font-size: .6cqw; }
+.fw .dk-shot.sm .todo .u { font-size: .6cqw; }

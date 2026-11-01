@@ -33,6 +33,7 @@ Node 20.19+ or 22.12+. In the editor, press `f` to present full screen, or `p` t
 - `kit.tsx` and `kit.css` are the deck's own pieces: the levelling staff, block openers, the day bar, live-demo pages, labs with a room timer, break pages and source lines.
 - `deck.css` styles the pages. `mocks.css` holds the deliberately off-brand examples (other people's documents and sites).
 - Instructor photo: drop `instructor.jpg` (or `.png` / `.webp`) into `slides/fieldwork-day/assets/`. Without it, the intro page shows a monogram.
+- Real screenshots and clips: `shots.ts` lists each one (id, source, what to capture, where it's used). Save the file as `slides/fieldwork-day/assets/shots/<id>.<ext>` and the page picks it up; until then the page shows a labelled gap. Clips play muted, only on the current page. `node scripts/shot-list.mjs fieldwork-day` shows what's still missing (`--md` prints a capture list).
 
 Conventions on the day:
 

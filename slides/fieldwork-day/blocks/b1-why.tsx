@@ -3,148 +3,99 @@ import type { Page } from '@open-slide/core';
 import { useIsActivePage, Step, Steps } from '@open-slide/core';
 import { useEffect, useState } from 'react';
 import { Frame, Hl, Pad } from '@assets/fieldwork/brand';
-import { CountUp, Head, PageNo, Src, eb, opener, usePlay } from '../kit';
+import { CountUp, Head, PageNo, Shot, Src, eb, opener, usePlay } from '../kit';
 
 const Open = opener(
   'why',
   'Models now finish work that took a person hours. Most businesses still use them like a search box. That gap is your head start.',
 );
 
-/* ---------- six months of evenings: the reel ---------- */
-const Tiny = ({ k }: { k: number }) => {
-  // Small abstract pictures of each project. No real data, no client names.
-  switch (k) {
-    case 0:
-      return (
-        <svg viewBox="0 0 200 90" aria-hidden="true">
-          {[0, 1, 2].map((s) => (
-            <polyline
-              key={s}
-              fill="none"
-              stroke={s === 1 ? 'var(--ink)' : 'var(--alu)'}
-              strokeWidth={s === 1 ? 2.2 : 1.6}
-              points={Array.from({ length: 41 }, (_, i) => {
-                const y = 45 + Math.sin(i * 0.45 + s * 1.7) * (14 + s * 4) + Math.sin(i * 1.9 + s) * 5;
-                return `${i * 5},${y.toFixed(1)}`;
-              }).join(' ')}
-            />
-          ))}
-          <rect x="128" y="8" width="22" height="74" fill="var(--accent)" opacity=".55" />
-        </svg>
-      );
-    case 1:
-      return (
-        <svg viewBox="0 0 200 90" aria-hidden="true">
-          {Array.from({ length: 24 }, (_, i) => {
-            const h = 70 * Math.exp(-(((i - 11) / 4.6) ** 2));
-            return <rect key={i} x={8 + i * 7.8} y={84 - h} width={6} height={h} fill={i === 15 ? 'var(--accent)' : 'var(--ink)'} />;
-          })}
-          <line x1="125" y1="4" x2="125" y2="86" stroke="var(--ink)" strokeDasharray="3 3" />
-        </svg>
-      );
-    case 2:
-      return (
-        <svg viewBox="0 0 200 90" aria-hidden="true">
-          {Array.from({ length: 28 }, (_, i) => {
-            const booked = [3, 4, 9, 10, 11, 16, 17, 23, 24].includes(i);
-            return (
-              <rect
-                key={i}
-                x={10 + (i % 7) * 26}
-                y={6 + Math.floor(i / 7) * 21}
-                width={22}
-                height={17}
-                fill={booked ? 'var(--ink)' : 'none'}
-                stroke="var(--ink)"
-                strokeWidth="1.2"
-              />
-            );
-          })}
-        </svg>
-      );
-    case 3:
-      return (
-        <svg viewBox="0 0 200 90" aria-hidden="true">
-          {[0, 1, 2].map((p) => (
-            <g key={p} transform={`translate(${34 + p * 50} 6)`}>
-              <rect width="34" height="78" rx="7" fill="none" stroke="var(--ink)" strokeWidth="1.6" />
-              <rect x="5" y="12" width="24" height={10 + p * 6} fill={p === 1 ? 'var(--accent)' : 'var(--alu)'} />
-              <rect x="5" y="44" width="24" height="3" fill="var(--alu)" />
-              <rect x="5" y="51" width="16" height="3" fill="var(--alu)" />
-            </g>
-          ))}
-        </svg>
-      );
-    case 4:
-      return (
-        <svg viewBox="0 0 200 90" aria-hidden="true">
-          {Array.from({ length: 6 }, (_, i) => (
-            <g key={i} transform={`translate(8 ${6 + i * 14})`}>
-              <rect width="9" height="9" fill="none" stroke="var(--ink)" strokeWidth="1.2" />
-              <rect x="18" y="3" width={90 + ((i * 37) % 60)} height="3" fill="var(--alu)" />
-              <rect
-                x="160"
-                y="0"
-                width="30"
-                height="9"
-                fill="none"
-                stroke={i === 2 || i === 4 ? 'var(--bad)' : 'var(--ok)'}
-                strokeWidth="1.2"
-              />
-            </g>
-          ))}
-        </svg>
-      );
-    default:
-      return (
-        <svg viewBox="0 0 200 90" aria-hidden="true">
-          <rect x="40" y="4" width="120" height="82" fill="var(--white)" stroke="var(--ink)" strokeWidth="1.4" />
-          <rect x="50" y="14" width="60" height="6" fill="var(--ink)" />
-          {[0, 1, 2, 3, 4].map((i) => (
-            <rect key={i} x="50" y={30 + i * 10} width={96 - (i % 2) * 22} height="3" fill="var(--alu)" />
-          ))}
-          <rect x="50" y="29" width="40" height="5" fill="var(--accent)" />
-        </svg>
-      );
-  }
-};
-
-const REEL = [
-  { t: 'An explorer for 105 million sensor readings', w: 'At work', d: 'Flags the bad readings instead of hiding them.' },
-  { t: 'A schedule planner that runs 10,000 what-ifs', w: 'At work', d: '“How likely are we to finish by the 30th?”' },
-  { t: 'A booking system for a tap-truck hire business', w: 'At home', d: 'Enquiry to quote to booking. Built in three days.' },
-  { t: 'Three iPhone apps, in TestFlight', w: 'At home', d: 'Small, personal tools. No app-developer training.' },
-  { t: 'Document reviews with 100+ page-referenced findings', w: 'At work', d: 'Every finding points at a page you can check.' },
-  { t: 'A morning brief that writes itself at 6:30', w: 'At work', d: 'Email, calendar and chat, read before I wake up.' },
+/* ---------- real owners, real jobs ---------- */
+type Owner = { id: string; biz: string; where: string; tool: string; did: string; got: string };
+const OWNERS: Owner[] = [
+  {
+    id: 'wcd-1',
+    biz: 'West Coast Deck',
+    where: 'Deck builder · US',
+    tool: 'ChatGPT',
+    did: 'Records every site visit. The recap email goes out five minutes later.',
+    got: 'A few hundred thousand dollars of new sales in 4–6 weeks.',
+  },
+  {
+    id: 'oakcreek',
+    biz: 'Oak Creek Plumbing & Remodeling',
+    where: 'Plumbing · about 20 plumbers',
+    tool: 'ChatGPT',
+    did: 'A tablet in every home visit: photos of the broken heater in, options, invoice and proposal out.',
+    got: '“Some of our older guys have learned to ask ChatGPT the right questions.”',
+  },
+  {
+    id: 'mothership',
+    biz: 'Mothership Coffee Roasters',
+    where: 'Six cafés · Las Vegas',
+    tool: 'Claude',
+    did: 'A Monday brief from the tills, the books, Slack and email.',
+    got: 'In-store margins up to 22%, partly from tighter ordering and rosters.',
+  },
+  {
+    id: 'hireeffect',
+    biz: 'HireEffect',
+    where: 'Bookkeeping and payroll · Dallas',
+    tool: 'Claude',
+    did: 'Found the 16 transactions behind a $13,000 gap in 2.5 years of PayPal data.',
+    got: 'A two-hour monthly check now takes ten seconds.',
+  },
+  {
+    id: 'sportsfit',
+    biz: 'SportsFit Health and Rehab',
+    where: 'Physiotherapy · Australia',
+    tool: 'Claude',
+    did: 'Sorts incoming email and sends it to the right treating physio.',
+    got: 'About seven to eight hours a week back.',
+  },
+  {
+    id: 'bella',
+    biz: 'Bella Manufacturing',
+    where: 'Food-truck fit-outs · Australia',
+    tool: 'Tool not named',
+    did: 'Had AI read and compare the insurance quotes.',
+    got: 'Saved several thousand dollars and found a gap in the cover.',
+  },
 ];
 
-const Reel: Page = () => {
+const Owners: Page = () => {
   const active = useIsActivePage();
   const [hot, setHot] = useState(-1);
   useEffect(() => {
     if (!active) return;
-    const id = setInterval(() => setHot((h) => (h + 1) % REEL.length), 2200);
+    const id = setInterval(() => setHot((h) => (h + 1) % OWNERS.length), 2600);
     return () => clearInterval(id);
   }, [active]);
   return (
-    <Frame label="Six months of evenings">
-      <Head eb={eb('why', 'Why now · proof first')} title="Six months of evenings and work hours" />
+    <Frame label="Real owners, real jobs">
+      <Head eb={eb('why', 'Why now · proof first')} title="Six businesses. None of them writes software" />
       <PageNo />
       <div className="b1-reel">
-        {REEL.map((r, i) => (
-          <div key={r.t} className={`dk-tile ${i === hot ? 'hot' : ''}`}>
-            <div className="pic">
-              <Tiny k={i} />
+        {OWNERS.map((o, i) => (
+          <div key={o.id} className={`dk-tile ${i === hot ? 'hot' : ''}`}>
+            <Shot id={o.id} className="pic sm" style={{ height: '8.4cqw' }} />
+            <div className="who">
+              <span className="dk-k">{o.where}</span>
+              <span className="tl">{o.tool}</span>
             </div>
-            <span className="dk-k">{r.w}</span>
-            <b>{r.t}</b>
-            <span className="d">{r.d}</span>
+            <b>{o.biz}</b>
+            <span className="d">{o.did}</span>
+            <span className="g">{o.got}</span>
           </div>
         ))}
       </div>
       <div className="b1-reel-cap">
-        One engineer. No software team. <Hl>21 projects</Hl> since May.
+        Same apps you have. Plain requests. <Hl>One job changed first.</Hl>
       </div>
+      <Src>
+        Sources: Jameson Haslam on X, Oct 2026 · CNN, Oct 2025 · Anthropic, Sep 2026 · NAB, Apr and Aug 2026. Results as each
+        business reported them.
+      </Src>
     </Frame>
   );
 };
@@ -304,28 +255,30 @@ const BigJob: Page = () => (
     <Head eb={eb('why', 'Why now · a reality check')} title="What a big job really costs, and what it really took" />
     <PageNo />
     <div className="b1-cost">
-      <div className="nums3">
-        {[
-          ['8 hrs', 'to build a 3D island game'],
-          ['US$1,874', 'of model time, at list prices'],
-          ['59%', 'of one week on a US$200 plan'],
-        ].map(([b, s]) => (
-          <div key={b} className="num">
-            <b>{b}</b>
-            <span>{s}</span>
-          </div>
-        ))}
-      </div>
-      <blockquote>
-        <p className="dk-quote" style={{ fontSize: '3.2cqw' }}>
-          “99% of my prompts were ‘Add X and Y’ or ‘This looks weird, make it better’.”
+      <Shot id="tidewater" className="vid" style={{ height: '28.7cqw' }} />
+      <div className="side">
+        <div className="nums3">
+          {[
+            ['8 hrs', 'to build this 3D island game'],
+            ['US$1,874', 'of model time, at list prices'],
+            ['59%', 'of one week on a US$200 plan'],
+          ].map(([b, s]) => (
+            <div key={b} className="num">
+              <b>{b}</b>
+              <span>{s}</span>
+            </div>
+          ))}
+        </div>
+        <blockquote>
+          <p className="dk-quote">“99% of my prompts were ‘Add X and Y’ or ‘This looks weird, make it better’.”</p>
+          <span className="dk-attr">Dan Greenheck, on building Tidewater</span>
+        </blockquote>
+        <p className="dk-body" style={{ fontSize: '1.4cqw' }}>
+          The prompts were plain. <Hl>The persistence was the skill.</Hl> Nobody needed a prompt course.
         </p>
-        <span className="dk-attr">Dan Greenheck, on building Tidewater</span>
-      </blockquote>
-      <p className="dk-body" style={{ fontSize: '1.4cqw' }}>
-        The prompts were plain. <Hl>The persistence was the skill.</Hl> Nobody needed a prompt course.
-      </p>
+      </div>
     </div>
+    <Src>Dan Greenheck, “Tidewater”, video on X, Sep 2026. Hours and cost as reported in the post.</Src>
   </Frame>
 );
 
@@ -351,8 +304,8 @@ const UseThem: Page = () => (
 export const pages: [Page, string][] = [
   [Open, '9:00 · Block 1 opener. Thirty minutes, no lab. The job of this block: make them want the rest of the day.'],
   [
-    Reel,
-    '2 min. The tiles light up in turn. Proof before theory: this is what one non-software person built in six months. Do not explain each tile; let it run once, then say: "I am not a developer. I am an engineer with a day job." If you have the 60-second screen reel ready, play it here instead.',
+    Owners,
+    '2 min. The tiles light up in turn. Proof before theory: six real businesses, none of them software companies. Do not read all six. Pick the two closest to the room (trades rooms: the deck builder and the plumber) and tell those in one breath each. Then point at the caption: each one changed one job first. Results are as the businesses reported them.',
   ],
   [
     TaskLength,
@@ -368,7 +321,7 @@ export const pages: [Page, string][] = [
   ],
   [
     BigJob,
-    '2 min. The point is not the money. It is the quote: the prompts were plain English. Persistence beats clever wording. Be honest that big builds cost real money, and that today\'s work fits easily in a normal plan.',
+    '2 min. Let the clip run while you talk. The point is not the money. It is the quote: the prompts were plain English. Persistence beats clever wording. Be honest that big builds cost real money, and that today\'s work fits easily in a normal plan.',
   ],
   [UseThem, '30 sec. Read the quote, pause, move on. Transition straight into the map of the apps.'],
 ];
