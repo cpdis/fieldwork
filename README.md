@@ -37,11 +37,13 @@ Node 20.19+ or 22.12+. In the editor, press `f` to present full screen, or `p` t
 
 - `stage/` holds the staged demos: fake app windows animated with the [Stageshow](https://benji.org/stageshow) kit (a scripted cursor, a camera that zooms in, rows that arrive in place). `stage/vendor/` is Stageshow copied unmodified (MIT, see `SOURCE.md`). Import single kit files, never `kit/index.ts`, which pulls in an icon package the deck doesn't have and brand marks that aren't MIT. `stage/beats.tsx` lets the clicker step a staged demo one beat at a time; each demo still shows its finished state in thumbnails and the presenter preview. `stage/staged.tsx` is the shared wrapper the Block 3 and 4 demos use: give the stage the pixel width of its box (for example 92.5cqw = 1776px) so it draws at scale 1 and cqw sizes inside it hold.
 
+- `drag/` holds the pages the room sorts by dragging, built on [Dragology](https://github.com/declarative-dragging/dragology) ("declarative dragging": you declare the states a card can be dropped into and the library animates the rest). `drag/vendor/` is Dragology 0.1.7 bundled into one file (MIT, see `SOURCE.md` and `LICENSES.md`), so the deck gains no package dependency. `drag/sort-board.tsx` is the one component the pages use: an SVG laid over the page's own HTML, with each card a `<foreignObject>` in the brand fonts; the zone under the pointer takes the card, the others make room, and a state the page sets (show the answers, reset) animates into place. Used by Block 2 (fine, think first or never), Block 5 (choose by stakes) and Block 7 (the three rule lists). Dragging works with the clicker's arrow keys untouched, and the thumbnails and presenter preview show the finished sort.
+
 Conventions on the day:
 
 - **LIVE IN THE APP** pages (black) are cue cards for switching to the ChatGPT and Claude desktop apps. Each one names the page that runs the same demo inside the deck, if the Wi-Fi or an app misbehaves.
 - **Lab** pages have a room timer (Start, +5 min, Reset). It keeps running if you move to another page and back.
-- Interactive pages (buttons, sliders, checkboxes) don't advance the slide when clicked. Use the arrow keys or the space bar to move on.
+- Interactive pages (buttons, sliders, checkboxes, cards you drag) don't advance the slide when clicked. Use the arrow keys or the space bar to move on. The drag pages each have a "Show the answers" (or "Show ours") button and a Reset, so a sort the room gets wrong is a conversation, not a dead end.
 - Check menu names and plan details against the live apps before each cohort. The pages that need it say "check names each cohort".
 
 Brand check: `node scripts/brand-check.mjs fieldwork-day`. It exits non-zero on a problem, so it can run in CI.

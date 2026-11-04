@@ -1,8 +1,9 @@
 /* Block 7 · 15:00 · Background agents (L6). */
 import type { Page } from '@open-slide/core';
 import { useIsActivePage } from '@open-slide/core';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Frame, Hl, SideLabel, Split } from '@assets/fieldwork/brand';
+import { PX, SortBoard, type SortState, type Zone, stateFrom, zoneOf } from '../drag/sort-board';
 import { Head, PageNo, Src, eb, lab, live, opener, usePlay } from '../kit';
 
 const Open = opener(
@@ -170,18 +171,96 @@ const RULES: { k: string; mark: string; sub: string; cls: string; items: string[
     items: ['Pay, refund or move money', 'Change bank details anywhere', 'Delete email or files', 'Agree to anything on your behalf'],
   },
 ];
+const RULE_CARDS = RULES.flatMap((c, ci) => c.items.map((_, i) => `rule-${ci}-${i}`));
+const RULE_ZONES = RULES.map((c) => c.cls);
+const ruleText = (card: string) => {
+  const [, ci, i] = card.split('-').map(Number);
+  return RULES[ci].items[i];
+};
+const ruleHome = (card: string) => RULES[Number(card.split('-')[1])].cls;
+// Board geometry in canvas px (1cqw = 19.2px), matching .b7-rules in deck.css: three cards, 1.6cqw apart.
+const RB = { x: 3.6 * PX, y: 17.2 * PX, w: 92.8 * PX, h: 30 * PX };
+const RW = (RB.w - 2 * 1.6 * PX) / 3;
+const ruleZones: Zone[] = RULES.map((c, i) => ({ id: c.cls, x: i * (RW + 1.6 * PX), y: 0, w: RW, h: RB.h, top: 7.1 * PX, pad: 1.5 * PX, cardH: 2.9 * PX, gap: 0.3 * PX }));
+const RULES_OURS = stateFrom(RULE_ZONES, RULE_CARDS, ruleHome);
+// Mixed up: every item one list along, so nothing starts in the right place and each list keeps four.
+const RULES_MIXED = stateFrom(RULE_ZONES, RULE_CARDS, (c) => RULE_ZONES[(Number(c.split('-')[1]) + 1) % RULE_ZONES.length]);
+
 const ApprovalRules: Page = () => {
   const on = usePlay(120);
+  const active = useIsActivePage();
+  const [state, setState] = useState<SortState>(RULES_OURS);
+  // 'ours' is the page as a reference; 'mixed' is the room sorting; 'shown' compares the room's sort with ours.
+  const [mode, setMode] = useState<'ours' | 'mixed' | 'shown'>('ours');
+  const [room, setRoom] = useState<SortState | null>(null);
+  const right = room ? RULE_CARDS.filter((c) => zoneOf(room, c) === ruleHome(c)).length : 0;
+  const render = useCallback(
+    (c: string) => {
+      const was = room ? zoneOf(room, c) : undefined;
+      const ok = was === ruleHome(c);
+      return (
+        <>
+          <span>{ruleText(c)}</span>
+          {room && <span className={`st ${ok ? 'ok' : 'bad'}`}>{ok ? '✓' : `was: ${RULES.find((r) => r.cls === was)?.k}`}</span>}
+        </>
+      );
+    },
+    [room],
+  );
   return (
     <Frame label="Write the rules first">
       <Head
         eb={eb('background', 'Background · the rules')}
         title="Write the rules before you switch it on"
-        sum="An assistant that works while you are away needs rules it cannot talk itself out of. Three short lists, in plain words, saved with the job."
+        sum="An assistant that works while you are away needs rules it cannot talk itself out of. Three short lists, in plain words, saved with the job. Mix them up and let the room sort them."
       />
       <PageNo />
+      <div className="b7-rules-btns pbtns">
+        {mode === 'ours' ? (
+          <button
+            className="rb primary"
+            type="button"
+            onClick={() => {
+              setRoom(null);
+              setState(RULES_MIXED);
+              setMode('mixed');
+            }}
+          >
+            Mix them up
+          </button>
+        ) : (
+          <button
+            className="rb primary"
+            type="button"
+            disabled={mode === 'shown'}
+            onClick={() => {
+              setRoom(state);
+              setState(RULES_OURS);
+              setMode('shown');
+            }}
+          >
+            Show ours
+          </button>
+        )}
+        <button
+          className="rb"
+          type="button"
+          onClick={() => {
+            setRoom(null);
+            setState(RULES_OURS);
+            setMode('ours');
+          }}
+        >
+          Reset
+        </button>
+        {room && active && (
+          <span className="dk-k" style={{ color: 'var(--ink)', alignSelf: 'center' }}>
+            The room matched {right} of {RULE_CARDS.length}
+          </span>
+        )}
+      </div>
       <div className={`b7-rules ${on ? '' : 'pre'}`}>
-        {RULES.map((c, ci) => (
+        {RULES.map((c) => (
           <div key={c.k} className={`card ${c.cls}`}>
             <div className="h">
               <i>{c.mark}</i>
@@ -190,15 +269,9 @@ const ApprovalRules: Page = () => {
                 <span className="dk-k">{c.sub}</span>
               </div>
             </div>
-            <ul>
-              {c.items.map((t, i) => (
-                <li key={t} className="dk-fade" style={{ ['--i' as string]: ci * 4 + i + 1 }}>
-                  {t}
-                </li>
-              ))}
-            </ul>
           </div>
         ))}
+        <SortBoard id="rules" width={RB.w} height={RB.h} zones={ruleZones} cards={RULE_CARDS} state={state} onChange={setState} locked={mode !== 'mixed'} render={render} />
       </div>
       <div className="b7-rules-foot">
         <div>
@@ -421,7 +494,7 @@ export const pages: [Page, string][] = [
   ],
   [
     ApprovalRules,
-    '4 min. Ask the room for one more item for each list from their own business. The "Never" list includes bank details on purpose; it sets up the hidden-instruction page in the next block.',
+    '4 min. Read the three lists. Then "Mix them up": every item moves one list along, and the room sorts them back by dragging; "Show ours" slides them home and marks what the room put elsewhere. Ask the room for one more item for each list from their own business. The "Never" list includes bank details on purpose; it sets up the hidden-instruction page in the next block.',
   ],
   [
     WhereItLives,

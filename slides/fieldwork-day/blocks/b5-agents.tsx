@@ -4,6 +4,7 @@ import { useIsActivePage } from '@open-slide/core';
 import { useCallback, useEffect, useState } from 'react';
 import { Chip, Eyebrow, Frame, Hl, Pad, SideLabel, Split, Title } from '@assets/fieldwork/brand';
 import { Head, PageNo, Src, eb, lab, live, opener, usePlay } from '../kit';
+import { PX, SortBoard, type SortState, type Zone, cqw, stateFrom, zoneOf } from '../drag/sort-board';
 import { BeatSteps } from '../stage/beats';
 import { BEAT_COUNT, QuoteRun } from '../stage/quote-run';
 
@@ -293,15 +294,59 @@ const TASKS: { t: string; q: Q }[] = [
   { t: 'Pay a supplier', q: 'human' },
   { t: 'Tell a client the job is delayed', q: 'human' },
 ];
+const STAKE_CARDS = TASKS.map((_, i) => `job-${i}`);
+const STAKE_ZONES = ['tray', ...(Object.keys(QUAD) as Q[])];
+// Board geometry in canvas px, matching .b5-mx and .b5-tray in deck.css (1cqw = 19.2px).
+const SB = { x: 3.6 * PX, y: 15.4 * PX, w: 92.8 * PX, h: (56.25 - 15.4 - 3) * PX };
+const MX = { left: (33 - 3.6) * PX, ax: 2.4 * PX, gap: 0.8 * PX, foot: 2.2 * PX };
+const QW = (SB.w - MX.left - MX.ax - 2 * MX.gap) / 2;
+const QH = (SB.h - MX.foot - 2 * MX.gap) / 2;
+const stakeZones: Zone[] = [
+  { id: 'tray', x: 0, y: 0, w: 26 * PX, top: 2 * PX, cardH: 2.5 * PX, gap: 0.5 * PX, h: SB.h },
+  ...(Object.keys(QUAD) as Q[]).map((q) => ({
+    id: q,
+    x: MX.left + MX.ax + MX.gap + QUAD[q].x * (QW + MX.gap),
+    y: (1 - QUAD[q].y) * (QH + MX.gap),
+    w: QW,
+    h: QH,
+    top: 5.2 * PX,
+    pad: 1.1 * PX,
+    cardH: 2.3 * PX,
+    gap: 0.45 * PX,
+  })),
+];
+const stakesAll = (where: (i: number) => string) => stateFrom(STAKE_ZONES, STAKE_CARDS, (c) => where(Number(c.slice(4))));
+const STAKES_ANSWER = stakesAll((i) => TASKS[i].q);
+const STAKES_EMPTY = stakesAll(() => 'tray');
+
 const Stakes: Page = () => {
   const active = useIsActivePage();
-  const [placed, setPlaced] = useState<boolean[]>(TASKS.map(() => !active));
+  // Off the live page (thumbnails, presenter preview) the board shows the finished placement.
+  const [state, setState] = useState<SortState>(active ? STAKES_EMPTY : STAKES_ANSWER);
+  // The room's placement at the moment the answers were shown; null until then.
+  const [room, setRoom] = useState<SortState | null>(active ? null : STAKES_ANSWER);
+  const placed = STAKE_CARDS.filter((c) => zoneOf(state, c) !== 'tray').length;
+  const right = room ? STAKE_CARDS.filter((c, i) => zoneOf(room, c) === TASKS[i].q).length : 0;
+  const render = useCallback(
+    (c: string) => {
+      const i = Number(c.slice(4));
+      const was = room ? zoneOf(room, c) : undefined;
+      const ok = was === TASKS[i].q;
+      return (
+        <>
+          <span>{TASKS[i].t}</span>
+          {room && <span className={`st ${ok ? 'ok' : 'bad'}`}>{ok ? '✓' : was === 'tray' ? 'not placed' : `was: ${QUAD[was as Q].t}`}</span>}
+        </>
+      );
+    },
+    [room],
+  );
   return (
     <Frame label="Choose by stakes">
       <Head
         eb={eb('agents', 'Agents · how much to watch')}
         title="How much to watch: choose by stakes"
-        sum="Autopilot is not all or nothing. Ask two questions: how bad if it's wrong, and can I undo it? Click a job to place it."
+        sum="Autopilot is not all or nothing. Ask two questions: how bad if it's wrong, and can I undo it? Drag each job to where the room puts it, then show the answers."
       />
       <PageNo />
       <div className="b5-mx">
@@ -317,38 +362,41 @@ const Stakes: Page = () => {
           <div key={q} className={`quad q-${q}`} style={{ gridColumn: QUAD[q].x + 2, gridRow: 2 - QUAD[q].y }}>
             <b>{QUAD[q].t}</b>
             <span>{QUAD[q].d}</span>
-            <div className="chips">
-              {TASKS.map((t, i) =>
-                t.q === q && placed[i] ? (
-                  <span key={t.t} className="tk">
-                    {t.t}
-                  </span>
-                ) : null,
-              )}
-            </div>
           </div>
         ))}
       </div>
       <div className="b5-tray">
-        <span className="dk-k">Jobs</span>
-        {TASKS.map((t, i) => (
+        <span className="dk-k">Jobs {placed ? `· ${placed} of ${TASKS.length} placed` : ''}</span>
+        <div className="pbtns" style={{ marginTop: `${(stakeZones[0].top ?? 0) / PX + TASKS.length * 3 + 0.6}cqw` }}>
           <button
-            key={t.t}
+            className="rb primary"
             type="button"
-            className={placed[i] ? 'gone' : ''}
-            onClick={() => setPlaced((p) => p.map((x, j) => (j === i ? true : x)))}
+            onClick={() => {
+              setRoom(state);
+              setState(STAKES_ANSWER);
+            }}
           >
-            {t.t}
+            Show the answers
           </button>
-        ))}
-        <div className="pbtns" style={{ marginTop: '.6cqw' }}>
-          <button className="rb" type="button" onClick={() => setPlaced(TASKS.map(() => true))}>
-            Place all
-          </button>
-          <button className="rb" type="button" onClick={() => setPlaced(TASKS.map(() => false))}>
+          <button
+            className="rb"
+            type="button"
+            onClick={() => {
+              setRoom(null);
+              setState(STAKES_EMPTY);
+            }}
+          >
             Reset
           </button>
         </div>
+        {room && active && (
+          <span className="dk-k" style={{ color: 'var(--ink)' }}>
+            The room matched {right} of {TASKS.length}
+          </span>
+        )}
+      </div>
+      <div style={{ position: 'absolute', left: cqw(SB.x), top: cqw(SB.y) }}>
+        <SortBoard id="stakes" width={SB.w} height={SB.h} zones={stakeZones} cards={STAKE_CARDS} state={state} onChange={setState} locked={!!room} render={render} />
       </div>
     </Frame>
   );
@@ -446,7 +494,7 @@ export const pages: [Page, string][] = [
   ],
   [
     Stakes,
-    '4 min. Read a job, ask the room where it goes, then click it. "Place all" if time is short. The bottom-right corner never gets automated.',
+    '4 min. Read a job, ask the room where it goes, then drag it there. "Show the answers" if time is short: the jobs slide to their corners and each one shows a tick or where it should have gone. The bottom-right corner never gets automated.',
   ],
   [
     DecisionTrail,
