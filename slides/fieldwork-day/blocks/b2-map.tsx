@@ -1,8 +1,9 @@
 /* Block 2 · 9:30 · The map of the apps. */
 import type { Page } from '@open-slide/core';
 import { useIsActivePage } from '@open-slide/core';
-import { type ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { Chip, Frame, Hl, type Hotspot, InsetWindow, SideLabel, Split } from '@assets/fieldwork/brand';
+import { PX, SortBoard, type SortState, type Zone, cqw, stateFrom, zoneOf } from '../drag/sort-board';
 import { Head, PageNo, Src, eb, lab, live, opener } from '../kit';
 
 const Open = opener(
@@ -267,46 +268,70 @@ const ITEMS: { t: string; v: V; why: string }[] = [
   { t: "A customer's tax file number", v: 'never', why: 'TFNs have their own legal rules. There is no task that needs it.' },
   { t: 'Passwords or bank logins', v: 'never', why: 'Never in a chat. Use the app’s connector or sign in yourself.' },
 ];
-const VL: Record<V | 'q', string> = { q: 'Your call?', fine: 'Fine', think: 'Think first', never: 'Never' };
-const ORDER: (V | 'q')[] = ['q', 'fine', 'think', 'never'];
+const VL: Record<V, string> = { fine: 'Fine', think: 'Think first', never: 'Never' };
+const VSUB: Record<V, string> = { fine: 'Paste it', think: 'Work plan, minimum needed', never: 'Not in any chat' };
+const VS: V[] = ['fine', 'think', 'never'];
+const PASTE_CARDS = ITEMS.map((_, i) => `item-${i}`);
+const PASTE_ZONES = ['pile', ...VS];
+// Board geometry in canvas px (1cqw = 19.2px): the pile on top, three columns below. deck.css .b2-sort matches.
+const PB = { x: 3.6 * PX, y: 15.4 * PX, w: 64 * PX, h: 36.4 * PX };
+const PILE_H = 1.9 * PX + 2 * 4.4 * PX + 0.5 * PX;
+const COL_W = (PB.w - 2 * 0.8 * PX) / 3;
+// Once the answers are shown the pile is empty, so the columns move up and the cards grow to fit the reason.
+const pasteZones = (shown: boolean): Zone[] => {
+  const y = shown ? 1.9 * PX : PILE_H + 1.2 * PX;
+  return [
+    { id: 'pile', x: 0, y: 0, w: PB.w, h: PILE_H, top: 1.9 * PX, cols: 4, cardH: 4.4 * PX, gap: 0.5 * PX },
+    ...VS.map((v, i) => ({ id: v, x: i * (COL_W + 0.8 * PX), y, w: COL_W, h: PB.h - y, top: 4.4 * PX, pad: 0.7 * PX, cardH: (shown ? 6 : 4.4) * PX, gap: 0.5 * PX })),
+  ];
+};
+const pasteAll = (where: (i: number) => string) => stateFrom(PASTE_ZONES, PASTE_CARDS, (c) => where(Number(c.slice(5))));
+const PASTE_ANSWER = pasteAll((i) => ITEMS[i].v);
+const PASTE_EMPTY = pasteAll(() => 'pile');
 
 const NotToPaste: Page = () => {
-  const [pick, setPick] = useState<(V | 'q')[]>(ITEMS.map(() => 'q'));
-  const [shown, setShown] = useState(false);
-  const right = ITEMS.filter((it, i) => pick[i] === it.v).length;
+  const active = useIsActivePage();
+  const [state, setState] = useState<SortState>(active ? PASTE_EMPTY : PASTE_ANSWER);
+  // The room's sort at the moment the answers were shown; null until then.
+  const [room, setRoom] = useState<SortState | null>(active ? null : PASTE_ANSWER);
+  const zones = useMemo(() => pasteZones(!!room), [room]);
+  const sorted = PASTE_CARDS.filter((c) => zoneOf(state, c) !== 'pile').length;
+  const right = room ? PASTE_CARDS.filter((c, i) => zoneOf(room, c) === ITEMS[i].v).length : 0;
+  const render = useCallback(
+    (c: string) => {
+      const i = Number(c.slice(5));
+      const was = room ? zoneOf(room, c) : undefined;
+      const ok = was === ITEMS[i].v;
+      return (
+        <div className="b2-sc">
+          <b>{ITEMS[i].t}</b>
+          {room && <span className={`st ${ok ? 'ok' : 'bad'}`}>{ok ? '✓' : was === 'pile' ? 'not sorted' : `was: ${VL[was as V]}`}</span>}
+          {room && <span className="why">{ITEMS[i].why}</span>}
+        </div>
+      );
+    },
+    [room],
+  );
   return (
     <Frame label="What not to paste">
       <Head
         eb={eb('map', 'The map · privacy')}
         title="Fine, think first, or never?"
-        sum="Click a card to vote with the room. Then show the answers. The rule of thumb is on the right."
+        sum="Drag each card to where the room says it goes. Then show the answers. The rule of thumb is on the right."
       />
       <PageNo />
-      <div className="b2-cards">
-        {ITEMS.map((it, i) => {
-          const p = pick[i];
+      <div className="b2-sort" style={{ left: cqw(PB.x), top: cqw(PB.y), width: cqw(PB.w), height: cqw(PB.h) }}>
+        <span className="dk-k">The room's call {sorted ? `· ${sorted} of ${ITEMS.length} sorted` : ''}</span>
+        {VS.map((v, i) => {
+          const z = zones[i + 1];
           return (
-            <button
-              key={it.t}
-              type="button"
-              className={`b2-card ${shown ? `show ${it.v}` : ''} ${p !== 'q' ? 'voted' : ''}`}
-              onClick={() => {
-                const n = [...pick];
-                n[i] = ORDER[(ORDER.indexOf(p) + 1) % ORDER.length];
-                setPick(n);
-              }}
-            >
-              <b>{it.t}</b>
-              <span className={`vote v-${p}`}>{VL[p]}</span>
-              {shown && (
-                <span className="ans">
-                  <span className={`st ${it.v === 'fine' ? 'ok' : it.v === 'think' ? 'warn' : 'bad'}`}>{VL[it.v]}</span>
-                  <span>{it.why}</span>
-                </span>
-              )}
-            </button>
+            <div key={v} className={`zone z-${v}`} style={{ left: cqw(z.x), top: cqw(z.y), width: cqw(z.w), height: cqw(z.h) }}>
+              <b>{VL[v]}</b>
+              <span>{VSUB[v]}</span>
+            </div>
           );
         })}
+        <SortBoard id="paste" width={PB.w} height={PB.h} zones={zones} cards={PASTE_CARDS} state={state} onChange={setState} locked={!!room} render={render} />
       </div>
       <div className="b2-rule">
         <span className="dk-k">Rule of thumb</span>
@@ -317,21 +342,28 @@ const NotToPaste: Page = () => {
           <Hl>Never</Hl> paste ID numbers, passwords or bank details.
         </p>
         <div className="pbtns">
-          <button className="rb primary" type="button" onClick={() => setShown(true)}>
+          <button
+            className="rb primary"
+            type="button"
+            onClick={() => {
+              setRoom(state);
+              setState(PASTE_ANSWER);
+            }}
+          >
             Show the answers
           </button>
           <button
             className="rb"
             type="button"
             onClick={() => {
-              setPick(ITEMS.map(() => 'q'));
-              setShown(false);
+              setRoom(null);
+              setState(PASTE_EMPTY);
             }}
           >
             Reset
           </button>
         </div>
-        {shown && pick.some((p) => p !== 'q') && (
+        {room && active && (
           <span className="dk-k" style={{ color: 'var(--ink)' }}>
             The room matched {right} of {ITEMS.length}
           </span>
@@ -629,7 +661,7 @@ export const pages: [Page, string][] = [
   ],
   [
     NotToPaste,
-    '4 min. Read each card, ask the room for a show of hands, click to set the room’s vote. Then "Show the answers". The two "Never" cards are the only hard rules. Everything else is "work plan, minimum needed".',
+    '4 min. Read each card, ask the room for a show of hands, drag it into the column the room picks. Then "Show the answers": every card slides to its right column, with a tick or where the room had put it, and the reason. The two "Never" cards are the only hard rules. Everything else is "work plan, minimum needed".',
   ],
   [
     Connect,
