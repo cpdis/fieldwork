@@ -460,6 +460,10 @@ export const lab = ({
           </dl>
         </Pad>
         <RoomTimer id={id} minutes={minutes} />
+        <div className="dk-tryit">
+          <span className="dk-k">Not sure it can?</span>
+          <b>Type it in and see.</b>
+        </div>
         <Split
           top="23.2cqw"
           left={

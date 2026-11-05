@@ -623,3 +623,19 @@
 .fw .b6-buy { position: absolute; left: 69cqw; right: 3.6cqw; top: 15.8cqw; display: grid; gap: 1.8cqw; align-content: start; justify-items: start; }
 .fw .b6-buy > div { border-top: .15cqw solid var(--ink); padding-top: .9cqw; display: grid; gap: .6cqw; }
 .fw .b6-buy p { font: 500 1.45cqw/1.35 var(--f-sans); letter-spacing: -.015em; }
+
+/* The core message: the models are already enough */
+.fw .b1-reflex { position: absolute; left: 3.6cqw; width: 60cqw; top: 18.4cqw; }
+.fw .b1-reflex .hd { display: grid; grid-template-columns: 26cqw minmax(0,1fr); gap: 2cqw; padding-bottom: .6cqw; border-bottom: .15cqw solid var(--ink); }
+.fw .b1-reflex .row { all: unset; box-sizing: border-box; cursor: pointer; width: 100%; display: grid; grid-template-columns: 26cqw minmax(0,1fr); gap: 2cqw; align-items: baseline; padding: 1.15cqw 0; border-bottom: .1cqw solid var(--rule); }
+.fw .b1-reflex .row:focus-visible { box-shadow: 0 0 0 .3cqw var(--accent); }
+.fw .b1-reflex .a { font: 500 1.45cqw/1.3 var(--f-sans); color: var(--ink); transition: color .3s; }
+.fw .b1-reflex .row.on .a { color: var(--muted); text-decoration: line-through; text-decoration-thickness: .08cqw; }
+.fw .b1-reflex .b { font: 500 .85cqw/1.6 var(--f-mono); letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+.fw .b1-reflex .row.on .b { font: 600 1.45cqw/1.3 var(--f-sans); letter-spacing: -.015em; text-transform: none; color: var(--ink); animation: dk-rowin .35s var(--ease) both; }
+.fw .b1-reflex-side { position: absolute; left: 68cqw; right: 3.6cqw; top: 18.4cqw; display: grid; gap: 1.6cqw; align-content: start; border-top: .15cqw solid var(--ink); padding-top: 1.1cqw; }
+.fw .b1-reflex-side > p:first-child { font: 600 2cqw/1.25 var(--f-sans); letter-spacing: -.025em; }
+.fw .b1-reflex-side .dk-body { font-size: 1.3cqw; }
+.fw .dk-tryit { position: absolute; right: 3.6cqw; top: 18.6cqw; white-space: nowrap; display: flex; gap: .8cqw; align-items: baseline; justify-content: flex-end; }
+.fw .dk-tryit b { font: 600 1.25cqw/1 var(--f-sans); letter-spacing: -.015em; }
+.fw .b8-close .cl-l > p.motto { font: 500 1.9cqw/1.3 var(--f-sans); letter-spacing: -.02em; text-transform: none; color: var(--ink); margin-top: .6cqw; }

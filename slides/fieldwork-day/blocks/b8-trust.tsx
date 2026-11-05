@@ -340,7 +340,7 @@ const WEEKS: [string, string][] = [
   ['Use it every day', 'Open your Project every working day for the task from Lab 2. Each time it misses, add one line to the instructions.'],
   ['Test the skill', 'Run your skill on five real jobs. When one fails, fix the skill, not the answer.'],
   ['Leave one job running', 'Let your scheduled task run. Read every result. Tighten the rules where it guessed.'],
-  ['Measure, then pick the next', 'Time the task again and write down before and after. Choose the next job to hand over.'],
+  ['Measure, then ask again', 'Time the task again and write down before and after. Pick the next job to hand over, and retry one ask that failed this month.'],
 ];
 const ThirtyDays: Page = () => {
   const on = usePlay(150);
@@ -391,6 +391,9 @@ const Close: Page = () => {
             </span>
           </div>
           <h1>Thank you.</h1>
+          <p className="motto">
+            The models are already good enough. Ask for the thing you assume it can’t do, and if it can’t yet, <Hl>ask again</Hl> on the next one.
+          </p>
           <p>
             {COURSE.cohort} · {COURSE.where} · {COURSE.when}
           </p>
@@ -442,5 +445,5 @@ export const pages: [Page, string][] = [
   ],
   [Regrade, '3 min. Count hands level by level, as at 9:00. The marks show this morning’s count beside this afternoon’s.'],
   [ThirtyDays, '2 min. Ask everyone to paste the plan into their Project now and fill in their own task names, so it is there tomorrow.'],
-  [Close, '16:00. Thank them. Leave this up while people pack. Ask for one sentence of feedback each, on the way out.'],
+  [Close, '16:00. Say the one line on the page out loud: it is the whole day in a sentence. Then thank them. Leave this up while people pack. Ask for one sentence of feedback each, on the way out.'],
 ];

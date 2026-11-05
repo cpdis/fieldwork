@@ -284,6 +284,61 @@ const BigJob: Page = () => (
   </Frame>
 );
 
+/* ---------- the models are already enough ---------- */
+const REFLEX: [string, string][] = [
+  ['“It probably can’t do that.”', 'Type it in and see. It takes a minute to find out.'],
+  ['“I’ll type the notes up tonight.”', 'Photograph them. Ask for the table.'],
+  ['“We’d need software for that.”', 'Ask it to build the view you want.'],
+  ['“It’s quicker to do it myself.”', 'Once, maybe. Every week, never.'],
+  ['“I tried that. It didn’t work.”', 'Give it more context. Or try again when the next model ships.'],
+];
+const AlreadyEnough: Page = () => {
+  const [flip, setFlip] = useState<boolean[]>(REFLEX.map(() => false));
+  const all = flip.every(Boolean);
+  return (
+    <Frame label="The models are already enough">
+      <Head
+        eb={eb('why', 'Why now · the real gap')}
+        title="The models are already good enough. The habit is what is missing."
+        sum="This is not about which company is ahead. Either app in this room can already take hours off your week. What changes things is the moment you stop and ask: could this be done with AI in the loop?"
+      />
+      <PageNo />
+      <div className="b1-reflex">
+        <div className="hd">
+          <span className="dk-k">The old reflex</span>
+          <span className="dk-k">The new one</span>
+        </div>
+        {REFLEX.map(([a, b], i) => (
+          <button
+            key={a}
+            type="button"
+            className={`row ${flip[i] ? 'on' : ''}`}
+            onClick={() => {
+              const n = [...flip];
+              n[i] = !n[i];
+              setFlip(n);
+            }}
+          >
+            <span className="a">{a}</span>
+            <span className="b">{flip[i] ? b : 'Click to reframe'}</span>
+          </button>
+        ))}
+      </div>
+      <div className="b1-reflex-side">
+        <p>
+          Be a little bold. Ask for the thing you assume it can’t do. More often than not, you will be <Hl>surprised</Hl>.
+        </p>
+        <p className="dk-body">If it falls short today, write the ask down and try it again on the next model. Each one moves the line.</p>
+        <div className="pbtns">
+          <button className="rb" type="button" onClick={() => setFlip(REFLEX.map(() => !all))}>
+            {all ? 'Reset' : 'Show all'}
+          </button>
+        </div>
+      </div>
+    </Frame>
+  );
+};
+
 /* ---------- use them ---------- */
 const UseThem: Page = () => (
   <Frame label="The only way to understand them">
@@ -324,6 +379,10 @@ export const pages: [Page, string][] = [
   [
     BigJob,
     '2 min. Let the clip run while you talk. The point is not the money. It is the quote: the prompts were plain English. Persistence beats clever wording. Be honest that big builds cost real money, and that today\'s work fits easily in a normal plan.',
+  ],
+  [
+    AlreadyEnough,
+    '3 min. The thesis of the day, so say it plainly: the models are not the bottleneck; the habit of asking is. Read each old reflex aloud, ask who has said it this month, then click to reframe. Do not argue about which company is ahead; both apps are already more capable than anyone here will use today. End on: if it fails, try again on the next model. This line comes back on every lab page and at the close.',
   ],
   [UseThem, '30 sec. Read the quote, pause, move on. Transition straight into the map of the apps.'],
 ];
