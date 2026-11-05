@@ -164,6 +164,17 @@ export const SHOTS: ShotSpec[] = [
     used: 'Block 6 method story',
     alt: 'NAB story about an accounting firm',
   },
+  /* ---- Block 6: build your own glue ---- */
+  {
+    id: 'killmysaas',
+    kind: 'clip',
+    url: 'https://www.youtube.com/watch?v=QmDLDy3ZSNE&t=1797',
+    capture: '10 to 15 seconds from the Kill My SaaS segment (29:57 to 46:00): swyx on screen, ideally while he talks about the bounty or shows a winning build',
+    credit: 'swyx, Latent Space interview, Nov 2026',
+    used: 'Block 6 Kill My SaaS story',
+    alt: 'swyx talking about the Kill My SaaS bounty',
+    note: 'Latent Space · interview, Nov 2026',
+  },
 ];
 
 export const SHOT_BY_ID: Record<string, ShotSpec> = Object.fromEntries(SHOTS.map((s) => [s.id, s]));

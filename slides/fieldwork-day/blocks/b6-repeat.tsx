@@ -1,7 +1,7 @@
 /* Block 6 · 14:00 · Make it repeatable (L5). */
 import type { Page } from '@open-slide/core';
 import { useIsActivePage } from '@open-slide/core';
-import { useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { Frame, Hl, SideLabel, Split } from '@assets/fieldwork/brand';
 import { CountUp, Head, PageNo, Shot, Src, eb, lab, live, opener, usePlay } from '../kit';
 
@@ -419,7 +419,7 @@ const Lab5 = lab({
   id: 'lab5',
   n: 5,
   block: 'repeat',
-  minutes: 20,
+  minutes: 15,
   title: 'Turn your task into a skill',
   goal: 'Take a job that went well today and save the method as a skill. Then run it on an example it has not seen.',
   done: 'The skill ran on a new example, and you checked the result against what you would have done.',
@@ -443,8 +443,147 @@ const Lab5 = lab({
   hand: 'fix the skill, not the answer',
 });
 
+/* ---------- build your own glue: a real story ---------- */
+const LEDGER: { k: string; v: ReactNode; sub: string; hl?: boolean }[] = [
+  { k: 'Software, every year', v: 'US$300k', sub: 'Out of US$3–10m to run each conference.' },
+  { k: 'The tool his team wanted', v: 'US$40k a year', sub: 'An events platform. One licence, renewed forever.' },
+  { k: 'What he offered instead', v: 'US$10k once', sub: 'A bounty for an open-source version anyone could run.', hl: true },
+  { k: 'Entries', v: '69', sub: 'Built in about a week.' },
+  { k: 'Worth paying for', v: 'About 5', sub: 'Most of the rest was slop.' },
+  { k: 'Time to judge them', v: '2 months', sub: 'Five kinds of user each had to try them.' },
+];
+const KillMySaas: Page = () => {
+  const on = usePlay(120);
+  return (
+    <Frame label="A bounty instead of a licence">
+      <Head
+        eb={eb('repeat', 'Repeatable · a real story')}
+        title="A US$10k bounty instead of a US$40k-a-year tool"
+        sum="swyx runs the Latent Space podcast and the AI Engineer conferences. Instead of buying an events platform, he paid people to build one, and found the payoff somewhere he did not expect."
+      />
+      <PageNo />
+      <div className={`b6-ledger ${on ? '' : 'pre'}`}>
+        {LEDGER.map((r, i) => (
+          <div key={r.k} className="row" style={{ ['--i' as string]: i }}>
+            <span className="dk-k">{r.k}</span>
+            <b>{r.hl ? <Hl>{r.v}</Hl> : r.v}</b>
+            <span className="s">{r.sub}</span>
+          </div>
+        ))}
+      </div>
+      <Shot id="killmysaas" style={{ position: 'absolute', right: '3.6cqw', width: '36cqw', top: '15.6cqw', height: '20.25cqw' }} />
+      <div className={`b6-payoff ${on ? '' : 'pre'}`}>
+        <span className="dk-k">Where the payoff was</span>
+        <div>
+          <b>Views nobody sells you</b>
+          <span>One table to review 1,000 talk submissions: the kind of feature a vendor leaves on a six-month roadmap.</span>
+        </div>
+        <div>
+          <b>Glue between tools</b>
+          <span>A signed contract lands in the right shared-drive folder by itself.</span>
+        </div>
+      </div>
+      <p className="b6-caveat">
+        His own caveats: he has staff to maintain it, he can live with a day of downtime, and the contest made a good episode.
+      </p>
+      <Src>Source: swyx in a Latent Space interview, Nov 2026 (YouTube QmDLDy3ZSNE, 29:57–46:00). Figures as he said them.</Src>
+    </Frame>
+  );
+};
+
+/* ---------- where do you copy and paste? ---------- */
+const PASTES: [string, string][] = [
+  ['Website enquiry form', 'the job spreadsheet'],
+  ['Supplier price list (PDF)', 'your quote template'],
+  ['Finished jobs in the calendar', 'invoices in the accounts'],
+  ['Timesheets', 'payroll'],
+  ['New bookings', 'reminder texts'],
+  ['The accounts', 'the Monday cash summary'],
+  ['Email attachments', 'the right client folder'],
+  ['Stock count', 'the reorder list'],
+];
+const WherePaste: Page = () => {
+  const [hands, setHands] = useState<number[]>(PASTES.map(() => 0));
+  const top = Math.max(...hands);
+  return (
+    <Frame label="Where do you copy and paste?">
+      <Head
+        eb={eb('repeat', 'Repeatable · find your glue')}
+        title="Where do you copy and paste every week?"
+        sum="Hands up for each one. Click a card to count the room. Then everyone picks one, their own, for the next lab."
+      />
+      <PageNo />
+      <div className="b6-paste">
+        {PASTES.map(([a, b], i) => (
+          <button
+            key={a}
+            type="button"
+            className={`pc ${hands[i] && hands[i] === top ? 'top' : ''}`}
+            onClick={(e) => {
+              const n = [...hands];
+              n[i] = Math.max(0, n[i] + (e.shiftKey ? -1 : 1));
+              setHands(n);
+            }}
+          >
+            <span className="a">{a}</span>
+            <span className="arr">copied into</span>
+            <span className="b">{b}</span>
+            <span className="h">{hands[i] ? `${hands[i]} ${hands[i] === 1 ? 'hand' : 'hands'}` : 'Click to count'}</span>
+          </button>
+        ))}
+      </div>
+      <div className="b6-buy">
+        <div>
+          <span className="dk-k">Build it yourself</span>
+          <p>A view of your own numbers. The glue that carries information from one tool to the next.</p>
+        </div>
+        <div>
+          <span className="dk-k">Keep paying for it</span>
+          <p>Anything that moves money, anything the ATO or the law cares about, anything you could not fix at 7 am.</p>
+        </div>
+        <button className="rb" type="button" onClick={() => setHands(PASTES.map(() => 0))}>
+          Reset
+        </button>
+      </div>
+    </Frame>
+  );
+};
+
+const Lab6 = lab({
+  id: 'lab6',
+  n: 6,
+  block: 'repeat',
+  minutes: 15,
+  title: 'Build your own glue',
+  goal: 'Pick the one place you copy and paste between two tools. Have the agent build the view or the connection, working on exports, not on your live systems.',
+  done: 'It ran on your sample, and three rows you checked by hand match the source.',
+  keep: 'The folder: the tool, the sample files, and a README that says what it reads and writes.',
+  apps: { openai: ['OpenAI · ChatGPT desktop → Codex', 'if you pay for ChatGPT'], claude: ['Claude desktop → Code', 'if you pay for Claude'] },
+  openai: [
+    'Make a folder called glue. Put in a small export from each tool: 10 to 20 rows, no bank or card details.',
+    <>
+      Open the folder in Codex: <span className="dk-say">Every week I copy [what] from [tool A] into [tool B]. Exports of both are here. Build me [a one-page view of … | a file I can import into …]. Ask me three questions first.</span>
+    </>,
+    'Open what it made. Check three rows by hand against the source.',
+    <>
+      Then: <span className="dk-say">Write a README: what this reads, what it writes, and how I run it next week.</span>
+    </>,
+  ],
+  claude: [
+    'Make a folder called glue. Put in a small export from each tool: 10 to 20 rows, no bank or card details.',
+    <>
+      Open the folder in the Code tab: <span className="dk-say">Every week I copy [what] from [tool A] into [tool B]. Exports of both are here. Build me [a one-page view of … | a file I can import into …]. Ask me three questions first.</span>
+    </>,
+    'Open what it made. Check three rows by hand against the source.',
+    <>
+      Then: <span className="dk-say">Write a README: what this reads, what it writes, and how I run it next week.</span>
+    </>,
+  ],
+  hand: 'it reads and drafts; you import',
+});
+
 export const pages: [Page, string][] = [
-  [Open, '14:00 · Block 6 opener. Forty-five minutes, ending in a 20-minute lab. Then the afternoon break.'],
+  [Open, '14:00 · Block 6 opener. An hour, with two labs: the skill (15 min) and your own glue (15 min). Then the afternoon break.'],
   [
     Boring,
     '3 min. Let the bar build. The point: the money is in moving information around, not in clever AI. AI earns a step only where judgement is needed.',
@@ -475,6 +614,18 @@ export const pages: [Page, string][] = [
   ],
   [
     Lab5,
-    '20 min. Start the timer. Common snag: the skill is too long. Tell them to cut it to what they would tell a new starter in two minutes.',
+    '15 min. Start the timer. Common snag: the skill is too long. Tell them to cut it to what they would tell a new starter in two minutes.',
+  ],
+  [
+    KillMySaas,
+    '3 min. A real story from a public interview. Read the ledger top to bottom and pause on the bounty. Then the turn: the clone was not the win. The win was a view nobody sells (one table for 1,000 talk submissions) and the glue between tools (a signed contract filing itself). Finish on his caveats: buy anything that moves money. Play the clip if it is in; it is muted.',
+  ],
+  [
+    WherePaste,
+    '2 min. Read each card, hands up, click once per hand (shift-click takes one off). The most common one goes yellow. Then everyone picks their own pair, which may not be on the board. Point at the right column: build the view and the glue, keep paying for anything that moves money.',
+  ],
+  [
+    Lab6,
+    '15 min. Start the timer. Before they start, check everyone has two exports, not a login to the live system. Common snags: the export has 5,000 rows (cut it to 20), or the ask is a whole app (cut it to one view or one import file). Nobody imports anything into a live system today.',
   ],
 ];

@@ -422,7 +422,7 @@ const Close: Page = () => {
 };
 
 export const pages: [Page, string][] = [
-  [Open, '15:30 · Block 8 opener. Thirty minutes to finish: checking, rules, policy, your number, the regrade, the plan.'],
+  [Open, '15:35 · Block 8 opener. Twenty-five minutes to finish: checking, rules, policy, your number, the regrade, the plan. If time is short, the policy interview goes home as homework.'],
   [
     TickedVsVerified,
     '4 min. A builder checking a subcontractor’s revised safety plan; any trade that reviews other people’s paperwork has this job. Untick two items, then "Check the revised document". The point: the checklist is a claim; the document is the evidence. Have the agent check the document, and you check the agent.',
