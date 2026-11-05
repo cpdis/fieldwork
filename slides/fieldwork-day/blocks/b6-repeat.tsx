@@ -491,6 +491,63 @@ const KillMySaas: Page = () => {
   );
 };
 
+/* ---------- the same idea on the Sunshine Coast ---------- */
+const PIPE = [
+  ['On site', 'The tech enters the measurements. Under a minute.'],
+  ['Price', 'The system prices the job.'],
+  ['Proposal', 'Drafted and emailed to the customer.'],
+  ['Signature', 'Signed online, with a record of who signed.'],
+  ['Deposit', 'Taken by card through Stripe.'],
+  ['Accounts', 'The payment is logged in Xero.'],
+  ['Booking', 'A task lands in the office to book the job.'],
+];
+const Bundilla: Page = () => {
+  const active = useIsActivePage();
+  const [n, setN] = useState(active ? 0 : PIPE.length);
+  useEffect(() => {
+    if (!active) {
+      setN(PIPE.length);
+      return;
+    }
+    setN(0);
+    const id = setInterval(() => setN((x) => (x >= PIPE.length ? x : x + 1)), 450);
+    return () => clearInterval(id);
+  }, [active]);
+  return (
+    <Frame label="A pest controller's glue">
+      <Head
+        eb={eb('repeat', 'Repeatable · close to home')}
+        title="A pest controller on the Sunshine Coast built the same kind of glue"
+        sum="Bundilla Pest Control, founded 1985. Their developer used AI coding assistants like Claude to build a proposal engine in two weeks. One entry on site now runs everything after it."
+      />
+      <PageNo />
+      <div className="b6-pipe">
+        {PIPE.map(([k, t], i) => (
+          <div key={k} className={`ps ${i < n ? 'on' : ''}`}>
+            <span className="dk-k">{String(i + 1).padStart(2, '0')}</span>
+            <b>{k}</b>
+            <span>{t}</span>
+          </div>
+        ))}
+      </div>
+      <div className="b6-pipe-nums">
+        <div className="num">
+          <b>45 → &lt;1</b>
+          <span>minutes per proposal</span>
+        </div>
+        <div className="num">
+          <b>38 hrs</b>
+          <span>saved in the first two weeks</span>
+        </div>
+        <p className="dk-body">
+          It runs inside the system they already used, joined to Stripe and Xero, and <Hl>a person still checks</Hl> the answers.
+        </p>
+      </div>
+      <Src>Source: SmartCompany partner content, sponsored by Salesforce, 25 Aug 2026. The engine runs inside their Salesforce; Claude helped write it.</Src>
+    </Frame>
+  );
+};
+
 /* ---------- where do you copy and paste? ---------- */
 const PASTES: [string, string][] = [
   ['Website enquiry form', 'the job spreadsheet'],
@@ -619,6 +676,10 @@ export const pages: [Page, string][] = [
   [
     KillMySaas,
     '3 min. A real story from a public interview. Read the ledger top to bottom and pause on the bounty. Then the turn: the clone was not the win. The win was a view nobody sells (one table for 1,000 talk submissions) and the glue between tools (a signed contract filing itself). Finish on his caveats: buy anything that moves money. Play the clip if it is in; it is muted.',
+  ],
+  [
+    Bundilla,
+    '2 min. The same idea at Australian small-business scale. Let the chain light up. The point: they did not buy a new tool, they joined the ones they had. Be straight that this is sponsored content and their developer did the building; today you will build something smaller yourself. If the block is running late, skip this page.',
   ],
   [
     WherePaste,

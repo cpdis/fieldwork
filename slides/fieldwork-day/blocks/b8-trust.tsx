@@ -187,6 +187,53 @@ const ThreeRules: Page = () => {
   );
 };
 
+/* ---------- where owners drew the line ---------- */
+const LINES: { q: string; who: string; what: string }[] = [
+  {
+    q: '“You need someone checking the answers, updating guardrails, and auditing the outputs.”',
+    who: 'Beau Rheinberger, Bundilla Pest Control, Sunshine Coast',
+    what: 'Uses agents and a Claude-built proposal engine every day.',
+  },
+  {
+    q: '“It’s got to be our own product at the end of the day.”',
+    who: 'Breton Homewood, Book Nook Cafe, Florida',
+    what: 'Put AI-generated pictures on his menu. Customers pushed back in reviews. Local artists are drawing the new ones.',
+  },
+  {
+    q: '“Our customers do not interact with AI when they’re trying to get our services.”',
+    who: 'Eros Puentes, La Maracucha, Florida',
+    what: 'Uses AI for the menu and the back of house, and keeps it away from the counter on purpose.',
+  },
+  {
+    q: '“It takes less than 10 seconds to walk in and put your eyes on what’s stacked up in boxes with labels on them.”',
+    who: 'Lee Dedrick, Northwest Seafood, Florida',
+    what: 'Decided he does not need it for stock. That is a fine answer too.',
+  },
+];
+const DrewTheLine: Page = () => {
+  const on = usePlay(120);
+  return (
+    <Frame label="Where owners drew the line">
+      <Head
+        eb={eb('trust', 'Trust · in their words')}
+        title="Where owners drew the line"
+        sum="Saying yes to AI is not saying yes to everything. Four owners, four lines, all in their own words."
+      />
+      <PageNo />
+      <div className={`b8-lines ${on ? '' : 'pre'}`}>
+        {LINES.map((l, i) => (
+          <div key={l.who} className="dk-fade" style={{ ['--i' as string]: i * 2 }}>
+            <p>{l.q}</p>
+            <span className="dk-attr">{l.who}</span>
+            <span className="w">{l.what}</span>
+          </div>
+        ))}
+      </div>
+      <Src>Sources: SmartCompany partner content (Salesforce), Aug 2026 · The Independent Florida Alligator, Apr 2026.</Src>
+    </Frame>
+  );
+};
+
 /* ---------- a one-page policy ---------- */
 const POLICY: [string, string][] = [
   ['What we use AI for', 'Drafting emails, quotes and reports. Summarising documents. Checking our work against our own files.'],
@@ -435,6 +482,10 @@ export const pages: [Page, string][] = [
     '4 min. Read the email out loud first; it looks fine. Then reveal. Ask: what would your Monday brief have done with this? Link back to the never list from Block 7.',
   ],
   [ThreeRules, '3 min. Three rules, then the quote from a Melbourne design-firm owner. Say it in your own words: the tool does the work, you own the decision. Ask the room for one example of each rule.'],
+  [
+    DrewTheLine,
+    '2 min. Optional in the 25-minute block. Read the first and second quotes; let the room read the rest. The cafe owner is the warning: customers noticed. The seafood owner is the permission: not every job needs AI.',
+  ],
   [
     PolicyOnePage,
     '5 min. Show the example, then everyone runs the interview prompt in their Project for five minutes. They finish it at home. Mention the Privacy Act and the APPs in one sentence; no legal advice.',
