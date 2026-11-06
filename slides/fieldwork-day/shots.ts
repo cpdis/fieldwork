@@ -153,6 +153,26 @@ export const SHOTS: ShotSpec[] = [
     used: 'Block 1 big-job page',
     alt: 'Tidewater, a 3D island game built with an AI coding agent',
   },
+  /* ---- Block 1: a farmer's own software ---- */
+  {
+    id: 'cutsheetrx',
+    kind: 'clip',
+    url: 'https://x.com/traviss22/status/2118375285917884898',
+    show: 'senterfarms.com/programs/csrx · CutSheetRX',
+    capture: 'Clip 1 from the thread: draw a field, cut and fill, then the 3D water-flow view (supplied by Colin, 6 Nov 2026)',
+    credit: 'Travis Senter, Senter Farms, on X, Nov 2026',
+    used: 'Block 1 farmer page',
+    alt: 'CutSheetRX: a field drawn on a map, its cut and fill, and a 3D view of where rain will flow',
+  },
+  {
+    id: 'cutsheetrx-phone',
+    kind: 'clip',
+    url: 'https://x.com/traviss22/status/2118417086200655952',
+    capture: 'Clip 3 from the thread: the elevation profile on a phone (supplied by Colin, 6 Nov 2026)',
+    credit: 'Travis Senter, Senter Farms, on X, Nov 2026',
+    used: 'Block 1 farmer page',
+    alt: 'CutSheetRX on a phone, drawing an elevation profile',
+  },
   /* ---- Block 6: a method, written down ---- */
   {
     id: 'indepth',

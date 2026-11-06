@@ -676,3 +676,11 @@
 .fw .b8-lines > div { border-top: .15cqw solid var(--ink); padding-top: 1.1cqw; display: grid; gap: .7cqw; align-content: start; }
 .fw .b8-lines p { font: 500 1.75cqw/1.28 var(--f-sans); letter-spacing: -.02em; text-wrap: balance; }
 .fw .b8-lines .w { font-size: 1.1cqw; line-height: 1.4; color: var(--muted); }
+
+/* Block 1 · a farmer's own software */
+.fw .b1-farm { position: absolute; left: 3.6cqw; right: 3.6cqw; top: 17.4cqw; display: grid; grid-template-columns: 40cqw 12.4cqw minmax(0,1fr); gap: 1.6cqw; align-items: start; }
+.fw .b1-farm .side { display: grid; gap: 1.6cqw; padding-left: 1cqw; }
+.fw .b1-farm blockquote { margin: 0; display: grid; gap: .8cqw; }
+.fw .b1-farm .dk-quote { font-size: 2.2cqw; }
+.fw .b1-farm-list { display: grid; border-top: .15cqw solid var(--ink); }
+.fw .b1-farm-list > div { display: grid; grid-template-columns: 9cqw minmax(0,1fr); gap: 1cqw; padding: .75cqw 0; border-bottom: .1cqw solid var(--rule); font-size: 1.1cqw; line-height: 1.38; align-items: baseline; }

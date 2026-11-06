@@ -470,6 +470,47 @@ const AlreadyEnough: Page = () => {
   );
 };
 
+/* ---------- a farmer's own software ---------- */
+const Farmer: Page = () => (
+  <Frame label="A farmer's own software">
+    <Head
+      eb={eb('why', 'Why now · built by an owner')}
+      title="A row-crop farmer built thirty tools for his farm this year"
+      sum="Travis Senter grows cotton, rice, soybeans and corn in Osceola, Arkansas. His bio reads “Farmer, Fabricator.” His latest tool reads public lidar data to show where rain will drain across any field."
+    />
+    <PageNo />
+    <div className="b1-farm">
+      <Shot id="cutsheetrx" chrome="browser" className="vid" style={{ height: '27cqw' }} />
+      <Shot id="cutsheetrx-phone" className="ph" fit="cover" style={{ height: '27cqw' }} />
+      <div className="side">
+        <blockquote>
+          <p className="dk-quote">“Quite possibly the best app I’ve created yet.”</p>
+          <span className="dk-attr">Travis Senter, on X · Nov 2026</span>
+        </blockquote>
+        <div className="b1-farm-list">
+          {[
+            ['Draw a field', 'Drainage paths and rainfall flow from the elevation.'],
+            ['Draw a line', 'An elevation profile, saved as a spreadsheet.'],
+            ['On his site', '“Thirty things built this year”: dashboards, maps, budgets, planners. All of it runs in a browser.'],
+          ].map(([k, v]) => (
+            <div key={k}>
+              <span className="dk-k">{k}</span>
+              <span>{v}</span>
+            </div>
+          ))}
+        </div>
+        <p className="dk-body" style={{ fontSize: '1.35cqw' }}>
+          He knows his fields better than any software company does. <Hl>That is the advantage.</Hl>
+        </p>
+      </div>
+    </div>
+    <Src>
+      Travis Senter on X, 5 Nov 2026 · senterfarms.com/programs · Farm Journal, Moving Iron 2026 speaker bio. He has not said which AI tools
+      he used.
+    </Src>
+  </Frame>
+);
+
 /* ---------- use them ---------- */
 const UseThem: Page = () => (
   <Frame label="The only way to understand them">
@@ -514,6 +555,10 @@ export const pages: [Page, string][] = [
   [
     BigJob,
     '2 min. Let the clip run while you talk. The point is not the money. It is the quote: the prompts were plain English. Persistence beats clever wording. Be honest that big builds cost real money, and that today\'s work fits easily in a normal plan.',
+  ],
+  [
+    Farmer,
+    '2 min. Let the field clip run: draw the field, see the cut and fill, then the water. The point: a working farmer, not a programmer, built thirty tools this year because he knows his own land. Do not name the AI tool he used; he has not said publicly. If asked: his public posts and a 2024 AgWeb interview show he already used ChatGPT on his farm data.',
   ],
   [
     Overhang,
