@@ -222,7 +222,7 @@ const HowToday: Page = () => (
     </div>
     <div className="b0-house">
       <span className="dk-k">Housekeeping</span>
-      <span>Breaks 10:45 and 14:45 · Lunch 12:00 · Finish 16:00</span>
+      <span>Breaks 10:45 and 15:00 · Lunch 12:00 · Finish 16:00</span>
       {COURSE.wifi.name && (
         <span>
           Wi-Fi <b>{COURSE.wifi.name}</b> · <b>{COURSE.wifi.password}</b>

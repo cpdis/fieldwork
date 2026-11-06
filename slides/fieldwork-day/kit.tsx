@@ -422,6 +422,7 @@ export const lab = ({
   openai,
   claude,
   hand,
+  apps,
 }: {
   id: string;
   n: number;
@@ -434,7 +435,11 @@ export const lab = ({
   openai: ReactNode[];
   claude: ReactNode[];
   hand?: string;
+  /** Side labels, when the lab uses another mode than the default chat apps. */
+  apps?: { openai: [string, string]; claude: [string, string] };
 }): Page => {
+  const [oaName, oaSub] = apps?.openai ?? ['OpenAI · ChatGPT desktop', 'if you pay for ChatGPT'];
+  const [clName, clSub] = apps?.claude ?? ['Claude', 'if you pay for Claude'];
   const P: Page = () => {
     const b = blockById(block);
     return (
@@ -455,11 +460,15 @@ export const lab = ({
           </dl>
         </Pad>
         <RoomTimer id={id} minutes={minutes} />
+        <div className="dk-tryit">
+          <span className="dk-k">Not sure it can?</span>
+          <b>Type it in and see.</b>
+        </div>
         <Split
           top="23.2cqw"
           left={
             <>
-              <SideLabel name="OpenAI · ChatGPT desktop" sub="if you pay for ChatGPT" />
+              <SideLabel name={oaName} sub={oaSub} />
               <ol className="dk-list">
                 {openai.map((s, i) => (
                   <li key={i}>
@@ -471,7 +480,7 @@ export const lab = ({
           }
           right={
             <>
-              <SideLabel name="Claude" sub="if you pay for Claude" />
+              <SideLabel name={clName} sub={clSub} />
               <ol className="dk-list">
                 {claude.map((s, i) => (
                   <li key={i}>
