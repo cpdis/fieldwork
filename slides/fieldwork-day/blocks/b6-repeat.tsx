@@ -1,9 +1,10 @@
 /* Block 6 · 14:00 · Make it repeatable (L5). */
 import type { Page } from '@open-slide/core';
 import { useIsActivePage } from '@open-slide/core';
-import { type ReactNode, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Frame, Hl, SideLabel, Split } from '@assets/fieldwork/brand';
 import { CountUp, Head, PageNo, Shot, Src, eb, lab, live, opener, usePlay } from '../kit';
+import { useSaved } from '../persist';
 
 const Open = opener(
   'repeat',
@@ -125,8 +126,8 @@ const Redesign: Page = () => {
       </div>
       <div className="b6-proc-side">
         <div className="num">
-          <b>{shown ? '$6' : '$31'}</b>
-          <span>{shown ? 'cost per invoice, redesigned' : 'cost per invoice, today'}</span>
+          <b>{shown ? '1 of 8' : '8 of 8'}</b>
+          <span>{shown ? 'steps still need a person' : 'steps done by hand today'}</span>
         </div>
         <p className="dk-body" style={{ fontSize: '1.3cqw' }}>
           {shown ? (
@@ -153,7 +154,9 @@ const Redesign: Page = () => {
           </button>
         </div>
       </div>
-      <Src>Cost figures: an accounts-payable example from a forward-deployed-engineering masterclass (Greg Isenberg with Varick), 2026.</Src>
+      <Src>
+        A made-up invoice process. The four labels follow a forward-deployed-engineering masterclass (Greg Isenberg with Varick), 2026.
+      </Src>
     </Frame>
   );
 };
@@ -268,7 +271,7 @@ const OneOff: Page = () => {
       <Head
         eb={eb('repeat', 'Repeatable · a real story')}
         title="One firm’s way of working, written down once"
-        sum="A 13-person accounting firm in Maroochydore wrote down “the InDepth way”. Now anyone on the team can ask how a job is done, and get the firm’s own answer."
+        sum="Indepth Accounting, a 13-person firm in Maroochydore, wrote down “the InDepth way”. Now anyone on the team can ask how a job is done, and get the firm’s own answer."
       />
       <PageNo />
       <div className={`b6-story ${on ? '' : 'pre'}`}>
@@ -391,8 +394,9 @@ const TestIt: Page = () => {
 const Live = live({
   block: 'repeat',
   title: 'This morning’s job, saved as a skill',
-  minutes: 5,
+  minutes: 4,
   backup: () => SkillAnatomy,
+  liveIn: 'openai',
   apps: [
     {
       who: 'openai',
@@ -411,6 +415,7 @@ const Live = live({
         'Same request in the Claude Project chat. Compare the two SKILL.md files side by side.',
         'Install it, then run one of the five test jobs.',
       ],
+      ready: 'The same request, made in the Claude Project before the day. Open the saved skill, put its SKILL.md beside the live one, and show one of the five test jobs already run.',
     },
   ],
 });
@@ -428,7 +433,9 @@ const Lab5 = lab({
     <>
       In the chat where the job went well: <span className="dk-say">Turn what we did into a skill. Name it, say when to use it, list the steps and the checks.</span>
     </>,
-    'Save it as a skill in ChatGPT (or in the skills folder, in Codex).',
+    <>
+      Save it: say <span className="dk-say">Save this as a skill.</span> and confirm when it asks.
+    </>,
     'New chat, new input. Does it use the skill without being told?',
     'Something wrong? Fix the skill, not the output. Run it again.',
   ],
@@ -442,54 +449,6 @@ const Lab5 = lab({
   ],
   hand: 'fix the skill, not the answer',
 });
-
-/* ---------- build your own glue: a real story ---------- */
-const LEDGER: { k: string; v: ReactNode; sub: string; hl?: boolean }[] = [
-  { k: 'Software, every year', v: 'US$300k', sub: 'Out of US$3–10m to run each conference.' },
-  { k: 'The tool his team wanted', v: 'US$40k a year', sub: 'An events platform. One licence, renewed forever.' },
-  { k: 'What he offered instead', v: 'US$10k once', sub: 'A bounty for an open-source version anyone could run.', hl: true },
-  { k: 'Entries', v: '69', sub: 'Built in about a week.' },
-  { k: 'Worth paying for', v: 'About 5', sub: 'Most of the rest was slop.' },
-  { k: 'Time to judge them', v: '2 months', sub: 'Five kinds of user each had to try them.' },
-];
-const KillMySaas: Page = () => {
-  const on = usePlay(120);
-  return (
-    <Frame label="A bounty instead of a licence">
-      <Head
-        eb={eb('repeat', 'Repeatable · a real story')}
-        title="A US$10k bounty instead of a US$40k-a-year tool"
-        sum="swyx runs the Latent Space podcast and the AI Engineer conferences. Instead of buying an events platform, he paid people to build one, and found the payoff somewhere he did not expect."
-      />
-      <PageNo />
-      <div className={`b6-ledger ${on ? '' : 'pre'}`}>
-        {LEDGER.map((r, i) => (
-          <div key={r.k} className="row" style={{ ['--i' as string]: i }}>
-            <span className="dk-k">{r.k}</span>
-            <b>{r.hl ? <Hl>{r.v}</Hl> : r.v}</b>
-            <span className="s">{r.sub}</span>
-          </div>
-        ))}
-      </div>
-      <Shot id="killmysaas" style={{ position: 'absolute', right: '3.6cqw', width: '36cqw', top: '15.6cqw', height: '20.25cqw' }} />
-      <div className={`b6-payoff ${on ? '' : 'pre'}`}>
-        <span className="dk-k">Where the payoff was</span>
-        <div>
-          <b>Views nobody sells you</b>
-          <span>One table to review 1,000 talk submissions: the kind of feature a vendor leaves on a six-month roadmap.</span>
-        </div>
-        <div>
-          <b>Glue between tools</b>
-          <span>A signed contract lands in the right shared-drive folder by itself.</span>
-        </div>
-      </div>
-      <p className="b6-caveat">
-        His own caveats: he has staff to maintain it, he can live with a day of downtime, and the contest made a good episode.
-      </p>
-      <Src>Source: swyx in a Latent Space interview, Nov 2026 (YouTube QmDLDy3ZSNE, 29:57–46:00). Figures as he said them.</Src>
-    </Frame>
-  );
-};
 
 /* ---------- the same idea on the Sunshine Coast ---------- */
 const PIPE = [
@@ -517,7 +476,7 @@ const Bundilla: Page = () => {
     <Frame label="A pest controller's glue">
       <Head
         eb={eb('repeat', 'Repeatable · close to home')}
-        title="A pest controller on the Sunshine Coast built the same kind of glue"
+        title="A pest controller on the Sunshine Coast had this built in two weeks"
         sum="Bundilla Pest Control, founded 1985. Their developer used AI coding assistants like Claude to build a proposal engine in two weeks. One entry on site now runs everything after it."
       />
       <PageNo />
@@ -560,14 +519,15 @@ const PASTES: [string, string][] = [
   ['Stock count', 'the reorder list'],
 ];
 const WherePaste: Page = () => {
-  const [hands, setHands] = useState<number[]>(PASTES.map(() => 0));
+  const active = useIsActivePage();
+  const [hands, setHands] = useSaved<number[]>('paste-hands', PASTES.map(() => 0), active);
   const top = Math.max(...hands);
   return (
     <Frame label="Where do you copy and paste?">
       <Head
         eb={eb('repeat', 'Repeatable · find your glue')}
         title="Where do you copy and paste every week?"
-        sum="Hands up for each one. Click a card to count the room. Then everyone picks one, their own, for the next lab."
+        sum="Hands up for each one. Click a card to count the room. Then everyone picks one, their own, and writes it down. It is your take-home lab."
       />
       <PageNo />
       <div className="b6-paste">
@@ -606,11 +566,35 @@ const WherePaste: Page = () => {
   );
 };
 
+const GlueDemo = live({
+  block: 'repeat',
+  title: 'Build your own glue, in five minutes',
+  minutes: 4,
+  liveIn: 'none',
+  apps: [
+    {
+      who: 'openai',
+      app: 'ChatGPT desktop',
+      mode: 'Codex',
+      steps: [],
+      ready: 'The “glue” folder: two small exports (website enquiries and the job sheet), the one-page view Codex built from them, and its README. Open the view, then drop in this week’s export and run it again.',
+    },
+    {
+      who: 'claude',
+      app: 'Claude desktop',
+      mode: 'Code',
+      steps: [],
+      ready: 'The same two exports, built in the Code tab. Scroll the chat back to the three questions it asked before it wrote anything, then check three rows by hand against the source.',
+    },
+  ],
+});
+
 const Lab6 = lab({
   id: 'lab6',
   n: 6,
   block: 'repeat',
-  minutes: 15,
+  minutes: 30,
+  home: true,
   title: 'Build your own glue',
   goal: 'Pick the one place you copy and paste between two tools. Have the agent build the view or the connection, working on exports, not on your live systems.',
   done: 'It ran on your sample, and three rows you checked by hand match the source.',
@@ -640,14 +624,14 @@ const Lab6 = lab({
 });
 
 export const pages: [Page, string][] = [
-  [Open, '14:00 · Block 6 opener. An hour, with two labs: the skill (15 min) and your own glue (15 min). Then the afternoon break.'],
+  [Open, '14:00 · Block 6 opener. Forty-five minutes, with one lab: the skill (15 min). The glue is a short demo and a take-home lab. Break at 14:45.'],
   [
     Boring,
-    '3 min. Let the bar build. The point: the money is in moving information around, not in clever AI. AI earns a step only where judgement is needed.',
+    '2 min. Let the bar build. The point: the money is in moving information around, not in clever AI. AI earns a step only where judgement is needed.',
   ],
   [
     Redesign,
-    '5 min. Ask the room to label each step; click to set their answer. Then "Show the redesign". Two steps get deleted outright. The single human step is the payment approval.',
+    '4 min. Ask the room to label each step; click to set their answer. Then "Show the redesign". Two steps get deleted outright. The single human step is the payment approval. The process is made up; do not quote a saving for it.',
   ],
   [
     SkillAnatomy,
@@ -655,11 +639,11 @@ export const pages: [Page, string][] = [
   ],
   [
     WhereSkills,
-    '3 min. Same file format in both apps. Check menu names against the live apps before each cohort; they move.',
+    '2 min. Same file format in both apps. CHECK BEFORE EACH COHORT: move one real skill from one app to the other and confirm it loads, and check both menu paths. The whole page rests on that.',
   ],
   [
     OneOff,
-    '3 min. A real firm: an accounting practice that wrote its method down so anyone can ask it. That is a skill. Point at step 3: the same method becomes the checker. End on the callback: they already made a skill this morning.',
+    '2 min. A real firm: an accounting practice that wrote its method down so anyone can ask it. That is a skill. Point at step 3: the same method becomes the checker. End on the callback: they already made a skill this morning.',
   ],
   [
     TestIt,
@@ -667,26 +651,26 @@ export const pages: [Page, string][] = [
   ],
   [
     Live,
-    '5 min. Use the Ridgeline chats from Block 3. If time is tight, do ChatGPT live and show the Claude skill already made.',
+    '4 min. ChatGPT runs live this block; the Claude skill is already made. Use the Ridgeline chat from Block 3.',
   ],
   [
     Lab5,
-    '15 min. Start the timer. Common snag: the skill is too long. Tell them to cut it to what they would tell a new starter in two minutes.',
-  ],
-  [
-    KillMySaas,
-    '3 min. A real story from a public interview. Read the ledger top to bottom and pause on the bounty. Then the turn: the clone was not the win. The win was a view nobody sells (one table for 1,000 talk submissions) and the glue between tools (a signed contract filing itself). Finish on his caveats: buy anything that moves money. Play the clip if it is in; it is muted.',
-  ],
-  [
-    Bundilla,
-    '2 min. The same idea at Australian small-business scale. Let the chain light up. The point: they did not buy a new tool, they joined the ones they had. Be straight that this is sponsored content and their developer did the building; today you will build something smaller yourself. If the block is running late, skip this page.',
+    '15 min. Start the timer. Common snag: the skill is too long. Tell them to cut it to what they would tell a new starter in two minutes. Early finishers can start the take-home lab two pages on.',
   ],
   [
     WherePaste,
-    '2 min. Read each card, hands up, click once per hand (shift-click takes one off). The most common one goes yellow. Then everyone picks their own pair, which may not be on the board. Point at the right column: build the view and the glue, keep paying for anything that moves money.',
+    '2 min. Read each card, hands up, click once per hand (shift-click takes one off). The most common one goes yellow. Then everyone writes down their own pair, which may not be on the board. Point at the right column: build the view and the glue, keep paying for anything that moves money. The counts are saved.',
+  ],
+  [
+    GlueDemo,
+    '4 min. Nothing runs live here: both folders were built before the day. Show the finished view in Codex, drop in a fresh export and run it. Then switch to Claude and show the three questions it asked first, and the three rows checked by hand. The point: it worked on exports, not on a live system, and a person checked it.',
+  ],
+  [
+    Bundilla,
+    '2 min. Optional: skip it if the block is behind. The same idea at Australian small-business scale. Let the chain light up. The point: they did not buy a new tool, they joined the ones they had. Be straight that this is sponsored content and that their developer did the building, inside Salesforce, with AI coding help.',
   ],
   [
     Lab6,
-    '15 min. Start the timer. Before they start, check everyone has two exports, not a login to the live system. Common snags: the export has 5,000 rows (cut it to 20), or the ask is a whole app (cut it to one view or one import file). Nobody imports anything into a live system today.',
+    '1 min. The take-home lab; no timer. Read the goal, point at the prompt on the companion page, and tell them it needs two small exports, which the pre-work email asked them to bring. Anyone who finished Lab 5 early can start now. Nobody imports anything into a live system. Break at 14:45.',
   ],
 ];

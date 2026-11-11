@@ -6,7 +6,8 @@
 import { type Page, useIsActivePage, useSlidePageNumber } from '@open-slide/core';
 import { type CSSProperties, type ReactNode, useEffect, useRef, useState } from 'react';
 import { Eyebrow, Frame, Pad, SideLabel, Split, Title } from '@assets/fieldwork/brand';
-import { type BlockId, DAY, LEVELS, blockById, toMin } from './course';
+import { type BlockId, COURSE, DAY, LEVELS, blockById, toMin } from './course';
+import { loadState, saveState } from './persist';
 import { SHOT_BY_ID } from './shots';
 import './kit.css';
 
@@ -247,6 +248,7 @@ export const opener = (id: BlockId, promise: string): Page => {
         </div>
         <div className="dk-open-staff">
           <Staff level={b.level} from={from} h={38} target={[4, 5, 'Today']} />
+          <span className="dk-open-about">About L{b.level} on the staff. A rough reading, not a grade.</span>
         </div>
         <div className="dk-open-day">
           <DayBar current={id} />
@@ -258,19 +260,28 @@ export const opener = (id: BlockId, promise: string): Page => {
 };
 
 /* ---------------- live switch ---------------- */
-export type LiveApp = { who: 'openai' | 'claude'; app: string; mode: string; steps: ReactNode[] };
+/**
+ * One job, both apps, but only one of them runs live. The other is opened already finished, so the room
+ * sees the same result in both without waiting for two agent runs. `liveIn` says which app runs live in
+ * this block; the deck alternates it (ChatGPT in Blocks 2, 4 and 6, Claude in 3, 5 and 7) to keep the
+ * weight equal. Swap them for the next cohort if you like, as long as it stays three each.
+ */
+export type LiveApp = { who: 'openai' | 'claude'; app: string; mode: string; steps: ReactNode[]; ready?: ReactNode };
 export const live = ({
   block,
   title,
   minutes,
   apps,
   backup,
+  liveIn,
 }: {
   block: BlockId;
   title: string;
   minutes: number;
   apps: LiveApp[];
   backup?: () => Page | undefined;
+  /** Which app runs live. The other one is shown ready-made. 'none': both are opened already finished. */
+  liveIn?: 'openai' | 'claude' | 'none';
 }): Page => {
   const ordered = [...apps].sort((a, b) => (a.who === b.who ? 0 : a.who === 'openai' ? -1 : 1));
   const P: Page = () => {
@@ -285,31 +296,40 @@ export const live = ({
           <i className="crop br" />
           <div className="dk-onair">
             <i />
-            Live in the app
+            {liveIn === 'none' ? 'In the app, ready-made' : 'Live in the app'}
           </div>
           <PageNo />
           <div className="dk-live-t">
             <div className="eb">
-              Block {b.n} · live demo · about {minutes} min
+              Block {b.n} · {liveIn === 'none' ? 'demo' : 'live demo'} · about {minutes} min
             </div>
             <h2>{title}</h2>
           </div>
           <div className="dk-apps">
-            {ordered.map((a, i) => (
-              <div key={a.app + a.mode} className={`dk-app ${ordered.length === 1 ? 'solo' : ''}`}>
-                <span className="o">{ordered.length > 1 ? (i === 0 ? 'First' : 'Then') : 'In'}</span>
-                <span className="n">
-                  {a.app} <span>{a.mode}</span>
-                </span>
-                <ol>
-                  {a.steps.map((s, j) => (
-                    <li key={j}>
-                      <span>{s}</span>
-                    </li>
-                  ))}
-                </ol>
-              </div>
-            ))}
+            {ordered.map((a) => {
+              const isReady = liveIn === 'none' || (ordered.length > 1 && liveIn !== undefined && a.who !== liveIn);
+              return (
+                <div key={a.app + a.mode} className={`dk-app ${ordered.length === 1 ? 'solo' : ''} ${isReady ? 'ready' : ''}`}>
+                  <span className="o">{ordered.length === 1 ? 'In' : isReady ? 'Open, already finished' : 'Live now'}</span>
+                  <span className="n">
+                    {a.app} <span>{a.mode}</span>
+                  </span>
+                  {isReady ? (
+                    <p className="rdy">
+                      {a.ready ?? 'The same job, run before the day. Open the finished chat and show the result next to the live one.'}
+                    </p>
+                  ) : (
+                    <ol>
+                      {a.steps.map((s, j) => (
+                        <li key={j}>
+                          <span>{s}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  )}
+                </div>
+              );
+            })}
           </div>
           <div className="dk-live-foot">
             <span>
@@ -333,7 +353,7 @@ export const live = ({
 };
 
 /* ---------------- lab, with a room timer that survives page changes ---------------- */
-const clocks: Record<string, { end: number | null; left: number; total: number }> = {};
+const clocks: Record<string, { end: number | null; left: number; total: number }> = loadState('timers', {});
 const fmt = (ms: number) => {
   const s = Math.max(0, Math.round(ms / 1000));
   return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
@@ -348,6 +368,7 @@ export const RoomTimer = ({ id, minutes }: { id: string; minutes: number }) => {
   const up = left <= 0;
   const set = (f: () => void) => {
     f();
+    saveState('timers', clocks);
     force((x) => x + 1);
   };
   return (
@@ -423,6 +444,7 @@ export const lab = ({
   claude,
   hand,
   apps,
+  home,
 }: {
   id: string;
   n: number;
@@ -435,6 +457,8 @@ export const lab = ({
   openai: ReactNode[];
   claude: ReactNode[];
   hand?: string;
+  /** A take-home lab: no room timer, and the eyebrow says so. `minutes` is how long it takes at a desk. */
+  home?: boolean;
   /** Side labels, when the lab uses another mode than the default chat apps. */
   apps?: { openai: [string, string]; claude: [string, string] };
 }): Page => {
@@ -446,7 +470,9 @@ export const lab = ({
       <Frame label={`Lab ${n}: ${title}`}>
         <Pad style={{ paddingBottom: 0 }}>
           <Eyebrow>
-            Lab {n} · Block {b.n} · {minutes} min · your own business
+            {home
+              ? `Take-home lab · Block ${b.n} · about ${minutes} min at your desk · your own business`
+              : `Lab ${n} · Block ${b.n} · ${minutes} min · your own business`}
           </Eyebrow>
           <Title>{title}</Title>
           <p className="dk-sum" style={{ maxWidth: '56cqw' }}>
@@ -459,11 +485,29 @@ export const lab = ({
             <dd>{keep}</dd>
           </dl>
         </Pad>
-        <RoomTimer id={id} minutes={minutes} />
+        {home ? (
+          <div className="dk-home">
+            <span className="dk-k">Not today</span>
+            <b>Do this one at your desk this week.</b>
+            <span>Finished the last lab early? Start it now.</span>
+          </div>
+        ) : (
+          <RoomTimer id={id} minutes={minutes} />
+        )}
         <div className="dk-tryit">
           <span className="dk-k">Not sure it can?</span>
           <b>Type it in and see.</b>
+          <span className="dk-k">It failed? Add it to your try-again list.</span>
         </div>
+        {COURSE.companion && (
+          <div className="dk-copy">
+            <span className="dk-k">Copy the prompts</span>
+            <b>
+              {COURSE.companion}
+              <span>#lab{n}</span>
+            </b>
+          </div>
+        )}
         <Split
           top="23.2cqw"
           left={

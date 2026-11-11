@@ -1,10 +1,11 @@
-/* Block 7 · 15:15 · Background agents (L6). */
+/* Block 7 · 15:00 · Background agents (L6). */
 import type { Page } from '@open-slide/core';
 import { useIsActivePage } from '@open-slide/core';
 import { useCallback, useEffect, useState } from 'react';
 import { Frame, Hl, SideLabel, Split } from '@assets/fieldwork/brand';
 import { PX, SortBoard, type SortState, type Zone, stateFrom, zoneOf } from '../drag/sort-board';
 import { Head, PageNo, Src, eb, lab, live, opener, usePlay } from '../kit';
+import { useSaved } from '../persist';
 
 const Open = opener(
   'background',
@@ -189,10 +190,11 @@ const RULES_MIXED = stateFrom(RULE_ZONES, RULE_CARDS, (c) => RULE_ZONES[(Number(
 const ApprovalRules: Page = () => {
   const on = usePlay(120);
   const active = useIsActivePage();
-  const [state, setState] = useState<SortState>(RULES_OURS);
+  // Saved on this laptop while the page is live, so a reload mid-sort keeps the room's work.
+  const [state, setState] = useSaved<SortState>('rules:state', RULES_OURS, active);
   // 'ours' is the page as a reference; 'mixed' is the room sorting; 'shown' compares the room's sort with ours.
-  const [mode, setMode] = useState<'ours' | 'mixed' | 'shown'>('ours');
-  const [room, setRoom] = useState<SortState | null>(null);
+  const [mode, setMode] = useSaved<'ours' | 'mixed' | 'shown'>('rules:mode', 'ours', active);
+  const [room, setRoom] = useSaved<SortState | null>('rules:room', null, active);
   const right = room ? RULE_CARDS.filter((c) => zoneOf(room, c) === ruleHome(c)).length : 0;
   const render = useCallback(
     (c: string) => {
@@ -201,7 +203,7 @@ const ApprovalRules: Page = () => {
       return (
         <>
           <span>{ruleText(c)}</span>
-          {room && <span className={`st ${ok ? 'ok' : 'bad'}`}>{ok ? '✓' : `was: ${RULES.find((r) => r.cls === was)?.k}`}</span>}
+          {room && <span className={`st ${ok ? 'ok' : 'warn'}`}>{ok ? 'same' : `room: ${RULES.find((r) => r.cls === was)?.k}`}</span>}
         </>
       );
     },
@@ -255,7 +257,7 @@ const ApprovalRules: Page = () => {
         </button>
         {room && active && (
           <span className="dk-k" style={{ color: 'var(--ink)', alignSelf: 'center' }}>
-            The room matched {right} of {RULE_CARDS.length}
+            Same as the room on {right} of {RULE_CARDS.length}
           </span>
         )}
       </div>
@@ -417,12 +419,7 @@ const TeamOfAgents: Page = () => {
           <span className="dk-k">The right scale</span>
           <span>One agent, plus two or three helpers when a job splits. Not hundreds. That is enough for most small businesses.</span>
         </div>
-        <div>
-          <span className="dk-k">Already here</span>
-          <span>A Sydney mechanic texts back every missed call, and a voice agent called Zoe answers after hours.</span>
-        </div>
       </div>
-      <Src right>Leondis Automotive, Sydney: NAB, “AI changing how Australian SMEs get work done”, Jul 2026.</Src>
     </Frame>
   );
 };
@@ -430,8 +427,9 @@ const TeamOfAgents: Page = () => {
 const Live = live({
   block: 'background',
   title: 'Set up the Monday brief',
-  minutes: 5,
+  minutes: 4,
   backup: () => WorksWhileYouDont,
+  liveIn: 'claude',
   apps: [
     {
       who: 'openai',
@@ -444,6 +442,7 @@ const Live = live({
         'Open Scheduled in the sidebar. Show the task, its time and the pause switch.',
         'Run it once now, so the room sees a first brief.',
       ],
+      ready: 'The same brief, set up as a scheduled task in ChatGPT before the day. Open Scheduled in the sidebar, show the task, its time and the pause switch, then open the brief it produced last Monday.',
     },
     {
       who: 'claude',
@@ -452,7 +451,7 @@ const Live = live({
       steps: [
         'Scheduled → New task → Create with Claude. Paste the same brief.',
         'Answer its questions. Set the approval mode so it can read and draft, never send.',
-        'Run it now. Put the two briefs side by side.',
+        'Run it now, so the room sees a first brief. Put it beside the ChatGPT one.',
       ],
     },
   ],
@@ -462,13 +461,13 @@ const Lab7 = lab({
   id: 'lab7',
   n: 7,
   block: 'background',
-  minutes: 8,
+  minutes: 15,
   title: 'One job that runs without you',
-  goal: 'Pick one thing you check every week. Set it up as a scheduled task, with the three lists of rules written into it.',
-  done: 'It ran once when you pressed run, and the result was worth reading.',
+  goal: 'Pick one thing you check every week. Set it up as a scheduled task, with the three lists of rules written into it. Nothing connected? Pick a job that needs no connector: a weekly check of a supplier’s public price page, or a summary of one folder.',
+  done: 'The task exists, with its rules written in, and it ran once when you pressed run.',
   keep: 'The scheduled task. Next week it runs on its own.',
   openai: [
-    'Pick the job: a Monday brief, an inbox digest, a price check, a to-do refresh.',
+    'Pick the job: a Monday brief, an inbox digest, a price check on a public web page, a to-do refresh.',
     <>
       In a new chat: <span className="dk-say">Every [day] at [time], [the job]. You may read and draft. Ask before you send anything. Never pay or delete. Tell me what you could not find.</span>
     </>,
@@ -476,7 +475,7 @@ const Lab7 = lab({
     'Read the result. Tighten the wording, then leave it on.',
   ],
   claude: [
-    'Pick the job: a Monday brief, an inbox digest, a price check, a to-do refresh.',
+    'Pick the job: a Monday brief, an inbox digest, a price check on a public web page, a to-do refresh.',
     <>
       Scheduled → New task → Create with Claude: <span className="dk-say">Every [day] at [time], [the job]. You may read and draft. Ask before you send anything. Never pay or delete. Tell me what you could not find.</span>
     </>,
@@ -487,29 +486,29 @@ const Lab7 = lab({
 });
 
 export const pages: [Page, string][] = [
-  [Open, '15:15 · Block 7 opener. Twenty minutes, because the glue lab took fifteen from the afternoon. Skip the team-of-agents page, run the live demo in one app only, and keep the rules page and the lab. If the day is running late, this is still the block to shorten.'],
+  [Open, '15:00 · Block 7 opener. Thirty minutes, half of it the lab. This is a headline block: everyone leaves with one scheduled job that has run once. Skip the team-of-agents page unless you are ahead.'],
   [
     WorksWhileYouDont,
     '4 min. Let the week run through once. Then click the Monday brief, the enquiry replies and the Friday review. Point at the two tags: "Done" is what it did alone, "Needs you" is the short list it leaves.',
   ],
   [
     ApprovalRules,
-    '4 min. Read the three lists. Then "Mix them up": every item moves one list along, and the room sorts them back by dragging; "Show ours" slides them home and marks what the room put elsewhere. Ask the room for one more item for each list from their own business. The "Never" list includes bank details on purpose; it sets up the hidden-instruction page in the next block.',
+    '4 min. Read the three lists. Then "Mix them up": every item moves one list along, and the room sorts them back by dragging; "Show ours" slides them home and marks where the room differed. Ask the room for one more item for each list from their own business. The "Never" list includes bank details on purpose; it sets up the hidden-instruction page in the next block. The sort is saved, so a reload does not lose it.',
   ],
   [
     WhereItLives,
-    '3 min. Dots need ChatGPT Pro or Business Premium; most people will use Scheduled tasks. Claude scheduled tasks are on all paid plans and run in the cloud. Check names and plans before each cohort.',
+    '3 min. Most people will use scheduled tasks; the always-on agent in ChatGPT is for the higher plans. CHECK BEFORE EACH COHORT, on your own accounts: every row on this page is a product claim (which plans have scheduled tasks, which have Dots, whether Claude tasks run with the laptop asleep), and one of the sources is a news article from June.',
   ],
   [
     TeamOfAgents,
-    'Skip in the 20-minute block; keep it as a backup. 3 min if used. Demo only. Let it run once. The point is scale: you already have what you need at L5 and L6. Read the mechanic example in one sentence: a person still approves what the voice agent promises.',
+    'Skip unless you are ahead; keep it as a backup. 3 min if used. Demo only. Let it run once. The point is scale: you already have what you need at L5 and L6.',
   ],
   [
     Live,
-    '5 min (3 in the 20-minute block: ChatGPT live, Claude task shown ready-made). Use the demo account with the Ridgeline calendar and inbox connected. Run it once on demand so people see a result; do not wait for Monday. If time is short, set up ChatGPT live and show a Claude task made beforehand.',
+    '4 min. Claude runs live this block; the ChatGPT task was set up before the day. Use the demo account with the Ridgeline calendar and inbox connected. Run it once on demand so people see a result; do not wait for Monday.',
   ],
   [
     Lab7,
-    '8 min. Start the timer. Most people pick the Monday brief; that is fine. Walk the room and check that every task has the "never" list written into it.',
+    '15 min. Start the timer. Most people pick the Monday brief; that is fine. Anyone with nothing connected picks the public price page or a folder. Done means the task exists and has run once, not that the brief is perfect. Walk the room and check that every task has the "never" list written into it.',
   ],
 ];

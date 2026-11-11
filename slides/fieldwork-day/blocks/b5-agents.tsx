@@ -4,6 +4,7 @@ import { useIsActivePage } from '@open-slide/core';
 import { useCallback, useEffect, useState } from 'react';
 import { Chip, Eyebrow, Frame, Hl, Pad, SideLabel, Split, Title } from '@assets/fieldwork/brand';
 import { Head, PageNo, Src, eb, lab, live, opener, usePlay } from '../kit';
+import { useSaved } from '../persist';
 import { PX, SortBoard, type SortState, type Zone, cqw, stateFrom, zoneOf } from '../drag/sort-board';
 import { BeatSteps } from '../stage/beats';
 import { BEAT_COUNT, QuoteRun } from '../stage/quote-run';
@@ -186,37 +187,109 @@ const ConnectorOrScreen: Page = () => (
         <span>Ask before it signs in anywhere, pays, or submits a form</span>
       </div>
     </div>
+    <div className="b5-limits">
+      <span className="dk-k">Where the switch is missing</span>
+      <span>
+        <b>Claude:</b> computer use is a beta on Pro and Max. Team and Enterprise seats do not have it unless an admin has it turned on.
+      </span>
+      <span>
+        <b>ChatGPT on Windows:</b> it works in the window in front only, so you cannot use the computer while it runs.
+      </span>
+      <span className="dk-muted">No switch on your plan? Watch today, and do the lab on files. Nothing else this afternoon needs it.</span>
+    </div>
   </Frame>
 );
 
 const Live = live({
   block: 'agents',
   title: 'Three supplier quotes, one of them stuck on a website',
-  minutes: 8,
+  minutes: 6,
   backup: () => WatchItWork,
+  liveIn: 'claude',
   apps: [
     {
       who: 'openai',
       app: 'ChatGPT desktop',
       mode: 'Codex · computer use',
-      steps: [
-        'Paste the goal from the next page. Read the plan out loud before it starts.',
-        'Watch it open the supplier site and find the price. Narrate each click.',
-        'Stop at the draft. Do not send.',
-      ],
+      steps: [],
+      ready: 'A screen recording of the same goal, run in Codex before the day on the same inbox. Play it at double speed while the live run works, and stop on its table.',
     },
     {
       who: 'claude',
       app: 'Claude desktop',
       mode: 'Cowork · computer use',
       steps: [
-        'Same goal, same inbox.',
-        'Compare the two tables. Same winner? Same reasons?',
-        'Ask the room: which steps would you let it do alone next time?',
+        'Paste the goal from the next page. Read the plan out loud before it starts.',
+        'Watch it open the supplier page and find the price. Narrate each click.',
+        'Stop at the draft. Do not send. Compare its table with the recording: same winner, same reasons?',
       ],
     },
   ],
 });
+
+/* ---------- plug in one thing (moved here from Block 2: this is where it is needed) ---------- */
+const CONNECT_OPENAI = [
+  ['Email', 'Gmail · Outlook'],
+  ['Calendar', 'Google Calendar · Outlook'],
+  ['Files', 'Google Drive · OneDrive · SharePoint · Dropbox'],
+  ['Not today?', 'Put the files in a folder on your laptop and point the agent at the folder.'],
+];
+const CONNECT_CLAUDE = [
+  ['Email', 'Gmail · Outlook (Microsoft 365)'],
+  ['Calendar', 'Google Calendar · Outlook (Microsoft 365)'],
+  ['Files', 'Google Drive · OneDrive and SharePoint (Microsoft 365)'],
+  ['Not today?', 'Put the files in a folder on your laptop and point the agent at the folder.'],
+];
+const Connect: Page = () => (
+  <Frame label="Connect one thing">
+    <Head
+      eb={eb('agents', 'Agents · before the lab')}
+      title="Plug in one thing, or use a folder"
+      sum="A connector lets the app read (and sometimes write to) another app you already use, with your permission. Three minutes, now. You can switch it off any time. If it will not connect, the lab works just as well on a folder of files."
+    />
+    <PageNo />
+    <Split
+      top="17.6cqw"
+      left={
+        <>
+          <SideLabel name="OpenAI · ChatGPT" sub="Settings → Apps" />
+          <div className="b2-conn">
+            {CONNECT_OPENAI.map(([k, v]) => (
+              <div key={k}>
+                <span className="dk-k">{k}</span>
+                <span>{v}</span>
+              </div>
+            ))}
+          </div>
+          <div className="mapline">
+            Then in a chat: <b>＋ → pick the app</b>
+          </div>
+        </>
+      }
+      right={
+        <>
+          <SideLabel name="Claude" sub="Settings → Connectors" />
+          <div className="b2-conn">
+            {CONNECT_CLAUDE.map(([k, v]) => (
+              <div key={k}>
+                <span className="dk-k">{k}</span>
+                <span>{v}</span>
+              </div>
+            ))}
+          </div>
+          <div className="mapline">then turn it on per chat, from the + menu</div>
+        </>
+      }
+    />
+    <div className="b5-m365">
+      <span className="dk-k">Microsoft 365</span>
+      <span>
+        Needs a <b>work or school account</b>, and an admin may have to approve it once. If you are the admin, approve it now. If you use a
+        personal Outlook.com address, or your IT person is not here, use the folder today.
+      </span>
+    </div>
+  </Frame>
+);
 
 /* ---------- write a goal it can finish ---------- */
 const PARTS: { t: string; k?: string }[] = [
@@ -322,9 +395,9 @@ const STAKES_EMPTY = stakesAll(() => 'tray');
 const Stakes: Page = () => {
   const active = useIsActivePage();
   // Off the live page (thumbnails, presenter preview) the board shows the finished placement.
-  const [state, setState] = useState<SortState>(active ? STAKES_EMPTY : STAKES_ANSWER);
-  // The room's placement at the moment the answers were shown; null until then.
-  const [room, setRoom] = useState<SortState | null>(active ? null : STAKES_ANSWER);
+  const [state, setState] = useSaved<SortState>('stakes:state', active ? STAKES_EMPTY : STAKES_ANSWER, active);
+  // The room's placement at the moment our placement was shown; null until then.
+  const [room, setRoom] = useSaved<SortState | null>('stakes:room', active ? null : STAKES_ANSWER, active);
   const placed = STAKE_CARDS.filter((c) => zoneOf(state, c) !== 'tray').length;
   const right = room ? STAKE_CARDS.filter((c, i) => zoneOf(room, c) === TASKS[i].q).length : 0;
   const render = useCallback(
@@ -335,7 +408,7 @@ const Stakes: Page = () => {
       return (
         <>
           <span>{TASKS[i].t}</span>
-          {room && <span className={`st ${ok ? 'ok' : 'bad'}`}>{ok ? '✓' : was === 'tray' ? 'not placed' : `was: ${QUAD[was as Q].t}`}</span>}
+          {room && <span className={`st ${ok ? 'ok' : 'warn'}`}>{ok ? 'same' : was === 'tray' ? 'not placed' : `room: ${QUAD[was as Q].t}`}</span>}
         </>
       );
     },
@@ -346,7 +419,7 @@ const Stakes: Page = () => {
       <Head
         eb={eb('agents', 'Agents · how much to watch')}
         title="How much to watch: choose by stakes"
-        sum="Autopilot is not all or nothing. Ask two questions: how bad if it's wrong, and can I undo it? Drag each job to where the room puts it, then show the answers."
+        sum="Autopilot is not all or nothing. Ask two questions: how bad if it's wrong, and can I undo it? Drag each job to where the room puts it, then compare with where we put it. Two of these are arguable, and the argument is the point."
       />
       <PageNo />
       <div className="b5-mx">
@@ -376,7 +449,7 @@ const Stakes: Page = () => {
               setState(STAKES_ANSWER);
             }}
           >
-            Show the answers
+            Show where we put it
           </button>
           <button
             className="rb"
@@ -391,7 +464,7 @@ const Stakes: Page = () => {
         </div>
         {room && active && (
           <span className="dk-k" style={{ color: 'var(--ink)' }}>
-            The room matched {right} of {TASKS.length}
+            Same as the room on {right} of {TASKS.length}
           </span>
         )}
       </div>
@@ -448,24 +521,26 @@ const Lab4 = lab({
   block: 'agents',
   minutes: 25,
   title: 'An admin job, done by an agent',
-  goal: 'Hand an agent one real multi-step job from your list: reconcile two lists, triage an inbox folder, compile quotes, fill a form from a document.',
+  goal: 'Hand an agent one real multi-step job on a folder of your own files: reconcile two lists, sort and rename a folder of documents, compile quotes from PDFs, fill a form from a document. Connected your email? Triage one folder of it instead.',
   done: 'It finished or stopped where you told it to, and you checked one result against the source before approving.',
   keep: 'The goal you wrote. Next time, try the same job with less watching.',
   openai: [
     <>
-      ChatGPT desktop → <b>Work</b> for connected apps, or <b>Codex</b> for files on your computer.
+      ChatGPT desktop → <b>Work</b>. Pick the folder, or the connected app, it may use.
     </>,
     'Write the goal with all five parts: the job, where things are, what good means, what you want back, where to stop.',
     'Read the plan before it starts. Correct it there; that is the cheapest moment.',
     'When it stops, check one item against the source. Then approve, or tell it what to fix.',
+    'Optional, if your plan has computer use: give it one step on a website with no connector, and watch every click.',
   ],
   claude: [
     <>
-      Claude desktop → <b>Cowork</b>. Pick the folder or connected app it may use.
+      Claude desktop → <b>Cowork</b>. Pick the folder, or the connected app, it may use.
     </>,
     'Write the goal with all five parts: the job, where things are, what good means, what you want back, where to stop.',
     'Read the plan before it starts. Correct it there; that is the cheapest moment.',
     'When it stops, check one item against the source. Then approve, or tell it what to fix.',
+    'Optional, on Pro or Max: switch on computer use, give it one step on a website with no connector, and watch every click.',
   ],
   hand: 'stop it if it wanders',
 });
@@ -482,11 +557,11 @@ export const pages: [Page, string][] = [
   ],
   [
     ConnectorOrScreen,
-    '3 min. Connector first, screen second. Be honest that computer use is slower and can misclick. Set the rule: it asks before it signs in, pays or submits.',
+    '3 min. Connector first, screen second. Be honest that computer use is slower and can misclick. Set the rule: it asks before it signs in, pays or submits. Then read the strip at the bottom, because half the room will otherwise go looking for a switch that is not on their plan. CHECK BEFORE EACH COHORT: which plans have computer use in each app, and the Windows limit.',
   ],
   [
     Live,
-    '8 min. Use a demo inbox with the three quote emails, and a test supplier page you control (not a real supplier). Keep the backup recording ready; the page before last runs the same thing in the deck. Never let it press Send.',
+    '6 min. The riskiest demo of the day, so only one app runs live: Claude this block, with a recording of the same job in Codex playing beside it. Swap them for the next cohort. Use the demo inbox with the three quote emails and the supplier page you control (never a real supplier). If the live run stalls, the page before last runs the same thing in the deck. Never let it press Send.',
   ],
   [
     GoodGoal,
@@ -494,14 +569,18 @@ export const pages: [Page, string][] = [
   ],
   [
     Stakes,
-    '4 min. Read a job, ask the room where it goes, then drag it there. "Show the answers" if time is short: the jobs slide to their corners and each one shows a tick or where it should have gone. The bottom-right corner never gets automated.',
+    '4 min. Read a job, ask the room where it goes, then drag it there. "Show where we put it" slides the jobs to our corners and marks where the room differed. Do not call it right or wrong: updating the website price list and booking the inspection are both arguable, and the argument is the lesson. The bottom-right corner never gets automated. The board is saved, so a reload does not lose it.',
   ],
   [
     DecisionTrail,
-    '3 min. The row with the question mark is the point: a good agent shows you what it could not find. Same lesson as the flagged digit this morning.',
+    '3 min. Optional: skip it if the block is behind. The row with the question mark is the point: a good agent shows you what it could not find. Same lesson as the flagged digit this morning.',
+  ],
+  [
+    Connect,
+    '3 min, before the timer starts. Everyone either connects one thing or puts some files in a folder. Say the Microsoft 365 line out loud: it needs a work or school account and sometimes an admin, and a personal Outlook.com address will not work. Nobody should lose lab time to a consent screen; the folder route is just as good today.',
   ],
   [
     Lab4,
-    '25 min. Start the timer. Walk the room and look at plans before they run. Common snag: the goal has no stopping point. Ask "where should it stop?" and have them add it.',
+    '25 min. Start the timer. Walk the room and look at plans before they run. Common snag: the goal has no stopping point. Ask "where should it stop?" and have them add it. Step 5 is the only place anyone but you touches computer use today: point it out to the people whose plan has it, and stand next to the first one who tries.',
   ],
 ];
