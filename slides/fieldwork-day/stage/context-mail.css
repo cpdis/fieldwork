@@ -1,0 +1,40 @@
+/*
+ * Block 3 "Same ask. Turn up the context": the staged email (context-mail.tsx).
+ * Drawn at scale 1, so sizes are cqw. Yellow marks the words the newest step changed,
+ * an underline the words from earlier steps: the key under the email explains both.
+ */
+.cd .ss-stage {
+  --ss-font: var(--f-sans);
+  --ss-mono: var(--f-mono);
+  --ss-accent: var(--ink);
+  --ss-success: var(--ink);
+  --ss-text-strong: var(--ink);
+  --ss-canvas: var(--paper);
+  color: var(--ink);
+}
+.cd-mail { position: relative; width: 59.375cqw; height: 34.635cqw; display: flex; flex-direction: column; background: var(--white); border: .1cqw solid var(--alu); font-family: var(--f-body2); color: var(--ink); }
+.cd-bar { flex: none; height: 2.2cqw; display: flex; align-items: center; gap: .8cqw; padding: 0 1.2cqw; background: var(--paper); border-bottom: .1cqw solid var(--rule); font: 400 .72cqw/1 var(--f-mono); color: var(--muted); }
+.cd-dots { display: flex; gap: .35cqw; }
+.cd-dots i { display: block; width: .6cqw; height: .6cqw; border-radius: 50%; background: var(--alu); }
+.cd-st { margin-left: auto; display: flex; align-items: center; gap: .45cqw; }
+
+.cd-head { flex: none; padding: 0 2cqw; }
+.cd-row { display: grid; grid-template-columns: 6.4cqw minmax(0, 1fr); align-items: center; gap: 1cqw; min-height: 3.2cqw; padding: .55cqw 0; border-bottom: .1cqw solid var(--rule); }
+.cd-k { font: 500 .75cqw/1 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.cd-chips { display: flex; flex-wrap: wrap; gap: .5cqw; }
+.cd-chip { display: none; padding: .38cqw .6cqw; border: .1cqw solid var(--ink); background: var(--white); font: 500 .8cqw/1 var(--f-mono); white-space: nowrap; }
+.cd-chip[data-on] { display: block; }
+.cd-chip[data-ask] { border-color: var(--alu); color: var(--muted); }
+.cd-chip[data-new] { background: var(--accent); }
+.cd-chip[data-pop] { animation: cd-pop .5s cubic-bezier(.3, 1.4, .5, 1) both; }
+@keyframes cd-pop { from { opacity: 0; transform: translateY(.4cqw) scale(.8); } }
+.cd-subj { font-size: 1.35cqw; font-weight: 600; line-height: 1.35; transition: opacity .35s var(--ease); }
+
+.cd-body { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 1cqw; padding: 1.4cqw 2cqw; font-size: 1.22cqw; line-height: 1.5; transition: opacity .35s var(--ease); }
+.cd .cd-body p { white-space: pre-line; }
+.cd-mail[data-fade] :is(.cd-subj, .cd-body) { opacity: .15; }
+
+.cd-w { opacity: 0; transition: opacity .22s var(--ease); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.cd-w[data-on] { opacity: 1; }
+.cd-w.new { background: var(--accent); }
+.cd-w.old { box-shadow: inset 0 -.14cqw 0 var(--ink); }
