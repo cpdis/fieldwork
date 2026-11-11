@@ -101,16 +101,19 @@
 .fw .half.fn .b2-setting { border-top-color: var(--fn-grid); font-family: var(--f-body2); color: var(--fn-ink); }
 .fw .half.fn .b2-setting .dk-k { font-family: var(--f-body2); font-weight: 600; color: var(--fn-red); }
 
-.fw .b2-cards { position: absolute; left: 3.6cqw; top: 15.4cqw; width: 64cqw; display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 1cqw; }
-.fw .b2-card { all: unset; box-sizing: border-box; cursor: pointer; background: var(--white); border: .1cqw solid var(--alu); padding: 1cqw; min-height: 13cqw; display: grid; grid-template-rows: auto auto 1fr; gap: .8cqw; align-content: start; transition: border-color .2s, transform .2s var(--ease); }
-.fw .b2-card:hover { border-color: var(--ink); }
-.fw .b2-card:focus-visible { outline: .1cqw solid var(--ink); box-shadow: 0 0 0 .3cqw var(--accent); }
-.fw .b2-card b { font: 600 1.3cqw/1.2 var(--f-sans); letter-spacing: -.015em; }
-.fw .b2-card .vote { justify-self: start; font: 500 .78cqw/1 var(--f-mono); letter-spacing: .05em; text-transform: uppercase; padding: .4cqw .55cqw; border: .1cqw dashed var(--alu); color: var(--muted); }
-.fw .b2-card .vote.v-fine, .fw .b2-card .vote.v-think, .fw .b2-card .vote.v-never { border-style: solid; border-color: var(--ink); color: var(--ink); }
-.fw .b2-card .vote.v-never { background: var(--ink); color: var(--paper); }
-.fw .b2-card .ans { align-self: end; display: grid; gap: .5cqw; font-size: .95cqw; line-height: 1.35; color: var(--ink); border-top: .1cqw solid var(--rule); padding-top: .7cqw; }
-.fw .b2-card .ans .st { justify-self: start; }
+/* the sort board (drag/sort-board.tsx): pile on top, three columns below. Geometry is set inline from b2-map.tsx. */
+.fw .b2-sort { position: absolute; }
+.fw .b2-sort > .dk-k { position: absolute; left: 0; top: 0; }
+.fw .b2-sort .zone { position: absolute; background: var(--white); border: .1cqw solid var(--alu); padding: .8cqw .9cqw; display: grid; gap: .25cqw; align-content: start; transition: top .65s var(--ease), height .65s var(--ease); }
+.fw .b2-sort .zone b { font: 600 1.5cqw/1.1 var(--f-sans); letter-spacing: -.02em; }
+.fw .b2-sort .zone > span { font-size: .9cqw; color: var(--muted); }
+.fw .b2-sort .zone.z-never { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.fw .b2-sort .zone.z-never > span { color: rgba(246,246,243,.6); }
+.fw .b2-sort .dg-card { align-items: start; padding: .6cqw .8cqw; }
+.fw .b2-sc { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: .3cqw .6cqw; align-items: start; width: 100%; }
+.fw .b2-sc b { font: 600 1.05cqw/1.2 var(--f-sans); letter-spacing: -.015em; }
+.fw .b2-sc .st { margin: 0; animation: dk-rowin .35s var(--ease) both; }
+.fw .b2-sc .why { grid-column: 1 / 3; }
 .fw .b2-rule { position: absolute; left: 71cqw; right: 3.6cqw; top: 15.4cqw; display: grid; gap: 1.1cqw; align-content: start; border-top: .15cqw solid var(--ink); padding-top: 1cqw; }
 .fw .b2-rule p { font-size: 1.45cqw; line-height: 1.35; }
 
@@ -465,12 +468,22 @@
 .fw .b7-rules .h { display: grid; grid-template-columns: 3.4cqw minmax(0,1fr); gap: 1cqw; align-items: center; border-bottom: .1cqw solid var(--rule); padding-bottom: 1.1cqw; }
 .fw .b7-rules .h i { font: 600 1.7cqw/1 var(--f-mono); font-style: normal; width: 3.4cqw; height: 3.4cqw; display: grid; place-items: center; border: .12cqw solid var(--ink); }
 .fw .b7-rules .h b { display: block; font: 600 2.2cqw/1.05 var(--f-sans); letter-spacing: -.03em; margin-bottom: .35cqw; }
-.fw .b7-rules ul { margin: 0; padding: 0; list-style: none; display: grid; gap: .95cqw; font-size: 1.4cqw; line-height: 1.32; }
-.fw .b7-rules li { padding-left: 1.3cqw; position: relative; }
-.fw .b7-rules li::before { content: "·"; position: absolute; left: .2cqw; font-weight: 700; }
+.fw .b7-rules .h { grid-template-columns: 3.4cqw minmax(0,1fr); }
+/* the items are cards on the sort board (drag/sort-board.tsx) laid over the three lists; they read as list rows */
+.fw .b7-rules .dg-board { left: 0; top: 0; }
+.fw .b7-rules .dg-card { background: transparent; border: 0; border-bottom: .1cqw solid var(--rule); padding: 0 .3cqw 0 1.3cqw; font-size: 1.25cqw; line-height: 1.25; position: relative; }
+.fw .b7-rules .dg-card::before { content: "·"; position: absolute; left: .2cqw; font-weight: 700; }
+.fw .b7-rules .dg-card.dragging { background: var(--white); border: .1cqw solid var(--ink); }
+.fw .b7-rules .dg-card .st { font-size: .68cqw; }
+.fw .b7-rules .dg-card { transition: opacity .5s var(--ease), transform .5s var(--ease), background .2s, box-shadow .2s; transition-delay: calc(var(--i, 0) * 90ms), calc(var(--i, 0) * 90ms), 0s, 0s; }
+.fw .b7-rules.pre .dg-card { opacity: 0; transform: translateY(.5cqw); }
+.fw .b7-rules-btns { position: absolute; right: 3.6cqw; top: 12.3cqw; }
+.fw .b7-rules .rb[disabled] { opacity: .4; }
 .fw .b7-rules .ask .h i { background: var(--accent); }
 .fw .b7-rules .never { background: var(--ink); color: var(--paper); }
 .fw .b7-rules .never .h { border-color: rgba(246,246,243,.2); }
+.fw .b7-rules .dg-card.in-never { color: var(--paper); border-bottom-color: rgba(246,246,243,.2); }
+.fw .b7-rules .dg-card.in-never.dragging { background: var(--ink); border-color: var(--paper); }
 .fw .b7-rules .never .h i { border-color: var(--paper); }
 .fw .b7-rules .never .dk-k { color: rgba(246,246,243,.6); }
 .fw .b7-rules-foot, .fw .b7-team-foot { position: absolute; left: 3.6cqw; right: 3.6cqw; bottom: 3.4cqw; display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 2.4cqw; border-top: .1cqw solid var(--rule); padding-top: 1.1cqw; }
