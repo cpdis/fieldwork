@@ -3,49 +3,50 @@ import type { Page } from '@open-slide/core';
 import { useIsActivePage, Step, Steps } from '@open-slide/core';
 import { useEffect, useState } from 'react';
 import { Frame, Hl, Pad } from '@assets/fieldwork/brand';
-import { CountUp, Head, PageNo, Shot, Src, eb, opener, usePlay } from '../kit';
+import { CountUp, Head, PageNo, RoomTimer, Shot, Src, eb, opener, usePlay } from '../kit';
 
 const Open = opener(
   'why',
   'Models now finish work that took a person hours. Most businesses still use them like a search box. That gap is your head start.',
 );
 
-/* ---------- real owners, real jobs ---------- */
-type Owner = { id: string; biz: string; where: string; tool: string; did: string; got: string; pos?: string };
+/* ---------- real owners, real jobs ----------
+ * Four cases, large enough to read from the back: two on ChatGPT, two on Claude, two of them from
+ * Australia and New Zealand. The other verified cases live on the companion page under "More cases".
+ */
+type Owner = {
+  id?: string;
+  quote?: string;
+  biz: string;
+  where: string;
+  tool: string;
+  did: string;
+  got: string;
+  src: string;
+  kind: string;
+  pos?: string;
+};
 const OWNERS: Owner[] = [
-  {
-    id: 'wcd-1',
-    pos: 'center 60%',
-    biz: 'West Coast Deck',
-    where: 'Deck builder · US',
-    tool: 'ChatGPT',
-    did: 'Records every site visit. The recap email goes out five minutes later.',
-    got: 'A few hundred thousand dollars of new sales in 4–6 weeks.',
-  },
   {
     id: 'oakcreek',
     pos: 'left top',
     biz: 'Oak Creek Plumbing & Remodeling',
-    where: 'Plumbing · about 20 plumbers',
+    where: 'Plumbing · about 20 plumbers · US',
     tool: 'ChatGPT',
     did: 'A tablet in every home visit: photos of the broken heater in, options, invoice and proposal out.',
     got: '“Some of our older guys have learned to ask ChatGPT the right questions.”',
+    src: 'CNN, Oct 2025',
+    kind: 'Press',
   },
   {
-    id: 'mothership',
-    biz: 'Mothership Coffee Roasters',
-    where: 'Six cafés · Las Vegas',
-    tool: 'Claude',
-    did: 'A Monday brief from the tills, the books, Slack and email.',
-    got: 'In-store margins up to 22%, partly from tighter ordering and rosters.',
-  },
-  {
-    id: 'hireeffect',
-    biz: 'HireEffect',
-    where: 'Bookkeeping and payroll · Dallas',
-    tool: 'Claude',
-    did: 'Found the 16 transactions behind a $13,000 gap in 2.5 years of PayPal data.',
-    got: 'A two-hour monthly check now takes ten seconds.',
+    quote: '“I’ve got a PhD in my pocket.”',
+    biz: 'Matthew Zonderop',
+    where: 'Dairy, 370 cows · Te Poi, NZ',
+    tool: 'ChatGPT',
+    did: 'Uploads his herd’s genomic spreadsheets and soil tests. Grazing plans and feed budgets are done with AI.',
+    got: 'A sharemilker, not a programmer, doing his own analysis.',
+    src: 'Farmers Weekly NZ, Nov 2024',
+    kind: 'Press',
   },
   {
     id: 'sportsfit',
@@ -54,14 +55,18 @@ const OWNERS: Owner[] = [
     tool: 'Claude',
     did: 'Sorts incoming email and sends it to the right treating physio.',
     got: 'About seven to eight hours a week back.',
+    src: 'NAB, Aug 2026',
+    kind: 'Bank',
   },
   {
-    id: 'bella',
-    biz: 'Bella Manufacturing',
-    where: 'Food-truck fit-outs · Australia',
-    tool: 'Tool not named',
-    did: 'Had AI read and compare the insurance quotes.',
-    got: 'Saved several thousand dollars and found a gap in the cover.',
+    id: 'hireeffect',
+    biz: 'HireEffect',
+    where: 'Bookkeeping and payroll · Dallas, US',
+    tool: 'Claude',
+    did: 'Found the 16 transactions behind a US$13,000 gap in 2.5 years of PayPal data.',
+    got: 'A two-hour monthly check now takes ten seconds.',
+    src: 'Anthropic, Sep 2026',
+    kind: 'Vendor',
   },
 ];
 
@@ -70,37 +75,81 @@ const Owners: Page = () => {
   const [hot, setHot] = useState(-1);
   useEffect(() => {
     if (!active) return;
-    const id = setInterval(() => setHot((h) => (h + 1) % OWNERS.length), 2600);
+    const id = setInterval(() => setHot((h) => (h + 1) % OWNERS.length), 3200);
     return () => clearInterval(id);
   }, [active]);
   return (
     <Frame label="Real owners, real jobs">
-      <Head eb={eb('why', 'Why now · proof first')} title="Six businesses. None of them writes software" />
+      <Head eb={eb('why', 'Why now · the proof')} title="Four businesses. None of them writes software" />
       <PageNo />
-      <div className="b1-reel">
+      <div className="b1-four">
         {OWNERS.map((o, i) => (
-          <div key={o.id} className={`dk-tile ${i === hot ? 'lit' : ''}`}>
-            <Shot id={o.id} className="pic sm" pos={o.pos ?? 'center top'} style={{ height: '8.4cqw' }} />
-            <div className="who">
-              <span className="dk-k">{o.where}</span>
-              <span className="tl">{o.tool}</span>
+          <div key={o.biz} className={`dk-tile ${i === hot ? 'lit' : ''}`}>
+            {o.id ? (
+              <Shot id={o.id} className="pic sm" pos={o.pos ?? 'center top'} style={{ height: '100%' }} />
+            ) : (
+              <div className="qt">{o.quote}</div>
+            )}
+            <div className="tx">
+              <div className="who">
+                <span className="dk-k">{o.where}</span>
+                <span className="tl">{o.tool}</span>
+              </div>
+              <b>{o.biz}</b>
+              <span className="d">{o.did}</span>
+              <span className="g">{o.got}</span>
+              <span className="sr">
+                <span className="kd">{o.kind}</span>
+                {o.src}
+              </span>
             </div>
-            <b>{o.biz}</b>
-            <span className="d">{o.did}</span>
-            <span className="g">{o.got}</span>
           </div>
         ))}
       </div>
       <div className="b1-reel-cap">
         Same apps you have. Plain requests. <Hl>One job changed first.</Hl>
       </div>
-      <Src>
-        Sources: Jameson Haslam on X, Oct 2026 · CNN, Oct 2025 · Anthropic, Sep 2026 · NAB, Apr and Aug 2026. Results as each
-        business reported them. Clips marked “demo” are Anthropic’s own demos of the same workflow.
+      <Src right>
+        Results as each business reported them. Press: independent journalism. Bank and vendor: published by a company with something to
+        sell. The HireEffect clip is the vendor’s demo of this workflow on a sample company, not HireEffect’s own screen.
       </Src>
     </Frame>
   );
 };
+
+/* ---------- two minutes, before any teaching ---------- */
+const TryOne: Page = () => (
+  <Frame label="Try one thing">
+    <Head
+      eb={eb('why', 'Why now · two minutes, hands on')}
+      title="Type one thing you assume it can’t do"
+      sum="Before we teach anything. Open the app you pay for, pick something from your own week, and ask for it in plain words. Two minutes."
+    />
+    <PageNo />
+    <RoomTimer id="try0" minutes={2} />
+    <div className="b1-try">
+      {[
+        ['If you are stuck for an idea', 'Photograph something handwritten on your desk and ask for it as a table.'],
+        ['Or', 'Paste the last long email you received and ask what it wants from you, and by when.'],
+        ['Or', 'Describe a job you quoted last week and ask what you forgot to price.'],
+      ].map(([k, v]) => (
+        <div key={v}>
+          <span className="dk-k">{k}</span>
+          <span>{v}</span>
+        </div>
+      ))}
+    </div>
+    <div className="b1-try-foot">
+      <p>
+        It worked? <Hl>That is the day in one line.</Hl>
+      </p>
+      <p>
+        It fell short? Write the ask down. That is the first line of your <b>try-again list</b>, and we come back to it at 15:30.
+      </p>
+      <p className="dk-muted">App will not open, or you cannot sign in? Hand up now. This is the moment to fix it.</p>
+    </div>
+  </Frame>
+);
 
 /* ---------- task length keeps doubling ---------- */
 const TaskLength: Page = () => {
@@ -128,7 +177,7 @@ const TaskLength: Page = () => {
             The length of job it can finish <Hl>doubles every few months</Hl>
           </>
         }
-        sum="Longest task a model can finish about half the time, measured in how long the task takes a skilled person."
+        sum="Longest task a model can finish about half the time, measured in how long the task takes a skilled person. Two published readings, joined by a straight line."
       />
       <PageNo />
       <div className={`b1-chart ${on ? '' : 'pre'}`}>
@@ -166,8 +215,8 @@ const TaskLength: Page = () => {
         </div>
       </div>
       <Src>
-        Source: METR task-length measurements, via Ethan Mollick, “30 months on the exponential”, One Useful Thing, 2026. Right-hand
-        labels are for scale only.
+        Source: METR task-length measurements, via Ethan Mollick, “30 months on the exponential”, One Useful Thing, 2026. The source
+        gives the first reading as 2024, with no month. Right-hand labels are for scale only.
       </Src>
     </Frame>
   );
@@ -213,7 +262,8 @@ const Shallow: Page = () => {
         sum={
           <>
             Out of every 100 companies in the S&amp;P 500, about 30 say AI has had a measurable effect, and about 2 track a number.
-            Investors call this “the diffusion gap”. It is the reason this room exists.
+            Investors call this “the diffusion gap”. If the biggest companies have not closed it, a small business that measures one job is
+            already ahead.
           </>
         }
       />
@@ -240,138 +290,13 @@ const Shallow: Page = () => {
           <span>have it switched on, and use it like search</span>
         </div>
         <p className="dk-body" style={{ marginTop: '1.4cqw', fontSize: '1.35cqw' }}>
-          Small businesses can move faster than any of them. You will leave today with a <b>before and after number</b> of your own.
+          Small businesses can move faster than any of them. You will leave today with <b>a number to beat</b>: what one job costs you now, and what you
+          expect it to cost in 30 days.
         </p>
       </div>
       <Src>
         Sources: a16z, “State of Markets II” (S&amp;P 500 reporting), 2026. “The diffusion gap”: Pat Grady, Sequoia, Sep 2026. Dots
-        are per 100 companies.
-      </Src>
-    </Frame>
-  );
-};
-
-/* ---------- what a big job costs ---------- */
-const BigJob: Page = () => (
-  <Frame label="What a big job really costs">
-    <Head eb={eb('why', 'Why now · a reality check')} title="What a big job really costs, and what it really took" />
-    <PageNo />
-    <div className="b1-cost">
-      <Shot id="tidewater" className="vid" style={{ height: '28.7cqw' }} />
-      <div className="side">
-        <div className="nums3">
-          {[
-            ['8 hrs', 'to build this 3D island game'],
-            ['US$1,874', 'of model time, at list prices'],
-            ['59%', 'of one week on a US$200 plan'],
-          ].map(([b, s]) => (
-            <div key={b} className="num">
-              <b>{b}</b>
-              <span>{s}</span>
-            </div>
-          ))}
-        </div>
-        <blockquote>
-          <p className="dk-quote">“99% of my prompts were ‘Add X and Y’ or ‘This looks weird, make it better’.”</p>
-          <span className="dk-attr">Dan Greenheck, on building Tidewater</span>
-        </blockquote>
-        <p className="dk-body" style={{ fontSize: '1.4cqw' }}>
-          The prompts were plain. <Hl>The persistence was the skill.</Hl> Nobody needed a prompt course.
-        </p>
-      </div>
-    </div>
-    <Src>Dan Greenheck, “Tidewater”, video on X, Sep 2026. Hours and cost as reported in the post.</Src>
-  </Frame>
-);
-
-/* ---------- close to home: Australia and New Zealand ---------- */
-type Near = { biz: string; where: string; tool: string; did: string; got: string; src: string; kind: string };
-const NEAR: Near[] = [
-  {
-    biz: 'Bundilla Pest Control',
-    where: 'Pest control · Sunshine Coast',
-    tool: 'Claude',
-    did: 'Built a proposal engine in two weeks. Measurements in on site, then price, proposal, signature and deposit go out by themselves.',
-    got: 'Proposals from up to 45 minutes to under one. 38 hours saved in the first fortnight.',
-    src: 'SmartCompany, Aug 2026',
-    kind: 'Sponsored',
-  },
-  {
-    biz: 'Matthew Zonderop',
-    where: 'Dairy, 370 cows · Te Poi, NZ',
-    tool: 'ChatGPT',
-    did: 'Uploads his herd’s genomic spreadsheets and soil tests. Grazing plans and feed budgets are done with AI.',
-    got: '“I’ve got a PhD in my pocket.”',
-    src: 'Farmers Weekly NZ, Nov 2024',
-    kind: 'Press',
-  },
-  {
-    biz: '“Dan”, a carpenter',
-    where: 'Carpentry · Queensland',
-    tool: 'Custom tool',
-    did: 'A three-step form drafts each quote in his voice with supplier prices. He reviews it for two minutes.',
-    got: '45 minutes a quote down to 8. Paid for itself in 7 weeks.',
-    src: 'Batten Digital, Apr 2026',
-    kind: 'Builder',
-  },
-  {
-    biz: 'Willoughby Plumbing and Gas',
-    where: 'Plumbing · New Zealand',
-    tool: 'Call answering',
-    did: 'Every missed call gets a reply in seconds. Urgent jobs ping straight through; a summary lands at lunch and at night.',
-    got: '“I’m able to complete the job I’m on without worrying about the calls.”',
-    src: 'Call Catcher, Oct 2026',
-    kind: 'Vendor',
-  },
-  {
-    biz: 'Tongariro Crossing Shuttles',
-    where: 'Alpine shuttles · Tongariro, NZ',
-    tool: 'Website chat',
-    did: 'Answers routes, pick-ups and weather questions all night, for walkers in other time zones.',
-    got: 'Up to 75 percent of enquiries handled end to end. About 37 staff hours saved in a month.',
-    src: 'Yonder',
-    kind: 'Vendor',
-  },
-  {
-    biz: 'A dental practice',
-    where: 'Dentistry · Darwin',
-    tool: 'Voice receptionist',
-    did: 'Picks up after a few rings, books into the practice system and hands over to a person when it should.',
-    got: 'Zero missed calls in three months.',
-    src: 'AI Adaptive, Mar 2026',
-    kind: 'Self-published',
-  },
-];
-const CloseToHome: Page = () => {
-  const on = usePlay(120);
-  return (
-    <Frame label="Close to home">
-      <Head
-        eb={eb('why', 'Why now · close to home')}
-        title="Closer to home: six businesses in Australia and New Zealand"
-        sum="Trades, farms, clinics, tourism. Each tag says who published the story, so you know how much weight to give the numbers."
-      />
-      <PageNo />
-      <div className={`b1-near ${on ? '' : 'pre'}`}>
-        {NEAR.map((n, i) => (
-          <div key={n.biz} className="dk-tile" style={{ ['--i' as string]: i }}>
-            <div className="who">
-              <span className="dk-k">{n.where}</span>
-              <span className="tl">{n.tool}</span>
-            </div>
-            <b>{n.biz}</b>
-            <span className="d">{n.did}</span>
-            <span className="g">{n.got}</span>
-            <span className="sr">
-              <span className={`kd k-${n.kind.toLowerCase().replace(/[^a-z]/g, '')}`}>{n.kind}</span>
-              {n.src}
-            </span>
-          </div>
-        ))}
-      </div>
-      <Src>
-        Press: independent journalism. Sponsored: paid content (Salesforce). Builder: the developer who built it. Vendor and self-published:
-        the company selling the tool. Numbers as each source reported them.
+        are per 100 companies; the 2 are drawn inside the 30 for simplicity.
       </Src>
     </Frame>
   );
@@ -422,10 +347,11 @@ const REFLEX: [string, string][] = [
 const AlreadyEnough: Page = () => {
   const [flip, setFlip] = useState<boolean[]>(REFLEX.map(() => false));
   const all = flip.every(Boolean);
+  const firstShut = flip.indexOf(false);
   return (
     <Frame label="The models are already enough">
       <Head
-        eb={eb('why', 'Why now · the real gap')}
+        eb={eb('why', 'Why now · the one idea for today')}
         title="The models are already good enough. The habit is what is missing."
         sum="This is not about which company is ahead. Either app in this room can already take hours off your week. What changes things is the moment you stop and ask: could this be done with AI in the loop?"
       />
@@ -447,7 +373,7 @@ const AlreadyEnough: Page = () => {
             }}
           >
             <span className="a">{a}</span>
-            <span className="b">{flip[i] ? b : 'Click to reframe'}</span>
+            <span className="b">{flip[i] ? b : i === firstShut ? 'Click to reframe' : ''}</span>
           </button>
         ))}
       </div>
@@ -457,8 +383,8 @@ const AlreadyEnough: Page = () => {
         </p>
         <p className="dk-body">If it falls short today, write the ask down and try it again on the next model. Each one moves the line.</p>
         <blockquote className="b1-lock">
-          “The penalty of locking into a ‘good enough’ solution based on today’s AI limits grows too.”
-          <span className="dk-attr">Ethan Mollick, on X · Oct 2026</span>
+          “99% of my prompts were ‘Add X and Y’ or ‘This looks weird, make it better’.”
+          <span className="dk-attr">Dan Greenheck, on building a 3D game in eight hours · X, Sep 2026</span>
         </blockquote>
         <div className="pbtns">
           <button className="rb" type="button" onClick={() => setFlip(REFLEX.map(() => !all))}>
@@ -531,18 +457,26 @@ const UseThem: Page = () => (
 );
 
 export const pages: [Page, string][] = [
-  [Open, '9:00 · Block 1 opener. Thirty minutes, no lab. The job of this block: make them want the rest of the day.'],
+  [Open, '9:00 · Block 1 opener. Thirty minutes, with one two-minute exercise. The job of this block: make them want the rest of the day.'],
   [
-    Owners,
-    '2 min. The tiles light up in turn. Proof before theory: six real businesses, none of them software companies. Do not read all six. Pick the two closest to the room (trades rooms: the deck builder and the plumber) and tell those in one breath each. Then point at the caption: each one changed one job first. Results are as the businesses reported them.',
+    AlreadyEnough,
+    '3 min. The thesis of the day, and it comes first, so say it plainly: the models are not the bottleneck; the habit of asking is. Read each old reflex aloud, ask who has said it this month, then click to reframe. Do not argue about which company is ahead; both apps are already more capable than anyone here will use today. Point at the quote: a man built a whole game with prompts that plain. End on: if it fails, write it down and try again on the next model. This line comes back on every lab page and at the close.',
   ],
   [
-    CloseToHome,
-    '2 min. The same idea, closer to home. Read two: the pest controller (a developer built their proposal engine with Claude in two weeks) and the Te Poi dairy farmer ("a PhD in my pocket"). Point at the source tags: most hard numbers come from the people selling the tool, and that is worth saying out loud.',
+    TryOne,
+    '3 min: 1 to set up, 2 on the timer. The thesis in action, forty minutes earlier than the first lab. Start the timer and walk the room. You are looking for two things: anyone who cannot open or sign in to an app (fix it now, or pair them up), and one good surprise to quote back. When the timer ends, ask for one that worked and one that fell short. Tell the second person to write it down: that is the try-again list, and it comes back in the 30-day plan.',
+  ],
+  [
+    Owners,
+    '2 min. The tiles light up in turn. Four real businesses, two on each app, none of them software companies. Do not read all four. Pick the two closest to the room (trades rooms: the plumber and the dairy farmer) and tell those in one breath each. Then point at the caption: each one changed one job first. Point at the tags: press, bank, vendor. Most hard numbers come from someone with something to sell, and that is worth saying out loud. More cases are on the companion page.',
+  ],
+  [
+    Farmer,
+    '2 min. Let the field clip run: draw the field, see the cut and fill, then the water. The point: a working farmer, not a programmer, built thirty tools this year because he knows his own land. Do not name the AI tool he used; he has not said publicly. If asked: his public posts and a 2024 AgWeb interview show he already used ChatGPT on his farm data.',
   ],
   [
     TaskLength,
-    '3 min. Wait for the line to draw. Then read the right-hand labels: four minutes was an email reply; seventeen hours is two working days. Stress "about half the time": it still fails, which is why the afternoon is about checking.',
+    '3 min. Wait for the line to draw. Be straight that it is two published readings with a line between them. Then read the right-hand labels: four minutes was an email reply; seventeen hours is two working days. Stress "about half the time": it still fails, which is why the afternoon is about checking.',
   ],
   [
     Cheaper,
@@ -550,23 +484,11 @@ export const pages: [Page, string][] = [
   ],
   [
     Shallow,
-    '3 min. Let the dots fill. The punchline is the yellow two: almost nobody measures. Promise: everyone here leaves with a before and after number on one real task.',
-  ],
-  [
-    BigJob,
-    '2 min. Let the clip run while you talk. The point is not the money. It is the quote: the prompts were plain English. Persistence beats clever wording. Be honest that big builds cost real money, and that today\'s work fits easily in a normal plan.',
-  ],
-  [
-    Farmer,
-    '2 min. Let the field clip run: draw the field, see the cut and fill, then the water. The point: a working farmer, not a programmer, built thirty tools this year because he knows his own land. Do not name the AI tool he used; he has not said publicly. If asked: his public posts and a 2024 AgWeb interview show he already used ChatGPT on his farm data.',
+    '2 min. Let the dots fill. The punchline is the yellow two: almost nobody measures. These are the biggest companies in America, so keep it short and turn it round: a small business that measures one job is ahead of most of them. Promise: everyone here leaves with a number to beat on one real job, and measures it properly on day 30.',
   ],
   [
     Overhang,
     '2 min. Read the big quote slowly. Mollick studies how people actually use AI; Levie runs a large software company. Both are saying the same thing: the tools are ahead of us. Then the small one: his father set up a new laptop by asking Codex to do it. If a retiree can, so can a business owner.',
-  ],
-  [
-    AlreadyEnough,
-    '3 min. The thesis of the day, so say it plainly: the models are not the bottleneck; the habit of asking is. Read each old reflex aloud, ask who has said it this month, then click to reframe. Do not argue about which company is ahead; both apps are already more capable than anyone here will use today. End on: if it fails, try again on the next model, and point at the Mollick line underneath: settling for today’s limits gets more expensive as the models improve. This line comes back on every lab page and at the close.',
   ],
   [UseThem, '30 sec. Read the quote, pause, move on. Transition straight into the map of the apps.'],
 ];

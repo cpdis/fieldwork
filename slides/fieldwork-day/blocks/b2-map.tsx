@@ -4,7 +4,9 @@ import { useIsActivePage } from '@open-slide/core';
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { Chip, Frame, Hl, type Hotspot, InsetWindow, SideLabel, Split } from '@assets/fieldwork/brand';
 import { PX, SortBoard, type SortState, type Zone, cqw, stateFrom, zoneOf } from '../drag/sort-board';
+import { COURSE, PLANS } from '../course';
 import { Head, PageNo, Src, eb, lab, live, opener } from '../kit';
+import { useSaved } from '../persist';
 
 const Open = opener(
   'map',
@@ -181,13 +183,20 @@ export const MapOfApps: Page = () => {
 };
 
 /* ---------- plans and privacy ---------- */
-const PlanStrip = ({ personal, work }: { personal: string[]; work: string[] }) => (
+type Plan = { name: string; price: string };
+const PlanCell = ({ p }: { p: Plan }) => (
+  <span>
+    {p.name}
+    {p.price && <small>{p.price}</small>}
+  </span>
+);
+const PlanStrip = ({ personal, work }: { personal: Plan[]; work: Plan[] }) => (
   <div className="b2-plans">
     <div className="grp">
       <span className="dk-k">Personal</span>
       <div className="row">
         {personal.map((p) => (
-          <span key={p}>{p}</span>
+          <PlanCell key={p.name} p={p} />
         ))}
       </div>
     </div>
@@ -195,12 +204,13 @@ const PlanStrip = ({ personal, work }: { personal: string[]; work: string[] }) =
       <span className="dk-k">Work</span>
       <div className="row">
         {work.map((p) => (
-          <span key={p}>{p}</span>
+          <PlanCell key={p.name} p={p} />
         ))}
       </div>
     </div>
   </div>
 );
+const anyPrice = [...PLANS.openai.personal, ...PLANS.openai.work, ...PLANS.claude.personal, ...PLANS.claude.work].some((p) => p.price);
 
 const Plans: Page = () => (
   <Frame label="Plans and privacy">
@@ -220,7 +230,7 @@ const Plans: Page = () => (
       left={
         <>
           <SideLabel name="OpenAI · ChatGPT" sub="plan names, late 2026" />
-          <PlanStrip personal={['Free', 'Plus', 'Pro']} work={['Business', 'Enterprise']} />
+          <PlanStrip personal={PLANS.openai.personal} work={PLANS.openai.work} />
           <div className="b2-setting">
             <span className="dk-k">The switch</span>
             <span>
@@ -229,14 +239,17 @@ const Plans: Page = () => (
           </div>
           <div className="b2-setting">
             <span className="dk-k">You will feel</span>
-            <span>Usage limits, and which models and modes you get. Today works on Plus and up.</span>
+            <span>
+              Usage limits, and which models and modes you get. This morning works on Plus and up. <b>Some of this afternoon needs a
+              higher plan. We will say when.</b>
+            </span>
           </div>
         </>
       }
       right={
         <>
           <SideLabel name="Claude" sub="plan names, late 2026" />
-          <PlanStrip personal={['Free', 'Pro', 'Max']} work={['Team', 'Enterprise']} />
+          <PlanStrip personal={PLANS.claude.personal} work={PLANS.claude.work} />
           <div className="b2-setting">
             <span className="dk-k">The switch</span>
             <span>
@@ -245,14 +258,23 @@ const Plans: Page = () => (
           </div>
           <div className="b2-setting">
             <span className="dk-k">You will feel</span>
-            <span>Usage limits, and which models and features you get. Today works on Pro and up.</span>
+            <span>
+              Usage limits, and which models and features you get. This morning works on Pro and up. <b>Some of this afternoon needs a
+              particular plan. We will say when.</b>
+            </span>
           </div>
           <div className="handnote" style={{ right: '3.4cqw', bottom: '2.4cqw' }}>
-            names change. check each cohort
+            {COURSE.menusChecked ? `checked ${COURSE.menusChecked}` : 'names change. check each cohort'}
           </div>
         </>
       }
     />
+    {anyPrice && (
+      <Src half>
+        Prices are A$ a month including GST{COURSE.menusChecked ? `, as charged on ${COURSE.menusChecked}` : ''}. They change; check the
+        pricing page before you buy.
+      </Src>
+    )}
   </Frame>
 );
 
@@ -260,28 +282,27 @@ const Plans: Page = () => (
 type V = 'fine' | 'think' | 'never';
 const ITEMS: { t: string; v: V; why: string }[] = [
   { t: 'Your public price list', v: 'fine', why: "It's on your website already." },
-  { t: 'Draft of a social post', v: 'fine', why: 'Nothing private in it.' },
-  { t: "A client's signed contract", v: 'think', why: 'Client confidentiality. Work plan, and only the pages you need.' },
-  { t: 'A sign-in sheet with names and mobiles', v: 'think', why: 'Personal information under the Privacy Act. Work plan, then delete the chat.' },
-  { t: 'Staff payroll spreadsheet', v: 'think', why: 'Strip names first, or keep it to a work plan your admin controls.' },
-  { t: "A worker's injury details", v: 'think', why: 'Health information is “sensitive” under the APPs. Minimum needed, work plan only.' },
+  { t: "A client's signed contract", v: 'think', why: 'Client confidentiality. A work plan, or training switched off, and only the pages you need.' },
+  { t: 'A sign-in sheet with names and mobiles', v: 'think', why: 'Personal information. A work plan, or names removed first. Delete the chat after.' },
+  { t: "A worker's injury details", v: 'think', why: 'Health details are “sensitive information” in privacy law. The minimum needed, with the name taken out.' },
   { t: "A customer's tax file number", v: 'never', why: 'TFNs have their own legal rules. There is no task that needs it.' },
   { t: 'Passwords or bank logins', v: 'never', why: 'Never in a chat. Use the app’s connector or sign in yourself.' },
 ];
 const VL: Record<V, string> = { fine: 'Fine', think: 'Think first', never: 'Never' };
-const VSUB: Record<V, string> = { fine: 'Paste it', think: 'Work plan, minimum needed', never: 'Not in any chat' };
+const VSUB: Record<V, string> = { fine: 'Paste it', think: 'Protected plan, minimum needed', never: 'Not in any chat' };
 const VS: V[] = ['fine', 'think', 'never'];
 const PASTE_CARDS = ITEMS.map((_, i) => `item-${i}`);
 const PASTE_ZONES = ['pile', ...VS];
 // Board geometry in canvas px (1cqw = 19.2px): the pile on top, three columns below. deck.css .b2-sort matches.
 const PB = { x: 3.6 * PX, y: 15.4 * PX, w: 64 * PX, h: 36.4 * PX };
 const PILE_H = 1.9 * PX + 2 * 4.4 * PX + 0.5 * PX;
+const PILE_COLS = 3; // six cards, two rows of three
 const COL_W = (PB.w - 2 * 0.8 * PX) / 3;
 // Once the answers are shown the pile is empty, so the columns move up and the cards grow to fit the reason.
 const pasteZones = (shown: boolean): Zone[] => {
   const y = shown ? 1.9 * PX : PILE_H + 1.2 * PX;
   return [
-    { id: 'pile', x: 0, y: 0, w: PB.w, h: PILE_H, top: 1.9 * PX, cols: 4, cardH: 4.4 * PX, gap: 0.5 * PX },
+    { id: 'pile', x: 0, y: 0, w: PB.w, h: PILE_H, top: 1.9 * PX, cols: PILE_COLS, cardH: 4.4 * PX, gap: 0.5 * PX },
     ...VS.map((v, i) => ({ id: v, x: i * (COL_W + 0.8 * PX), y, w: COL_W, h: PB.h - y, top: 4.4 * PX, pad: 0.7 * PX, cardH: (shown ? 6 : 4.4) * PX, gap: 0.5 * PX })),
   ];
 };
@@ -291,9 +312,10 @@ const PASTE_EMPTY = pasteAll(() => 'pile');
 
 const NotToPaste: Page = () => {
   const active = useIsActivePage();
-  const [state, setState] = useState<SortState>(active ? PASTE_EMPTY : PASTE_ANSWER);
+  // Saved on this laptop, so a reload mid-sort does not lose the room's answers.
+  const [state, setState] = useSaved<SortState>('paste:state', active ? PASTE_EMPTY : PASTE_ANSWER, active);
   // The room's sort at the moment the answers were shown; null until then.
-  const [room, setRoom] = useState<SortState | null>(active ? null : PASTE_ANSWER);
+  const [room, setRoom] = useSaved<SortState | null>('paste:room', active ? null : PASTE_ANSWER, active);
   const zones = useMemo(() => pasteZones(!!room), [room]);
   const sorted = PASTE_CARDS.filter((c) => zoneOf(state, c) !== 'pile').length;
   const right = room ? PASTE_CARDS.filter((c, i) => zoneOf(room, c) === ITEMS[i].v).length : 0;
@@ -317,7 +339,7 @@ const NotToPaste: Page = () => {
       <Head
         eb={eb('map', 'The map · privacy')}
         title="Fine, think first, or never?"
-        sum="Drag each card to where the room says it goes. Then show the answers. The rule of thumb is on the right."
+        sum="Two cards per column. Drag each one to where the room says it goes, then show the answers. The rule of thumb is on the right."
       />
       <PageNo />
       <div className="b2-sort" style={{ left: cqw(PB.x), top: cqw(PB.y), width: cqw(PB.w), height: cqw(PB.h) }}>
@@ -337,6 +359,9 @@ const NotToPaste: Page = () => {
         <span className="dk-k">Rule of thumb</span>
         <p>
           Anything with a person's name in it goes in a <b>work plan</b>, or gets the names taken out.
+        </p>
+        <p className="solo">
+          One-person business, no work plan? Switch training off (previous page) and take the names out before you paste.
         </p>
         <p>
           <Hl>Never</Hl> paste ID numbers, passwords or bank details.
@@ -369,67 +394,13 @@ const NotToPaste: Page = () => {
           </span>
         )}
       </div>
-      <Src>Australian Privacy Principles (Privacy Act 1988). General guidance, not legal advice.</Src>
+      <Src>
+        Good practice for everyone, and the law for some: the Privacy Act 1988 binds businesses over A$3 million turnover and some smaller
+        ones, such as health providers. Check where you sit. General guidance, not legal advice.
+      </Src>
     </Frame>
   );
 };
-
-/* ---------- connect one thing ---------- */
-const CONNECT_OPENAI = [
-  ['Email', 'Gmail · Outlook'],
-  ['Calendar', 'Google Calendar · Outlook'],
-  ['Files', 'Google Drive · OneDrive · SharePoint · Dropbox'],
-  ['Everything else', 'Check the directory. No connector? Block 5 has the answer.'],
-];
-const CONNECT_CLAUDE = [
-  ['Email', 'Gmail · Outlook (Microsoft 365)'],
-  ['Calendar', 'Google Calendar · Outlook (Microsoft 365)'],
-  ['Files', 'Google Drive · OneDrive and SharePoint (Microsoft 365)'],
-  ['Everything else', 'Check the directory. No connector? Block 5 has the answer.'],
-];
-const Connect: Page = () => (
-  <Frame label="Connect one thing">
-    <Head
-      eb={eb('map', 'The map · connectors')}
-      title="Plug in one thing: your email or your files"
-      sum="A connector lets the app read (and sometimes write to) another app you already use, with your permission. Start with one. You can switch it off any time."
-    />
-    <PageNo />
-    <Split
-      top="16.4cqw"
-      left={
-        <>
-          <SideLabel name="OpenAI · ChatGPT" sub="Settings → Apps" />
-          <div className="b2-conn">
-            {CONNECT_OPENAI.map(([k, v]) => (
-              <div key={k}>
-                <span className="dk-k">{k}</span>
-                <span>{v}</span>
-              </div>
-            ))}
-          </div>
-          <div className="mapline">
-            Then in a chat: <b>＋ → pick the app</b>
-          </div>
-        </>
-      }
-      right={
-        <>
-          <SideLabel name="Claude" sub="Settings → Connectors" />
-          <div className="b2-conn">
-            {CONNECT_CLAUDE.map(([k, v]) => (
-              <div key={k}>
-                <span className="dk-k">{k}</span>
-                <span>{v}</span>
-              </div>
-            ))}
-          </div>
-          <div className="mapline">then turn it on per chat, from the + menu</div>
-        </>
-      }
-    />
-  </Frame>
-);
 
 /* ---------- first win: a photo becomes a spreadsheet ---------- */
 // Mobile numbers are from ACMA's range reserved for fiction (0491 57x xxx), so none belong to a real person.
@@ -597,15 +568,16 @@ export const PhotoToTable: Page = () => {
 const Live = live({
   block: 'map',
   title: 'A photo becomes a spreadsheet, for real',
-  minutes: 5,
+  minutes: 4,
   backup: () => PhotoToTable,
+  liveIn: 'openai',
   apps: [
     {
       who: 'openai',
       app: 'ChatGPT desktop',
       mode: 'Chat',
       steps: [
-        'Photograph the paper sign-in sheet on the front table.',
+        'Photograph the printed sign-in sheet: the made-up Baldivis one, never the real one from the door.',
         <>
           Drop it in and say: “Turn this into a table I can paste into Excel. Flag anything you can't read.”
         </>,
@@ -617,6 +589,7 @@ const Live = live({
       app: 'Claude desktop',
       mode: 'Chat',
       steps: ['Same photo, same words.', 'Compare the two tables side by side.', 'Ask the room: which one would you trust, and why?'],
+      ready: 'The same photo and the same words, run before the day. Open the finished chat, put the two tables side by side, and ask the room which one they would trust, and why.',
     },
   ],
 });
@@ -625,7 +598,7 @@ const Lab1 = lab({
   id: 'lab1',
   n: 1,
   block: 'map',
-  minutes: 10,
+  minutes: 12,
   title: 'Your first useful task',
   goal: 'Take something on paper that you usually retype, and turn it into rows you can use.',
   done: 'A table is in Excel or Sheets, and you have checked every flagged cell against the paper.',
@@ -650,22 +623,18 @@ const Lab1 = lab({
 });
 
 export const pages: [Page, string][] = [
-  [Open, '9:30 · Block 2 opener. Thirty minutes. Ends with a 10-minute lab.'],
+  [Open, '9:30 · Block 2 opener. Thirty minutes. Ends with a 12-minute lab.'],
   [
     MapOfApps,
-    '6 min. Click the three chips in turn. On each, click a numbered dot in both windows. The big idea: ChatGPT has one app with three modes (Chat, Work, Codex); Claude has one app with Chat, Cowork and Code. Same three jobs. Check the tab names against the live apps before each cohort.',
+    '5 min. Click the three chips in turn. On each, click a numbered dot in both windows. The big idea: ChatGPT has one app with three modes (Chat, Work, Codex); Claude has one app with Chat, Cowork and Code. Same three jobs. CHECK BEFORE EACH COHORT: open both apps and compare the tab names with this page. They have moved before (Cowork has been folding into the main Claude app). The tab names are two constants at the top of b2-map.tsx.',
   ],
   [
     Plans,
-    '3 min. Ask who is on a free plan. Tell them today needs a paid plan for the agent parts. Have everyone open the privacy switch now, on screen, and decide. Do not tell them what to choose; tell them where it is.',
+    '3 min. Ask who is on a free plan. Tell them today needs a paid plan, and that two things this afternoon need a particular plan: computer use and background agents. You will say which when you get there. Have everyone open the privacy switch now, on screen, and decide. Do not tell them what to choose; tell them where it is. The first question is always "what does it cost?": fill in the prices in course.ts (PLANS) from your own billing pages and they show here with the date you checked.',
   ],
   [
     NotToPaste,
-    '4 min. Read each card, ask the room for a show of hands, drag it into the column the room picks. Then "Show the answers": every card slides to its right column, with a tick or where the room had put it, and the reason. The two "Never" cards are the only hard rules. Everything else is "work plan, minimum needed".',
-  ],
-  [
-    Connect,
-    '3 min. Do not connect live yet; just show where. In the lab, anyone who finishes early connects their email or files. Microsoft shops: on Claude, the Microsoft 365 connector may need an admin on Team or Enterprise.',
+    '4 min. Six cards. Read each, ask the room for a show of hands, drag it into the column the room picks. Then "Show the answers": every card slides to its right column, with a tick or where the room had put it, and the reason. The two "Never" cards are the only hard rules. Everything else is "protected plan, minimum needed". Be straight about the law: most businesses in this room are under the A$3 million line, so for them this is good practice, not a legal duty, unless they hold health records. Sole operators: training off, names out. The sort is saved, so a reload does not lose it.',
   ],
   [
     PhotoToTable,
@@ -673,10 +642,10 @@ export const pages: [Page, string][] = [
   ],
   [
     Live,
-    '5 min. Bring a paper sign-in sheet (the one people signed on arrival works, if they agree; otherwise use a made-up one). Run it in ChatGPT, then Claude. If either app is slow or the Wi-Fi drops, come back and use the page before this one.',
+    '4 min. ChatGPT runs live; Claude is open with the same job already finished. Use the printed made-up Baldivis sheet every time. Never photograph the real sign-in sheet from the door: it has real names and mobiles, and you have just filed that under "think first". If the app is slow or the Wi-Fi drops, come back and use the page before this one.',
   ],
   [
     Lab1,
-    '10 min. Start the timer. Walk the room. Most common snag: the photo is too dark or at an angle; tell them to retake it flat. Early finishers: connect email or files (previous pages).',
+    '12 min. Start the timer. Walk the room. Most common snag: the photo is too dark or at an angle; tell them to retake it flat. Second most common: someone is still not signed in. Sit with them. Connecting email and files comes after lunch, when it is needed.',
   ],
 ];

@@ -97,6 +97,6 @@ The never list comes from the brand brief, section 2:
 
 ## Content rules
 
-- Never show a real company's name unless that company is part of the training audience. Use made-up stand-ins, for example Ridgeline Surveying, Northline Supplies and Westside Electrical.
+- Never show a client's or an employer's name or data, or anything a business has not made public. Published third-party cases are fine when the page carries a source line that names the publisher. Demo businesses and their data are made up, for example Ridgeline Surveying, Northline Supplies and Westside Electrical. A company in the training audience can be named in its own session.
 - Use real numbers and realistic work. Write in plain Australian English.
 - Claude and ChatGPT/Codex get equal weight on every dual-track page.

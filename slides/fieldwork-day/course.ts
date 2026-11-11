@@ -12,6 +12,46 @@ export const COURSE = {
   contact: '',
   /** Shown on the housekeeping page when set. */
   wifi: { name: '', password: '' },
+  /**
+   * The companion page: every lab prompt, ready to copy, plus more cases and the take-home prompts.
+   * Build it with `node scripts/companion.mjs`, host it, and put the short link here (no https://).
+   * Lab pages, the 30-day plan and the close show it when set.
+   */
+  companion: '',
+  /** The feedback form (five questions, filled in before people leave). Shown on the close when set. */
+  feedback: '',
+  /** The day both apps' menus and plan names were last checked against this deck, for example '28 Nov 2026'. */
+  menusChecked: '',
+};
+
+/**
+ * What each plan costs, in A$ a month including GST, as charged on your own account. Leave a price as ''
+ * until you have checked it: the plans page shows a price row only for prices that are filled in,
+ * with the `menusChecked` date beside it. Plan names change too; check both before each cohort.
+ */
+export const PLANS = {
+  openai: {
+    personal: [
+      { name: 'Free', price: '' },
+      { name: 'Plus', price: '' },
+      { name: 'Pro', price: '' },
+    ],
+    work: [
+      { name: 'Business', price: '' },
+      { name: 'Enterprise', price: '' },
+    ],
+  },
+  claude: {
+    personal: [
+      { name: 'Free', price: '' },
+      { name: 'Pro', price: '' },
+      { name: 'Max', price: '' },
+    ],
+    work: [
+      { name: 'Team', price: '' },
+      { name: 'Enterprise', price: '' },
+    ],
+  },
 };
 
 export type BlockId = 'why' | 'map' | 'context' | 'make' | 'agents' | 'repeat' | 'background' | 'trust';
@@ -20,7 +60,10 @@ export type DaySlot =
   | { kind: 'block'; id: BlockId; n: number; start: string; end: string; title: string; short: string; level: number; out: string }
   | { kind: 'break'; id: string; start: string; end: string; title: string };
 
-/** The day. `level` is the reading on the staff (Every's Eight Levels) that the block teaches. */
+/**
+ * The day. `level` is roughly where the block sits on the staff (Every's Eight Levels).
+ * It is our reading, not Every's: openers show it as "about L3", never as a grade.
+ */
 export const DAY: DaySlot[] = [
   { kind: 'block', id: 'why', n: 1, start: '9:00', end: '9:30', title: 'Why now', short: 'Why now', level: 1, out: 'A reason to care' },
   { kind: 'block', id: 'map', n: 2, start: '9:30', end: '10:00', title: 'The map of the apps', short: 'The map', level: 1, out: 'Your first useful task' },
@@ -29,15 +72,18 @@ export const DAY: DaySlot[] = [
   { kind: 'block', id: 'make', n: 4, start: '11:00', end: '12:00', title: 'Making things that look good', short: 'Making things', level: 3, out: 'A brand file and one asset' },
   { kind: 'break', id: 'lunch', start: '12:00', end: '13:00', title: 'Lunch' },
   { kind: 'block', id: 'agents', n: 5, start: '13:00', end: '14:00', title: 'Agents and computer use', short: 'Agents', level: 4, out: 'An admin job done by an agent' },
-  { kind: 'block', id: 'repeat', n: 6, start: '14:00', end: '15:00', title: 'Make it repeatable', short: 'Repeatable', level: 5, out: 'Your first skill and your own glue' },
-  { kind: 'break', id: 'break2', start: '15:00', end: '15:15', title: 'Break' },
-  { kind: 'block', id: 'background', n: 7, start: '15:15', end: '15:35', title: 'Background agents', short: 'Background', level: 6, out: 'One job on a schedule' },
-  { kind: 'block', id: 'trust', n: 8, start: '15:35', end: '16:00', title: 'Trust and next steps', short: 'Trust', level: 5, out: 'A policy and a 30-day plan' },
+  { kind: 'block', id: 'repeat', n: 6, start: '14:00', end: '14:45', title: 'Make it repeatable', short: 'Repeatable', level: 5, out: 'Your first skill' },
+  { kind: 'break', id: 'break2', start: '14:45', end: '15:00', title: 'Break' },
+  { kind: 'block', id: 'background', n: 7, start: '15:00', end: '15:30', title: 'Background agents', short: 'Background', level: 6, out: 'One job on a schedule' },
+  { kind: 'block', id: 'trust', n: 8, start: '15:30', end: '16:00', title: 'Trust and next steps', short: 'Trust', level: 5, out: 'A number to beat and a 30-day plan' },
 ];
 
 export const blockById = (id: BlockId) => DAY.find((d) => d.kind === 'block' && d.id === id) as Extract<DaySlot, { kind: 'block' }>;
 
-/** Every's Eight Levels of AI Adoption, the spine of the day. */
+/**
+ * Every's Eight Levels of AI Adoption, the spine of the day. The names are Every's. The one-line
+ * descriptions are our plain-English paraphrase (Every's own write-up of levels 2 to 8 is for subscribers).
+ */
 export const LEVELS = [
   { n: 1, name: 'Chatbot', looks: 'You ask, it answers, you copy and paste.' },
   { n: 2, name: 'Copilot', looks: 'It works inside your files: the doc, the sheet, the inbox.' },

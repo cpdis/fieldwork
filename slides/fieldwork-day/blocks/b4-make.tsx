@@ -3,10 +3,9 @@
 import type { Page } from '@open-slide/core';
 import { useIsActivePage } from '@open-slide/core';
 import { type ReactNode, useEffect, useState } from 'react';
-import { Chip, Frame, Hl, Mark, Pad, SideLabel, Split } from '@assets/fieldwork/brand';
+import { Chip, Frame, Hl, SideLabel, Split } from '@assets/fieldwork/brand';
 import { Browser, Head, PageNo, Shot, Src, eb, lab, live, opener, usePlay } from '../kit';
 import { BeatSteps } from '../stage/beats';
-import { BEAT_COUNT as CHECK_BEATS, CheckRun } from '../stage/check-run';
 import { BEAT_COUNT as ITER_BEATS, IterateRun, VERSIONS } from '../stage/iterate-run';
 import { useBeats } from '../stage/staged';
 
@@ -73,7 +72,7 @@ const SpotTells: Page = () => {
       <Head
         eb={eb('make', 'Making things · the tells')}
         title="Spot the tells"
-        sum="Ask any AI for “a website for a plumber” and you get the average of every website. Call out what gives it away. Click a number when someone spots one."
+        sum="Ask any AI for “a website for a plumber” and you get the average of every website. Call out what gives it away. Nothing is marked yet. When someone spots one, click it on the page and its number appears."
       />
       <PageNo />
       <div className="b4-tells-site">
@@ -309,30 +308,23 @@ const WhatItMakes: Page = () => (
 );
 
 /* ---------- real tools, running in real businesses ---------- */
-const TOOLS = [
+// One per app, so the page carries equal weight. KANE and the thumbnail-vote page are on the companion page.
+const TOOLS: { id?: string; quote?: string; who: string; tool: string; t: string; d: string; g: string }[] = [
+  {
+    quote: '“Inventorying and reordering merchandise would take me two to three full days. Now it takes me two to three hours.”',
+    who: 'ATV Big Air Tour · touring events, run by two people',
+    tool: 'ChatGPT',
+    t: 'Stock count and reorder',
+    d: 'Counts the merchandise, recommends what to reorder, and checks the event listings for mistakes on a schedule.',
+    g: 'Listing checks went from eight hours a week to one.',
+  },
   {
     id: 'bambi',
     who: 'Bambi Baby · baby-gear stores',
     tool: 'Claude',
     t: 'Speed to lead',
     d: 'Three in four walk-in shoppers used to leave without a name or an email. Now they scan what they like, and the wishlist and the follow-up go out on their own.',
-    g: '$60,000 in sales tied to it in the first four days.',
-  },
-  {
-    id: 'kane',
-    who: 'KANE · creative agency',
-    tool: 'Claude',
-    t: 'Proposal builder',
-    d: 'Meeting notes in. A fit score, a price from past projects, the proposal and the statement of work out, ready to sign.',
-    g: 'Scoping to signature went from weeks to minutes.',
-  },
-  {
-    id: 'packlab',
-    who: 'A YouTube channel’s team',
-    tool: 'Claude artifact',
-    t: 'Thumbnail vote',
-    d: 'A shared page where the team votes on video thumbnails, so the decision does not get lost in Slack.',
-    g: 'Made in a chat and shared as a link. No code.',
+    g: 'US$60,000 in sales tied to it in the first four days, by the store’s own count.',
   },
 ];
 const RealTools: Page = () => {
@@ -342,13 +334,13 @@ const RealTools: Page = () => {
       <Head
         eb={eb('make', 'Making things · real tools')}
         title="Small tools that fit one business"
-        sum="Not apps for sale. Each one fits how one business already works, and none needed a software team."
+        sum="Not apps for sale. Each one fits how one business already works, and neither needed a software team. One from each app."
       />
       <PageNo />
       <div className={`b4-tools ${on ? '' : 'pre'}`}>
         {TOOLS.map((x, i) => (
-          <div key={x.id} className="dk-fade" style={{ ['--i' as string]: i * 2 }}>
-            <Shot id={x.id} style={{ height: '16.2cqw' }} />
+          <div key={x.t} className="dk-fade" style={{ ['--i' as string]: i * 2 }}>
+            {x.id ? <Shot id={x.id} style={{ height: '18cqw' }} /> : <div className="qt" style={{ height: '18cqw' }}>{x.quote}</div>}
             <div className="who">
               <span className="dk-k">{x.who}</span>
               <span className="tl">{x.tool}</span>
@@ -360,8 +352,8 @@ const RealTools: Page = () => {
         ))}
       </div>
       <Src>
-        Bambi Baby and KANE: Anthropic, Sep 2026, results as each business reported them; the clips are Anthropic’s demos of the
-        same workflows. Thumbnail vote: Anthony Dupont-Cinko, “How to Use Claude Artifacts”, Tenex on YouTube, Sep 2026.
+        ATV Big Air Tour: OpenAI, Sep 2026. Bambi Baby: Anthropic, Sep 2026; the clip is Anthropic’s demo of the same workflow. Both are
+        vendor-published, with results as each business reported them.
       </Src>
     </Frame>
   );
@@ -430,39 +422,13 @@ const Pictures: Page = () => {
 };
 
 /* ---------- how this deck was made ---------- */
-const MetaIntro: Page = () => (
-  <Frame label="How this deck was made">
-    <Pad>
-      <PageNo />
-      <div className="b4-meta">
-        <span className="dk-k">Making things · 12 minutes, then the lab</span>
-        <h1>
-          How this deck was made
-        </h1>
-        <p>
-          Every page you have seen today was built by an AI agent working from a brand file a few pages long. None of it looks like
-          the plumber's site. Here is the setup, because you can copy it this afternoon in either app.
-        </p>
-        <div className="three">
-          {[
-            ['1', 'Brand as a file, not a vibe'],
-            ['2', 'A checker that can count'],
-            ['3', 'It looks before it hands over'],
-          ].map(([n, t]) => (
-            <div key={n}>
-              <span className="dk-k">{n}</span>
-              <b>{t}</b>
-            </div>
-          ))}
-        </div>
-      </div>
-    </Pad>
-  </Frame>
-);
-
 const BrandFile: Page = () => (
   <Frame label="Brand as a file">
-    <Head eb={eb('make', 'How this deck was made · 1 of 3')} title="Brand as a file, not a vibe" />
+    <Head
+      eb={eb('make', 'How this deck was made · 1 of 3')}
+      title="Brand as a file, not a vibe"
+      sum="An AI agent built every page today from this file. That is why none of it looks like the plumber's site."
+    />
     <PageNo />
     <div className="b4-bf">
       <div className="doc">
@@ -530,34 +496,6 @@ const BrandFile: Page = () => (
   </Frame>
 );
 
-const Checker: Page = () => {
-  const active = useIsActivePage();
-  const { beat, onBeat, pick, take } = useBeats(CHECK_BEATS);
-  return (
-    <Frame label="A checker that can count">
-      <BeatSteps count={CHECK_BEATS - 1} onBeat={onBeat} />
-      <Head
-        eb={eb('make', 'How this deck was made · 2 of 3')}
-        title="A checker that can count"
-        sum="Before anything goes out, a small script checks every colour, font and banned word against the brand file. The judgement stays human. The counting doesn't."
-      />
-      <PageNo />
-      <div className="b4-chk-stage">
-        <CheckRun beat={beat} take={take} live={active} />
-      </div>
-      <div className="pbtns b4-chk-btns">
-        <button className="rb primary" type="button" onClick={() => pick(1)}>
-          Run the check
-        </button>
-        <button className="rb" type="button" disabled={beat < 1} onClick={() => pick(2)}>
-          Fix and re-check
-        </button>
-      </div>
-      <Src right>This deck has one too: node scripts/brand-check.mjs checks every page against the brand file.</Src>
-    </Frame>
-  );
-};
-
 const LOOP = ['Make it', 'Screenshot it', 'Critique it', 'Fix it'];
 const LooksFirst: Page = () => {
   const active = useIsActivePage();
@@ -573,7 +511,7 @@ const LooksFirst: Page = () => {
   return (
     <Frame label="It looks before it hands over">
       <Head
-        eb={eb('make', 'How this deck was made · 3 of 3')}
+        eb={eb('make', 'How this deck was made · 2 of 3')}
         title="It looks before it hands over"
         sum="The agent renders the page, takes a screenshot, critiques it against the brand file, fixes the worst problem, and goes again. You only see the version that survived."
       />
@@ -608,54 +546,10 @@ const LooksFirst: Page = () => {
   );
 };
 
-const SamePrompt: Page = () => (
-  <Frame label="Same prompt, two results">
-    <Head
-      eb={eb('make', 'How this deck was made · the proof')}
-      title="Same prompt, two results"
-      sum={
-        <>
-          <span className="dk-say">Make a LinkedIn ad for a one-day AI course for small business owners in Perth.</span> Left: no brand
-          file. Right: the same words, with the brand file loaded.
-        </>
-      }
-    />
-    <PageNo />
-    <div className="b4-pair">
-      <div>
-        <span className="dk-k">Without the brand file</span>
-        <div className="ad bad">
-          <span className="pill">✦ AI MASTERCLASS ✦</span>
-          <b>Unlock the Power of AI for Your Business</b>
-          <span>Transform your workflow. Supercharge productivity. 10x your results.</span>
-          <span className="cta">Register Now →</span>
-        </div>
-      </div>
-      <div>
-        <span className="dk-k">With the brand file</span>
-        <div className="ad good">
-          <div className="mk">
-            <Mark size="3cqw" />
-            <span>Fieldwork</span>
-          </div>
-          <b>
-            A photo of your timesheet becomes a spreadsheet. <span className="hl">By 10:00.</span>
-          </b>
-          <span>One day in the Claude and ChatGPT desktop apps, on your own business. Perth, December. Twelve seats.</span>
-          <span className="cta">Book a seat</span>
-        </div>
-      </div>
-    </div>
-    <p className="b4-pair-line">
-      Taste comes from context. If you don't give the AI a point of view, <Hl>it gives you its own.</Hl>
-    </p>
-  </Frame>
-);
-
 const OneFile: Page = () => (
   <Frame label="One file, both apps">
     <Head
-      eb={eb('make', 'How this deck was made · in your app')}
+      eb={eb('make', 'How this deck was made · 3 of 3 · in your app')}
       title="One file, both apps"
       sum="You don't need an agent framework. Put the brand file where each app reads it first, and add one short skill that checks against it."
     />
@@ -705,27 +599,29 @@ const OneFile: Page = () => (
 
 const Live = live({
   block: 'make',
-  title: 'A website on your own domain, first draft to fifth',
-  minutes: 6,
+  title: 'A website, from the third draft to the fifth',
+  minutes: 5,
   backup: () => FirstToFifth,
+  liveIn: 'openai',
   apps: [
     {
       who: 'openai',
       app: 'ChatGPT desktop',
       mode: 'Codex',
       steps: [
-        'New folder “ridgeline-site” with about.md and the price list. “Make a one-page website for this business.”',
-        'Open the preview. Read v1 out loud. Then the reference screenshots and message 3.',
+        'Open the “ridgeline-site” folder, already at the third draft. Show the preview and read the headline out loud.',
+        <>
+          One turn, live: <span className="dk-say">Screenshot it. Critique it like a designer. Fix the top three problems.</span>
+        </>,
+        'While it works, show the three reference screenshots that got it this far. Then read what it changed.',
       ],
     },
     {
       who: 'claude',
       app: 'Claude desktop',
       mode: 'Code',
-      steps: [
-        'Same folder, picking up from v3: “Screenshot it. Critique it like a designer. Fix the top three.”',
-        '“Remove anything that isn’t helping someone book a survey.” Publish if the Wi-Fi is good.',
-      ],
+      steps: [],
+      ready: 'The same folder, taken to the fifth draft in Claude before the day. Open the preview, then scroll the chat back to the last message: “Remove anything that isn’t helping someone book a survey.”',
     },
   ],
 });
@@ -737,14 +633,14 @@ const Lab3 = lab({
   minutes: 20,
   title: 'One thing a customer will see, on brand',
   goal: 'Write a one-page brand file, then make one customer-facing thing with it: a price sheet, a one-pager or a social post.',
-  done: 'You made it twice, without and with the brand file, and asked for a brand check on the second.',
+  done: 'You made it with the brand file loaded, and asked for a brand check on it.',
   keep: 'brand.md, saved in your business Project.',
   openai: [
     <>
       In your Project, new chat: <span className="dk-say">Interview me to write a one-page brand file: colours, fonts, five nevers, three voice rules.</span>
     </>,
     'Save the answer as brand.md in the Project files.',
-    'Ask for the asset. Then ask again in a chat outside the Project, and compare.',
+    'Ask for the asset. Early finishers: ask again in a chat outside the Project, and compare the two.',
     <>
       <span className="dk-say">Check this against brand.md. List every miss, then fix them.</span>
     </>,
@@ -754,7 +650,7 @@ const Lab3 = lab({
       In your Project, new chat: <span className="dk-say">Interview me to write a one-page brand file: colours, fonts, five nevers, three voice rules.</span>
     </>,
     'Save the answer as brand.md in Project knowledge.',
-    'Ask for the asset. Then ask again in a chat outside the Project, and compare.',
+    'Ask for the asset. Early finishers: ask again in a chat outside the Project, and compare the two.',
     <>
       <span className="dk-say">Check this against brand.md. List every miss, then fix them.</span>
     </>,
@@ -766,7 +662,7 @@ export const pages: [Page, string][] = [
   [Open, '11:00 · Block 4 opener. Sixty minutes, the longest teaching block. Ends with a 20-minute lab, then lunch.'],
   [
     SpotTells,
-    '5 min. Make it a game. The room calls out what looks AI-made; click the matching number. Eight to find. When they get stuck, click "Show all". The point: once you can name a tell, you can tell the AI to avoid it.',
+    '5 min. Make it a game. The room calls out what looks AI-made; click that spot on the page and its number appears (the spots are hidden until found; hover shows you where they are). Eight to find. When they get stuck, click "Show all". The point: once you can name a tell, you can tell the AI to avoid it.',
   ],
   [
     FourMoves,
@@ -778,46 +674,34 @@ export const pages: [Page, string][] = [
   ],
   [
     WhatItMakes,
-    '3 min. Both apps make real files. The handwritten note matters for Claude users: when you share an artifact that uses Claude, it runs on the viewer’s usage, not yours.',
+    '3 min. Both apps make real files. The handwritten note matters for Claude users: when you share an artifact that uses Claude, it runs on the viewer’s usage, not yours. CHECK BEFORE EACH COHORT that this is still how sharing works.',
   ],
   [
     RealTools,
-    '2 min. Let the clips play. One sentence each: what the tool does, and the number. The point: these are small, one-business tools, made in the same apps they have. Skip this page if the block is running late.',
+    '2 min. One sentence each: what the tool does, and the number. One is ChatGPT, one is Claude, and both stories were published by the vendor, so say so. The point: these are small, one-business tools, made in the same apps they have. Skip this page if the block is running late.',
   ],
   [
     Live,
-    '6 min. Have the ridgeline-site folder ready on the desktop with about.md, prices and three reference screenshots. Codex for v1 to v3, Claude Code for v4 and v5, so both get airtime. Only publish to a real domain if the connection is solid; the preview is enough.',
+    '5 min. ChatGPT (Codex) runs live this block; Claude Code is open with the same site already at the fifth draft. Do not build from nothing: each agent turn takes minutes. Have the ridgeline-site folder ready at the third draft, run the one critique turn live, and talk over the wait with the reference screenshots. Then switch to the finished one. Do not publish to a real domain on the day.',
   ],
   [
     Pictures,
-    '4 min. Start with only "Subject" on, read the verdict, then add parts one at a time. The jump is "Reference": attach a photo of the real thing. Be straight about the apps: ChatGPT makes images itself; Claude needs a connected tool.',
-  ],
-  [
-    MetaIntro,
-    '1 min. The reveal. Say it plainly: an AI agent built every page today, from a brand file. That is why it does not look like the plumber site.',
+    '4 min. Start with only "Subject" on, read the verdict, then add parts one at a time. The jump is "Reference": attach a photo of the real thing. Be straight about the apps: ChatGPT makes images itself; Claude needs a connected tool. CHECK BEFORE EACH COHORT whether that is still true of Claude.',
   ],
   [
     BrandFile,
-    '3 min. Walk the four sections: palette, type, never, voice. It is short on purpose. Everyone writes one of these in the lab.',
-  ],
-  [
-    Checker,
-    '3 min. Open on the first draft and let the room spot what is wrong with it. Click once: the check is typed and run, and each problem it reports is pinned on the tile as it lands. Click again: the agent fixes the five and the check runs clean. The buttons do the same if you are not using the clicker. The real script is in the repo (node scripts/brand-check.mjs) and runs over this deck.',
+    '2 min. The reveal, in one breath: an AI agent built every page today, from this file. Walk the four sections: palette, type, never, voice. It is short on purpose. Everyone writes one of these in the lab. This is the only place today where your own work is the example; keep it to these three pages and five minutes.',
   ],
   [
     LooksFirst,
-    '2 min. The loop runs three passes by itself. Point at the sentence at the bottom: that one sentence gets most of the benefit in either app.',
-  ],
-  [
-    SamePrompt,
-    '2 min. Same words, two results. Read the takeaway line and stop talking for a second.',
+    '1.5 min. The loop runs three passes by itself. Point at the sentence at the bottom: that one sentence gets most of the benefit in either app.',
   ],
   [
     OneFile,
-    '2 min. Where the brand file goes in each app. Mention that this deck’s own brand file is read by both Claude and Codex in the same folder.',
+    '1.5 min. Where the brand file goes in each app, and the check: one short skill that lists every colour, font and word that breaks the file. Mention that this deck’s own brand file is read by both Claude and Codex in the same folder, and that it has a checker of its own.',
   ],
   [
     Lab3,
-    '20 min. Start the timer. People who finish early: run the same brand file on a second asset. Lunch at 12:00; tell them their work is saved in the Project.',
+    '20 min. Start the timer. The brand interview takes most people ten minutes, so the comparison outside the Project is for early finishers only. Lunch at 12:00; tell them their work is saved in the Project.',
   ],
 ];
