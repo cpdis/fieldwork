@@ -29,10 +29,10 @@ export const DAY: DaySlot[] = [
   { kind: 'block', id: 'make', n: 4, start: '11:00', end: '12:00', title: 'Making things that look good', short: 'Making things', level: 3, out: 'A brand file and one asset' },
   { kind: 'break', id: 'lunch', start: '12:00', end: '13:00', title: 'Lunch' },
   { kind: 'block', id: 'agents', n: 5, start: '13:00', end: '14:00', title: 'Agents and computer use', short: 'Agents', level: 4, out: 'An admin job done by an agent' },
-  { kind: 'block', id: 'repeat', n: 6, start: '14:00', end: '14:45', title: 'Make it repeatable', short: 'Repeatable', level: 5, out: 'Your first skill' },
-  { kind: 'break', id: 'break2', start: '14:45', end: '15:00', title: 'Break' },
-  { kind: 'block', id: 'background', n: 7, start: '15:00', end: '15:30', title: 'Background agents', short: 'Background', level: 6, out: 'One job on a schedule' },
-  { kind: 'block', id: 'trust', n: 8, start: '15:30', end: '16:00', title: 'Trust and next steps', short: 'Trust', level: 5, out: 'A policy and a 30-day plan' },
+  { kind: 'block', id: 'repeat', n: 6, start: '14:00', end: '15:00', title: 'Make it repeatable', short: 'Repeatable', level: 5, out: 'Your first skill and your own glue' },
+  { kind: 'break', id: 'break2', start: '15:00', end: '15:15', title: 'Break' },
+  { kind: 'block', id: 'background', n: 7, start: '15:15', end: '15:35', title: 'Background agents', short: 'Background', level: 6, out: 'One job on a schedule' },
+  { kind: 'block', id: 'trust', n: 8, start: '15:35', end: '16:00', title: 'Trust and next steps', short: 'Trust', level: 5, out: 'A policy and a 30-day plan' },
 ];
 
 export const blockById = (id: BlockId) => DAY.find((d) => d.kind === 'block' && d.id === id) as Extract<DaySlot, { kind: 'block' }>;

@@ -284,6 +284,233 @@ const BigJob: Page = () => (
   </Frame>
 );
 
+/* ---------- close to home: Australia and New Zealand ---------- */
+type Near = { biz: string; where: string; tool: string; did: string; got: string; src: string; kind: string };
+const NEAR: Near[] = [
+  {
+    biz: 'Bundilla Pest Control',
+    where: 'Pest control · Sunshine Coast',
+    tool: 'Claude',
+    did: 'Built a proposal engine in two weeks. Measurements in on site, then price, proposal, signature and deposit go out by themselves.',
+    got: 'Proposals from up to 45 minutes to under one. 38 hours saved in the first fortnight.',
+    src: 'SmartCompany, Aug 2026',
+    kind: 'Sponsored',
+  },
+  {
+    biz: 'Matthew Zonderop',
+    where: 'Dairy, 370 cows · Te Poi, NZ',
+    tool: 'ChatGPT',
+    did: 'Uploads his herd’s genomic spreadsheets and soil tests. Grazing plans and feed budgets are done with AI.',
+    got: '“I’ve got a PhD in my pocket.”',
+    src: 'Farmers Weekly NZ, Nov 2024',
+    kind: 'Press',
+  },
+  {
+    biz: '“Dan”, a carpenter',
+    where: 'Carpentry · Queensland',
+    tool: 'Custom tool',
+    did: 'A three-step form drafts each quote in his voice with supplier prices. He reviews it for two minutes.',
+    got: '45 minutes a quote down to 8. Paid for itself in 7 weeks.',
+    src: 'Batten Digital, Apr 2026',
+    kind: 'Builder',
+  },
+  {
+    biz: 'Willoughby Plumbing and Gas',
+    where: 'Plumbing · New Zealand',
+    tool: 'Call answering',
+    did: 'Every missed call gets a reply in seconds. Urgent jobs ping straight through; a summary lands at lunch and at night.',
+    got: '“I’m able to complete the job I’m on without worrying about the calls.”',
+    src: 'Call Catcher, Oct 2026',
+    kind: 'Vendor',
+  },
+  {
+    biz: 'Tongariro Crossing Shuttles',
+    where: 'Alpine shuttles · Tongariro, NZ',
+    tool: 'Website chat',
+    did: 'Answers routes, pick-ups and weather questions all night, for walkers in other time zones.',
+    got: 'Up to 75 percent of enquiries handled end to end. About 37 staff hours saved in a month.',
+    src: 'Yonder',
+    kind: 'Vendor',
+  },
+  {
+    biz: 'A dental practice',
+    where: 'Dentistry · Darwin',
+    tool: 'Voice receptionist',
+    did: 'Picks up after a few rings, books into the practice system and hands over to a person when it should.',
+    got: 'Zero missed calls in three months.',
+    src: 'AI Adaptive, Mar 2026',
+    kind: 'Self-published',
+  },
+];
+const CloseToHome: Page = () => {
+  const on = usePlay(120);
+  return (
+    <Frame label="Close to home">
+      <Head
+        eb={eb('why', 'Why now · close to home')}
+        title="Closer to home: six businesses in Australia and New Zealand"
+        sum="Trades, farms, clinics, tourism. Each tag says who published the story, so you know how much weight to give the numbers."
+      />
+      <PageNo />
+      <div className={`b1-near ${on ? '' : 'pre'}`}>
+        {NEAR.map((n, i) => (
+          <div key={n.biz} className="dk-tile" style={{ ['--i' as string]: i }}>
+            <div className="who">
+              <span className="dk-k">{n.where}</span>
+              <span className="tl">{n.tool}</span>
+            </div>
+            <b>{n.biz}</b>
+            <span className="d">{n.did}</span>
+            <span className="g">{n.got}</span>
+            <span className="sr">
+              <span className={`kd k-${n.kind.toLowerCase().replace(/[^a-z]/g, '')}`}>{n.kind}</span>
+              {n.src}
+            </span>
+          </div>
+        ))}
+      </div>
+      <Src>
+        Press: independent journalism. Sponsored: paid content (Salesforce). Builder: the developer who built it. Vendor and self-published:
+        the company selling the tool. Numbers as each source reported them.
+      </Src>
+    </Frame>
+  );
+};
+
+/* ---------- the overhang ---------- */
+const Overhang: Page = () => {
+  const on = usePlay(120);
+  return (
+    <Frame label="The overhang">
+      <Head eb={eb('why', 'Why now · the overhang')} title="If progress stopped today, we would still be catching up for years" />
+      <PageNo />
+      <div className={`b1-over ${on ? '' : 'pre'}`}>
+        <blockquote className="main">
+          <p>
+            “Even if AI development stopped today, we’d have years of catching up to do. The gap between what current models can do and what
+            almost anyone is using them for is <Hl>vast</Hl>.”
+          </p>
+          <span className="dk-attr">Ethan Mollick, Wharton professor, on X · Sep 2026</span>
+        </blockquote>
+        <blockquote className="side">
+          <p>
+            “Most of the world still thinks of AI as chatbots that will answer a question on demand but not yet do real work for them.”
+          </p>
+          <span className="dk-attr">Aaron Levie, CEO of Box, on X · Jan 2026</span>
+        </blockquote>
+        <blockquote className="side">
+          <p>
+            “He just told me that he took my advice to install Codex and just ask it to take over and solve his setup problems & install
+            what he needed. Family IT support will never be the same.”
+          </p>
+          <span className="dk-attr">Ethan Mollick, on his father’s new MacBook · Aug 2026</span>
+        </blockquote>
+      </div>
+      <Src>Posts on X: @emollick, 18 Sep 2026 and 18 Aug 2026; @levie, 13 Jan 2026. Quoted as posted.</Src>
+    </Frame>
+  );
+};
+
+/* ---------- the models are already enough ---------- */
+const REFLEX: [string, string][] = [
+  ['“It probably can’t do that.”', 'Type it in and see. It takes a minute to find out.'],
+  ['“I’ll type the notes up tonight.”', 'Photograph them. Ask for the table.'],
+  ['“We’d need software for that.”', 'Ask it to build the view you want.'],
+  ['“It’s quicker to do it myself.”', 'Once, maybe. Every week, never.'],
+  ['“I tried that. It didn’t work.”', 'Give it more context. Or try again when the next model ships.'],
+];
+const AlreadyEnough: Page = () => {
+  const [flip, setFlip] = useState<boolean[]>(REFLEX.map(() => false));
+  const all = flip.every(Boolean);
+  return (
+    <Frame label="The models are already enough">
+      <Head
+        eb={eb('why', 'Why now · the real gap')}
+        title="The models are already good enough. The habit is what is missing."
+        sum="This is not about which company is ahead. Either app in this room can already take hours off your week. What changes things is the moment you stop and ask: could this be done with AI in the loop?"
+      />
+      <PageNo />
+      <div className="b1-reflex">
+        <div className="hd">
+          <span className="dk-k">The old reflex</span>
+          <span className="dk-k">The new one</span>
+        </div>
+        {REFLEX.map(([a, b], i) => (
+          <button
+            key={a}
+            type="button"
+            className={`row ${flip[i] ? 'on' : ''}`}
+            onClick={() => {
+              const n = [...flip];
+              n[i] = !n[i];
+              setFlip(n);
+            }}
+          >
+            <span className="a">{a}</span>
+            <span className="b">{flip[i] ? b : 'Click to reframe'}</span>
+          </button>
+        ))}
+      </div>
+      <div className="b1-reflex-side">
+        <p>
+          Be a little bold. Ask for the thing you assume it can’t do. More often than not, you will be <Hl>surprised</Hl>.
+        </p>
+        <p className="dk-body">If it falls short today, write the ask down and try it again on the next model. Each one moves the line.</p>
+        <blockquote className="b1-lock">
+          “The penalty of locking into a ‘good enough’ solution based on today’s AI limits grows too.”
+          <span className="dk-attr">Ethan Mollick, on X · Oct 2026</span>
+        </blockquote>
+        <div className="pbtns">
+          <button className="rb" type="button" onClick={() => setFlip(REFLEX.map(() => !all))}>
+            {all ? 'Reset' : 'Show all'}
+          </button>
+        </div>
+      </div>
+    </Frame>
+  );
+};
+
+/* ---------- a farmer's own software ---------- */
+const Farmer: Page = () => (
+  <Frame label="A farmer's own software">
+    <Head
+      eb={eb('why', 'Why now · built by an owner')}
+      title="A row-crop farmer built thirty tools for his farm this year"
+      sum="Travis Senter grows cotton, rice, soybeans and corn in Osceola, Arkansas. His bio reads “Farmer, Fabricator.” His latest tool reads public lidar data to show where rain will drain across any field."
+    />
+    <PageNo />
+    <div className="b1-farm">
+      <Shot id="cutsheetrx" chrome="browser" className="vid" style={{ height: '27cqw' }} />
+      <Shot id="cutsheetrx-phone" className="ph" fit="cover" style={{ height: '27cqw' }} />
+      <div className="side">
+        <blockquote>
+          <p className="dk-quote">“Quite possibly the best app I’ve created yet.”</p>
+          <span className="dk-attr">Travis Senter, on X · Nov 2026</span>
+        </blockquote>
+        <div className="b1-farm-list">
+          {[
+            ['Draw a field', 'Drainage paths and rainfall flow from the elevation.'],
+            ['Draw a line', 'An elevation profile, saved as a spreadsheet.'],
+            ['On his site', '“Thirty things built this year”: dashboards, maps, budgets, planners. All of it runs in a browser.'],
+          ].map(([k, v]) => (
+            <div key={k}>
+              <span className="dk-k">{k}</span>
+              <span>{v}</span>
+            </div>
+          ))}
+        </div>
+        <p className="dk-body" style={{ fontSize: '1.35cqw' }}>
+          He knows his fields better than any software company does. <Hl>That is the advantage.</Hl>
+        </p>
+      </div>
+    </div>
+    <Src>
+      Travis Senter on X, 5 Nov 2026 · senterfarms.com/programs · Farm Journal, Moving Iron 2026 speaker bio. He has not said which AI tools
+      he used.
+    </Src>
+  </Frame>
+);
+
 /* ---------- use them ---------- */
 const UseThem: Page = () => (
   <Frame label="The only way to understand them">
@@ -310,6 +537,10 @@ export const pages: [Page, string][] = [
     '2 min. The tiles light up in turn. Proof before theory: six real businesses, none of them software companies. Do not read all six. Pick the two closest to the room (trades rooms: the deck builder and the plumber) and tell those in one breath each. Then point at the caption: each one changed one job first. Results are as the businesses reported them.',
   ],
   [
+    CloseToHome,
+    '2 min. The same idea, closer to home. Read two: the pest controller (a developer built their proposal engine with Claude in two weeks) and the Te Poi dairy farmer ("a PhD in my pocket"). Point at the source tags: most hard numbers come from the people selling the tool, and that is worth saying out loud.',
+  ],
+  [
     TaskLength,
     '3 min. Wait for the line to draw. Then read the right-hand labels: four minutes was an email reply; seventeen hours is two working days. Stress "about half the time": it still fails, which is why the afternoon is about checking.',
   ],
@@ -324,6 +555,18 @@ export const pages: [Page, string][] = [
   [
     BigJob,
     '2 min. Let the clip run while you talk. The point is not the money. It is the quote: the prompts were plain English. Persistence beats clever wording. Be honest that big builds cost real money, and that today\'s work fits easily in a normal plan.',
+  ],
+  [
+    Farmer,
+    '2 min. Let the field clip run: draw the field, see the cut and fill, then the water. The point: a working farmer, not a programmer, built thirty tools this year because he knows his own land. Do not name the AI tool he used; he has not said publicly. If asked: his public posts and a 2024 AgWeb interview show he already used ChatGPT on his farm data.',
+  ],
+  [
+    Overhang,
+    '2 min. Read the big quote slowly. Mollick studies how people actually use AI; Levie runs a large software company. Both are saying the same thing: the tools are ahead of us. Then the small one: his father set up a new laptop by asking Codex to do it. If a retiree can, so can a business owner.',
+  ],
+  [
+    AlreadyEnough,
+    '3 min. The thesis of the day, so say it plainly: the models are not the bottleneck; the habit of asking is. Read each old reflex aloud, ask who has said it this month, then click to reframe. Do not argue about which company is ahead; both apps are already more capable than anyone here will use today. End on: if it fails, try again on the next model, and point at the Mollick line underneath: settling for today’s limits gets more expensive as the models improve. This line comes back on every lab page and at the close.',
   ],
   [UseThem, '30 sec. Read the quote, pause, move on. Transition straight into the map of the apps.'],
 ];

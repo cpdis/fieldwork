@@ -187,6 +187,53 @@ const ThreeRules: Page = () => {
   );
 };
 
+/* ---------- where owners drew the line ---------- */
+const LINES: { q: string; who: string; what: string }[] = [
+  {
+    q: '“You need someone checking the answers, updating guardrails, and auditing the outputs.”',
+    who: 'Beau Rheinberger, Bundilla Pest Control, Sunshine Coast',
+    what: 'Uses agents and a Claude-built proposal engine every day.',
+  },
+  {
+    q: '“It’s got to be our own product at the end of the day.”',
+    who: 'Breton Homewood, Book Nook Cafe, Florida',
+    what: 'Put AI-generated pictures on his menu. Customers pushed back in reviews. Local artists are drawing the new ones.',
+  },
+  {
+    q: '“Our customers do not interact with AI when they’re trying to get our services.”',
+    who: 'Eros Puentes, La Maracucha, Florida',
+    what: 'Uses AI for the menu and the back of house, and keeps it away from the counter on purpose.',
+  },
+  {
+    q: '“It takes less than 10 seconds to walk in and put your eyes on what’s stacked up in boxes with labels on them.”',
+    who: 'Lee Dedrick, Northwest Seafood, Florida',
+    what: 'Decided he does not need it for stock. That is a fine answer too.',
+  },
+];
+const DrewTheLine: Page = () => {
+  const on = usePlay(120);
+  return (
+    <Frame label="Where owners drew the line">
+      <Head
+        eb={eb('trust', 'Trust · in their words')}
+        title="Where owners drew the line"
+        sum="Saying yes to AI is not saying yes to everything. Four owners, four lines, all in their own words."
+      />
+      <PageNo />
+      <div className={`b8-lines ${on ? '' : 'pre'}`}>
+        {LINES.map((l, i) => (
+          <div key={l.who} className="dk-fade" style={{ ['--i' as string]: i * 2 }}>
+            <p>{l.q}</p>
+            <span className="dk-attr">{l.who}</span>
+            <span className="w">{l.what}</span>
+          </div>
+        ))}
+      </div>
+      <Src>Sources: SmartCompany partner content (Salesforce), Aug 2026 · The Independent Florida Alligator, Apr 2026.</Src>
+    </Frame>
+  );
+};
+
 /* ---------- a one-page policy ---------- */
 const POLICY: [string, string][] = [
   ['What we use AI for', 'Drafting emails, quotes and reports. Summarising documents. Checking our work against our own files.'],
@@ -340,7 +387,7 @@ const WEEKS: [string, string][] = [
   ['Use it every day', 'Open your Project every working day for the task from Lab 2. Each time it misses, add one line to the instructions.'],
   ['Test the skill', 'Run your skill on five real jobs. When one fails, fix the skill, not the answer.'],
   ['Leave one job running', 'Let your scheduled task run. Read every result. Tighten the rules where it guessed.'],
-  ['Measure, then pick the next', 'Time the task again and write down before and after. Choose the next job to hand over.'],
+  ['Measure, then ask again', 'Time the task again and write down before and after. Pick the next job to hand over, and retry one ask that failed this month.'],
 ];
 const ThirtyDays: Page = () => {
   const on = usePlay(150);
@@ -391,6 +438,9 @@ const Close: Page = () => {
             </span>
           </div>
           <h1>Thank you.</h1>
+          <p className="motto">
+            The models are already good enough. Ask for the thing you assume it can’t do, and if it can’t yet, <Hl>ask again</Hl> on the next one.
+          </p>
           <p>
             {COURSE.cohort} · {COURSE.where} · {COURSE.when}
           </p>
@@ -422,7 +472,7 @@ const Close: Page = () => {
 };
 
 export const pages: [Page, string][] = [
-  [Open, '15:30 · Block 8 opener. Thirty minutes to finish: checking, rules, policy, your number, the regrade, the plan.'],
+  [Open, '15:35 · Block 8 opener. Twenty-five minutes to finish: checking, rules, policy, your number, the regrade, the plan. If time is short, the policy interview goes home as homework.'],
   [
     TickedVsVerified,
     '4 min. A builder checking a subcontractor’s revised safety plan; any trade that reviews other people’s paperwork has this job. Untick two items, then "Check the revised document". The point: the checklist is a claim; the document is the evidence. Have the agent check the document, and you check the agent.',
@@ -433,6 +483,10 @@ export const pages: [Page, string][] = [
   ],
   [ThreeRules, '3 min. Three rules, then the quote from a Melbourne design-firm owner. Say it in your own words: the tool does the work, you own the decision. Ask the room for one example of each rule.'],
   [
+    DrewTheLine,
+    '2 min. Optional in the 25-minute block. Read the first and second quotes; let the room read the rest. The cafe owner is the warning: customers noticed. The seafood owner is the permission: not every job needs AI.',
+  ],
+  [
     PolicyOnePage,
     '5 min. Show the example, then everyone runs the interview prompt in their Project for five minutes. They finish it at home. Mention the Privacy Act and the APPs in one sentence; no legal advice.',
   ],
@@ -442,5 +496,5 @@ export const pages: [Page, string][] = [
   ],
   [Regrade, '3 min. Count hands level by level, as at 9:00. The marks show this morning’s count beside this afternoon’s.'],
   [ThirtyDays, '2 min. Ask everyone to paste the plan into their Project now and fill in their own task names, so it is there tomorrow.'],
-  [Close, '16:00. Thank them. Leave this up while people pack. Ask for one sentence of feedback each, on the way out.'],
+  [Close, '16:00. Say the one line on the page out loud: it is the whole day in a sentence. Then thank them. Leave this up while people pack. Ask for one sentence of feedback each, on the way out.'],
 ];

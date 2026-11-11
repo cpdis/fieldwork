@@ -1,4 +1,4 @@
-/* Block 7 · 15:00 · Background agents (L6). */
+/* Block 7 · 15:15 · Background agents (L6). */
 import type { Page } from '@open-slide/core';
 import { useIsActivePage } from '@open-slide/core';
 import { useCallback, useEffect, useState } from 'react';
@@ -458,11 +458,11 @@ const Live = live({
   ],
 });
 
-const Lab6 = lab({
-  id: 'lab6',
-  n: 6,
+const Lab7 = lab({
+  id: 'lab7',
+  n: 7,
   block: 'background',
-  minutes: 10,
+  minutes: 8,
   title: 'One job that runs without you',
   goal: 'Pick one thing you check every week. Set it up as a scheduled task, with the three lists of rules written into it.',
   done: 'It ran once when you pressed run, and the result was worth reading.',
@@ -487,7 +487,7 @@ const Lab6 = lab({
 });
 
 export const pages: [Page, string][] = [
-  [Open, '15:00 · Block 7 opener. Thirty minutes. If the day is running late, this is the block to shorten: keep the rules page and the lab.'],
+  [Open, '15:15 · Block 7 opener. Twenty minutes, because the glue lab took fifteen from the afternoon. Skip the team-of-agents page, run the live demo in one app only, and keep the rules page and the lab. If the day is running late, this is still the block to shorten.'],
   [
     WorksWhileYouDont,
     '4 min. Let the week run through once. Then click the Monday brief, the enquiry replies and the Friday review. Point at the two tags: "Done" is what it did alone, "Needs you" is the short list it leaves.',
@@ -502,14 +502,14 @@ export const pages: [Page, string][] = [
   ],
   [
     TeamOfAgents,
-    '3 min. Demo only. Let it run once. The point is scale: you already have what you need at L5 and L6. Read the mechanic example in one sentence: a person still approves what the voice agent promises.',
+    'Skip in the 20-minute block; keep it as a backup. 3 min if used. Demo only. Let it run once. The point is scale: you already have what you need at L5 and L6. Read the mechanic example in one sentence: a person still approves what the voice agent promises.',
   ],
   [
     Live,
-    '5 min. Use the demo account with the Ridgeline calendar and inbox connected. Run it once on demand so people see a result; do not wait for Monday. If time is short, set up ChatGPT live and show a Claude task made beforehand.',
+    '5 min (3 in the 20-minute block: ChatGPT live, Claude task shown ready-made). Use the demo account with the Ridgeline calendar and inbox connected. Run it once on demand so people see a result; do not wait for Monday. If time is short, set up ChatGPT live and show a Claude task made beforehand.',
   ],
   [
-    Lab6,
-    '10 min. Start the timer. Most people pick the Monday brief; that is fine. Walk the room and check that every task has the "never" list written into it.',
+    Lab7,
+    '8 min. Start the timer. Most people pick the Monday brief; that is fine. Walk the room and check that every task has the "never" list written into it.',
   ],
 ];
