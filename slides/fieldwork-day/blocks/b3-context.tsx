@@ -30,59 +30,6 @@ const NextWord: Page = () => {
   );
 };
 
-/* ---------- same idea, two names ---------- */
-const ROWS = [
-  { shared: 'Decide what to hand over', oa: 'Pick the task', an: 'Delegation', anx: 'what to hand over, and what to keep' },
-  { shared: 'Give it what it needs', oa: 'Bring sources', an: 'Description', anx: 'the goal, the context, the format' },
-  { shared: 'It does the first draft', oa: 'Draft', an: '(the model’s part)', anx: '' },
-  { shared: 'Check it against the source', oa: 'Review', an: 'Discernment', anx: 'is it right, is it good' },
-  { shared: 'Own the result', oa: 'You sign it', an: 'Diligence', anx: 'your name on it, so you answer for it' },
-];
-const SameIdea: Page = () => {
-  const on = usePlay(120);
-  return (
-    <Frame label="Same idea, two names">
-      <Head
-        eb={eb('context', 'Context · the method')}
-        title="One method, two names for it"
-        sum="OpenAI teaches a three-step cycle. Anthropic teaches four Ds. They describe the same habit, and it is the habit for the whole day."
-      />
-      <PageNo />
-      <Split
-        top="16.4cqw"
-        left={
-          <>
-            <SideLabel name="OpenAI · the cycle" sub="bring sources → draft → review" />
-            <div className={`b3-rows ${on ? '' : 'pre'}`}>
-              {ROWS.map((r, i) => (
-                <div key={r.shared} className="dk-fade" style={{ ['--i' as string]: i }}>
-                  <span className="dk-k">
-                    {i + 1} · {r.shared}
-                  </span>
-                  <b className={i === 2 ? 'dk-muted' : ''}>{r.oa}</b>
-                </div>
-              ))}
-            </div>
-          </>
-        }
-        right={
-          <>
-            <SideLabel name="Anthropic · the 4Ds" sub="AI Fluency course" />
-            <div className={`b3-rows ${on ? '' : 'pre'}`}>
-              {ROWS.map((r, i) => (
-                <div key={r.shared} className="dk-fade" style={{ ['--i' as string]: i + 5 }}>
-                  <b className={i === 2 ? 'dk-muted' : ''}>{r.an}</b>
-                  {r.anx && <span className="x">{r.anx}</span>}
-                </div>
-              ))}
-            </div>
-          </>
-        }
-      />
-    </Frame>
-  );
-};
-
 /* ---------- the context dial (the email is staged in stage/context-mail.tsx) ---------- */
 const DIAL = [
   { k: 'Just the ask', d: '“Write a follow-up email to the client after yesterday’s site visit.”' },
@@ -137,7 +84,7 @@ const ProjBody = ({ files, inst }: { files: string; inst: string }) => (
   <div className="b3-proj">
     <div className="col">
       <div className="mlab">{inst}</div>
-      <div className="task" style={{ fontSize: '.78cqw', lineHeight: 1.4 }}>
+      <div className="task b3-inst">
         You work for Ridgeline Surveying, licensed surveyors in Perth. Write in plain Australian English, first names, short
         paragraphs. Always use our price list. Never promise a date we haven't confirmed.
       </div>
@@ -255,7 +202,7 @@ const DeckStory: Page = () => (
         </Step>
         <Step>
           <div>
-            <span className="dk-k">In the ute</span>
+            <span className="dk-k">Afterwards</span>
             <b>Pastes it all in</b>
             <span>The transcript, plus the client's call history, into ChatGPT.</span>
           </div>
@@ -264,12 +211,12 @@ const DeckStory: Page = () => (
           <div>
             <span className="dk-k">5 minutes</span>
             <b>Recap email sent</b>
-            <span>The client gets a recap of everything agreed before the ute has left the street.</span>
+            <span>The client gets a recap of everything agreed, about five minutes after the visit.</span>
           </div>
         </Step>
         <Step>
           <div>
-            <span className="dk-k">That night</span>
+            <span className="dk-k">Then</span>
             <b>Proposal drafted</b>
             <span>“Referencing my previous proposals.” Past work is the template.</span>
           </div>
@@ -279,7 +226,7 @@ const DeckStory: Page = () => (
             <span className="dk-k">4–6 weeks</span>
             <b>A few hundred thousand dollars of new sales</b>
             <span>
-              “I still don't know what an MCP is.”
+              “I still don't know what an MCP is.” (An MCP is the plumbing that connects apps. He never needed it.)
             </span>
           </div>
         </Step>
@@ -305,8 +252,9 @@ const DeckStory: Page = () => (
 const Live = live({
   block: 'context',
   title: 'Build a Project in front of you',
-  minutes: 5,
+  minutes: 4,
   backup: () => ContextDial,
+  liveIn: 'claude',
   apps: [
     {
       who: 'openai',
@@ -317,6 +265,7 @@ const Live = live({
         'Paste the five-line instructions.',
         'Ask: “Write a follow-up email to the client after yesterday’s site visit.” Attach the site notes.',
       ],
+      ready: 'The Ridgeline project, built before the day with the same three files and the same five lines. Open it, show the instructions and the files, and put its email beside the live one.',
     },
     {
       who: 'claude',
@@ -324,8 +273,9 @@ const Live = live({
       mode: 'Projects',
       steps: [
         'Create project “Ridgeline”. Add the same files to Project knowledge.',
-        'Same instructions, same ask, same notes.',
-        'Put both emails side by side with the one from “just the ask”.',
+        'Paste the five-line instructions.',
+        'Ask: “Write a follow-up email to the client after yesterday’s site visit.” Attach the site notes.',
+        'Put the email beside the one from “just the ask”, and beside the ChatGPT one.',
       ],
     },
   ],
@@ -344,7 +294,7 @@ const Lab2 = lab({
     <>
       Sidebar → <b>New project</b>. Name it after your business.
     </>,
-    'Add what you already have: price list, services page, a few good emails. Photos of paper are fine.',
+    'Add what you brought: your price list, services page and a few good past emails. Photos of paper are fine.',
     'Instructions, five lines: who you are, who your customers are, how you talk, one thing it must always do, one it must never do.',
     'Test it with a real customer question from this week. Fix the files, not the question.',
   ],
@@ -352,7 +302,7 @@ const Lab2 = lab({
     <>
       Projects → <b>Create project</b>. Name it after your business.
     </>,
-    'Add what you already have to Project knowledge: price list, services page, a few good emails.',
+    'Add what you brought to Project knowledge: your price list, services page and a few good past emails.',
     'Project instructions, five lines: who you are, your customers, how you talk, one always, one never.',
     'Test it with a real customer question from this week. Fix the files, not the question.',
   ],
@@ -366,16 +316,12 @@ export const pages: [Page, string][] = [
     '4 min. The first word picks itself as the page opens: the bars grow, the highlight lands on "$" fast because it is far ahead. Click three times for the next three words. On the second, the bars are flat and the highlight wanders before it settles on a price: stop there and make the point. When the bars are flat, it is guessing, and it does not say so. The last click ends on "It has never seen your price list." That line sets up the whole block.',
   ],
   [
-    SameIdea,
-    '3 min. The two vendors teach the same method with different words. Point at row 2 and row 4: giving it what it needs, and checking against the source. Those two are where owners win or lose.',
-  ],
-  [
     ContextDial,
     '4 min. Level 0 writes itself as the page opens. Click three times for levels 1, 2 and 3: each click attaches that context to the draft and the email rewrites itself. Read the subject line each time. Yellow is what the step you just added changed. At 0 it is a template; at 3 it is an email you would actually send. The dial buttons jump to any level. The made-up business is a surveyor; swap the example for your audience if you like.',
   ],
   [
     WhereContext,
-    '3 min. Click 1, 2, 3 in both windows. Same three parts in both apps: instructions, files, chats that inherit both. The words differ ("files" versus "project knowledge").',
+    '3 min. Click 1, 2, 3 in both windows. Clicking a number zooms in, which is how the room reads the small text. Same three parts in both apps: instructions, files, chats that inherit both. The words differ ("files" versus "project knowledge").',
   ],
   [
     StarterPack,
@@ -383,14 +329,14 @@ export const pages: [Page, string][] = [
   ],
   [
     DeckStory,
-    '3 min. Press → to build it up. The point: no integrations, no MCP, just context. Record the site visit, paste the transcript and the call history, and use past proposals as the template. Read the last quote with a straight face.',
+    '3 min. Press → to build it up. The point: no integrations, no connectors, just context. Record the site visit, paste the transcript and the call history, and use past proposals as the template. The steps are as the owner posted them; the sales figure is his own. Nobody here needs to know what an MCP is either, which is the joke.',
   ],
   [
     Live,
-    '5 min. Have the Ridgeline files ready in a folder on the desktop. Build both Projects quickly. If time is short, build one and show the other already made.',
+    '4 min. Claude runs live this block; ChatGPT is open with the same Project already built. Have the Ridgeline files ready in a folder on the desktop. Build the one Project, ask for the email, then switch to the ready-made one and show that the parts are the same.',
   ],
   [
     Lab2,
-    '20 min. Start the timer. Most common snag: people have no files ready. Tell them to type the five-line instructions and paste their website’s services page. That is enough for now. Break at 10:45.',
+    '20 min. Start the timer. The pre-work email asked everyone to bring a price list and a few past emails. Most common snag: someone did not. Tell them to type the five-line instructions and paste their website’s services page. That is enough for now. Break at 10:45.',
   ],
 ];

@@ -6,9 +6,9 @@
 .fw .dg-card { width: 100%; height: 100%; box-sizing: border-box; display: flex; align-items: center; gap: .5cqw; background: var(--white); border: .1cqw solid var(--ink); padding: 0 .8cqw; font-size: 1.05cqw; line-height: 1.25; user-select: none; -webkit-user-select: none; touch-action: none; transition: box-shadow .2s, background .2s; }
 .fw .dg-card.dragging { box-shadow: .3cqw .4cqw 0 rgba(20,21,24,.18); cursor: grabbing; }
 .fw .dg-card.locked { cursor: default; }
-.fw .dg-card .st { margin-left: auto; font: 500 .75cqw/1 var(--f-mono); letter-spacing: .05em; text-transform: uppercase; white-space: nowrap; animation: dk-rowin .35s var(--ease) both; }
+.fw .dg-card .st { margin-left: auto; font: 500 .88cqw/1 var(--f-mono); letter-spacing: .05em; text-transform: uppercase; white-space: nowrap; animation: dk-rowin .35s var(--ease) both; }
 .fw .dg-card .st.ok { color: var(--ok); }
 .fw .dg-card .st.bad { color: var(--bad); }
-.fw .dg-card .why { font-size: .9cqw; line-height: 1.3; color: var(--muted); animation: dk-rowin .35s var(--ease) both; }
-.fw .dg-hint { font: 400 .8cqw/1 var(--f-mono); color: var(--muted); }
+.fw .dg-card .why { font-size: .95cqw; line-height: 1.3; color: var(--muted); animation: dk-rowin .35s var(--ease) both; }
+.fw .dg-hint { font: 400 .88cqw/1 var(--f-mono); color: var(--muted); }
 .fw .dg-ghost { fill: var(--soft); stroke: var(--muted); stroke-width: 2; stroke-dasharray: 6 5; pointer-events: none; }

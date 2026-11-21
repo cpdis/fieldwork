@@ -2,6 +2,7 @@
 /* Opening: cover, the day, where are you on the staff, who's talking, how today works. */
 import type { Page } from '@open-slide/core';
 import { useState } from 'react';
+import { clearRoomState, loadState, saveState } from '../persist';
 import { Eyebrow, Frame, Hl, Mark, Pad, Title } from '@assets/fieldwork/brand';
 import { COURSE, DAY, LEVELS, toMin } from '../course';
 import { Head, PageNo, Staff, usePlay } from '../kit';
@@ -29,12 +30,34 @@ const Cover: Page = () => {
           </div>
           <div>
             <b>Your business, all day</b>
-            <span>Each block ends with a lab on a real task from your own work, not a made-up example.</span>
+            <span>Each block ends with a lab on your own work, not a made-up example.</span>
           </div>
           <div>
             <b>Leave with things that run</b>
-            <span>A business Project, a brand file, a skill, a scheduled job, a policy and a 30-day plan.</span>
+            <span>A business Project, a brand file, an admin job done, a skill, a scheduled job and a 30-day plan.</span>
           </div>
+        </div>
+        <div className="b0-arrive">
+          <span className="dk-k">While you settle in</span>
+          <ol>
+            <li>Open the ChatGPT or Claude desktop app. The one you pay for.</li>
+            <li>Check you are signed in, on a paid plan.</li>
+            <li>{COURSE.wifi.name ? <>Join the Wi-Fi: <b>{COURSE.wifi.name}</b> · <b>{COURSE.wifi.password}</b></> : 'Join the Wi-Fi. The details are on your table.'}</li>
+            <li>Charger in. {COURSE.companion ? <>Open <b>{COURSE.companion}</b> in a browser tab.</> : 'Anything not working? Say so now, not at the first lab.'}</li>
+          </ol>
+          <button
+            type="button"
+            className="rb b0-new"
+            data-osd-interactive
+            onClick={() => {
+              if (window.confirm('Start a new session? This clears the saved hand counts, timers and sorts on this laptop.')) {
+                clearRoomState();
+                window.location.reload();
+              }
+            }}
+          >
+            New session
+          </button>
         </div>
       </Pad>
     </Frame>
@@ -58,7 +81,7 @@ const Today: Page = () => {
   const on = usePlay();
   return (
     <Frame label="Today">
-      <Head eb="Today · 9:00 to 16:00" title="One day, eight blocks, one real task" />
+      <Head eb="Today · 9:00 to 16:00" title="One day, eight blocks, your own business" />
       <PageNo />
       <div className={`b0-sched ${on ? '' : 'pre'}`}>
         {DAY.map((d, i) => (
@@ -72,7 +95,7 @@ const Today: Page = () => {
                 <span className="n">{String(d.n).padStart(2, '0')}</span>
                 <span className="b">{d.title}</span>
                 <span className="o">{d.out}</span>
-                <span className="lv">L{d.level}</span>
+                <span className="lv">~L{d.level}</span>
               </>
             ) : (
               <>
@@ -93,7 +116,8 @@ const Today: Page = () => {
 };
 
 /* ---------- where are you on the staff? (room tally, read again at the end) ---------- */
-export const roomTally: { am: Record<number, number>; pm: Record<number, number> } = { am: {}, pm: {} };
+export const roomTally: { am: Record<number, number>; pm: Record<number, number> } = loadState('tally', { am: {}, pm: {} });
+const keepTally = () => saveState('tally', roomTally);
 
 export const StaffPoll = ({ when }: { when: 'am' | 'pm' }) => {
   const [pick, setPick] = useState(when === 'am' ? 1 : 4);
@@ -127,6 +151,7 @@ export const StaffPoll = ({ when }: { when: 'am' | 'pm' }) => {
             type="button"
             onClick={() => {
               t[pick] = (t[pick] ?? 0) + 1;
+              keepTally();
               force((x) => x + 1);
             }}
           >
@@ -137,6 +162,7 @@ export const StaffPoll = ({ when }: { when: 'am' | 'pm' }) => {
             type="button"
             onClick={() => {
               for (const k of Object.keys(t)) delete t[Number(k)];
+              keepTally();
               force((x) => x + 1);
             }}
           >
@@ -160,13 +186,13 @@ const WhereAreYou: Page = () => (
       sum={
         <>
           Every's Eight Levels of AI Adoption, read like a levelling staff. Most owners start at L1. Today's target:{' '}
-          <Hl>leave working at L4</Hl>, with one L5 workflow built and a map to L6.
+          <Hl>leave having done L4 once</Hl>, with one L5 workflow saved and a look at L6.
         </>
       }
     />
     <PageNo />
     <StaffPoll when="am" />
-    <div className="dk-src">Levels: Every, “The Eight Levels of AI Adoption”. We count the room again at 15:50.</div>
+    <div className="dk-src">Levels: Every, “The Eight Levels of AI Adoption”. The one-line descriptions are our paraphrase. We count the room again before we finish.</div>
   </Frame>
 );
 
@@ -209,8 +235,8 @@ const HowToday: Page = () => (
     <div className="b0-rules">
       {[
         ['01', 'Idea, both apps, your business', 'Each block: a short idea, the same job in ChatGPT and in Claude, then a lab on your own work.'],
-        ['02', 'Use the app you pay for', 'The labs show both. No one needs to switch tools today, and nothing here needs code.'],
-        ['03', 'One real task, all day', 'The task from your intake form grows through the labs. By 16:00 it runs as a skill.'],
+        ['02', 'Use the app you pay for', 'The labs show both. No one needs to switch tools today, and you will not write code yourself.'],
+        ['03', 'Your business, all day', 'Every lab runs on your own work: the tasks from your intake form, your files, your prices.'],
         ['04', 'Ask out loud', 'If you are stuck, someone else is too. Questions are the best part of the day.'],
       ].map(([n, t, s]) => (
         <div key={n}>
@@ -222,13 +248,14 @@ const HowToday: Page = () => (
     </div>
     <div className="b0-house">
       <span className="dk-k">Housekeeping</span>
-      <span>Breaks 10:45 and 15:00 · Lunch 12:00 · Finish 16:00</span>
+      <span>Breaks 10:45 and 14:45 · Lunch 12:00 · Finish 16:00</span>
       {COURSE.wifi.name && (
         <span>
           Wi-Fi <b>{COURSE.wifi.name}</b> · <b>{COURSE.wifi.password}</b>
         </span>
       )}
       <span>Phones are fine. Laptops open, chargers in.</span>
+      <span>We take a few photos for the course page. Tell {COURSE.instructor} if you would rather not be in them.</span>
     </div>
   </Frame>
 );
@@ -236,15 +263,15 @@ const HowToday: Page = () => (
 export const pages: [Page, string][] = [
   [
     Cover,
-    'Cover. Up as people arrive. Welcome them, point at coffee. Start at 9:00 sharp: owners notice when you respect their time.',
+    'Cover. Up as people arrive. Welcome them, point at coffee, and point at the checklist: app open, signed in, paid plan, Wi-Fi. Walk the room and fix sign-in problems now. The small "New session" button clears the saved hand counts, timers and sorts from the last run: press it once before the first person arrives, never during the day. Start at 9:00 sharp: owners notice when you respect their time.',
   ],
   [
     Today,
-    '1 min. The shape of the day. Point at the right column: everyone leaves with these six things, made on their own business. The staff on the right climbs from L1 to L5 by the end.',
+    '1 min. The shape of the day. Point at the right column: everyone leaves with these things, made on their own business. The staff on the right climbs from L1 to about L5 by the end; the readings are rough, not grades.',
   ],
   [
     WhereAreYou,
-    '3 min. Click each level and read it out. Ask: "Hands up if this is you." Click "+ One hand" for each hand at that level. Most of the room will be L1 or L2. Say: "That is normal. By 4pm you will be at L4." The tally is kept for the regrade at 15:50.',
+    '3 min. Click each level and read it out. Ask: "Hands up if this is you." Click "+ One hand" for each hand at that level. Most of the room will be L1 or L2. Say: "That is normal." "By 4pm you will have done L4 once" is the honest promise. The tally is saved on this laptop, so it survives a reload, and comes back for the recount in Block 8.',
   ],
   [
     Instructor,
@@ -252,6 +279,6 @@ export const pages: [Page, string][] = [
   ],
   [
     HowToday,
-    '1 min. The four rules. Rule 3 matters most: the intake task. If someone did not fill in the intake form, ask them now for one annoying recurring task.',
+    '1 min. The four rules. Rule 3 matters most: every lab is on their own work. If someone did not fill in the intake form, ask them now for three jobs they would happily never do again. Read the photo line out loud and mean it.',
   ],
 ];

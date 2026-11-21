@@ -1,0 +1,117 @@
+{
+  "intro": "Everything from the day that you might want to copy: the lab prompts, the homework, the 30-day plan and the cases we did not have time for. Use the app you pay for. The steps are the same idea in both.",
+  "warmup": {
+    "title": "The two-minute warm-up",
+    "lead": "Ask for one thing you assume it cannot do. If you are stuck for an idea:",
+    "ideas": [
+      "Photograph something handwritten on your desk and ask for it as a table.",
+      "Paste the last long email you received and ask what it wants from you, and by when.",
+      "Describe a job you quoted last week and ask what you forgot to price."
+    ]
+  },
+  "labs": [
+    {
+      "n": 1,
+      "title": "Your first useful task",
+      "goal": "Take something on paper that you usually retype, and turn it into rows you can use.",
+      "done": "A table is in Excel or Sheets, and you have checked every flagged cell against the paper.",
+      "prompts": ["Turn this into a table I can paste into Excel. Flag anything you can't read."],
+      "openai": ["Open ChatGPT desktop. Start a new chat.", "Photograph a docket, receipt, timesheet or whiteboard. Drop the photo in.", "Paste the prompt.", "Paste the table into Excel or Sheets. Check each flagged cell against the paper."],
+      "claude": ["Open Claude desktop. Start a new chat.", "Photograph a docket, receipt, timesheet or whiteboard. Drop the photo in.", "Paste the prompt.", "Paste the table into Excel or Sheets. Check each flagged cell against the paper."]
+    },
+    {
+      "n": 2,
+      "title": "Build your business Project",
+      "goal": "Set up a Project that knows your business, so every chat from now on starts from you.",
+      "done": "You asked it a question a customer asked you this week, and the answer used your prices and sounded like you.",
+      "prompts": ["Who we are:\nWho our customers are:\nHow we talk:\nAlways:\nNever:"],
+      "promptLabel": "Instructions to fill in, five lines",
+      "openai": ["Sidebar, New project. Name it after your business.", "Add what you brought: your price list, services page and a few good past emails. Photos of paper are fine.", "Fill in the five lines and save them as the Project instructions.", "Test it with a real customer question from this week. Fix the files, not the question."],
+      "claude": ["Projects, Create project. Name it after your business.", "Add what you brought to Project knowledge: your price list, services page and a few good past emails.", "Fill in the five lines and save them as the Project instructions.", "Test it with a real customer question from this week. Fix the files, not the question."]
+    },
+    {
+      "n": 3,
+      "title": "One thing a customer will see, on brand",
+      "goal": "Write a one-page brand file, then make one customer-facing thing with it: a price sheet, a one-pager or a social post.",
+      "done": "You made it with the brand file loaded, and asked for a brand check on it.",
+      "prompts": ["Interview me to write a one-page brand file: colours, fonts, five nevers, three voice rules.", "Check this against brand.md. List every miss, then fix them."],
+      "openai": ["In your Project, start a new chat and paste the first prompt.", "Save the answer as brand.md in the Project files.", "Ask for the asset. If you have time, ask again in a chat outside the Project and compare the two.", "Paste the second prompt."],
+      "claude": ["In your Project, start a new chat and paste the first prompt.", "Save the answer as brand.md in Project knowledge.", "Ask for the asset. If you have time, ask again in a chat outside the Project and compare the two.", "Paste the second prompt."]
+    },
+    {
+      "n": 4,
+      "title": "An admin job, done by an agent",
+      "goal": "Hand an agent one real multi-step job on a folder of your own files: reconcile two lists, sort and rename a folder of documents, compile quotes from PDFs, or fill a form from a document.",
+      "done": "It finished or stopped where you told it to, and you checked one result against the source before approving.",
+      "prompts": ["The job: \nWhere things are: \nWhat good means: \nWhat I want back: \nWhere to stop: "],
+      "promptLabel": "A goal with all five parts",
+      "openai": ["ChatGPT desktop, Work. Pick the folder, or the connected app, it may use.", "Write the goal with all five parts.", "Read the plan before it starts. Correct it there; that is the cheapest moment.", "When it stops, check one item against the source. Then approve, or tell it what to fix."],
+      "claude": ["Claude desktop, Cowork. Pick the folder, or the connected app, it may use.", "Write the goal with all five parts.", "Read the plan before it starts. Correct it there; that is the cheapest moment.", "When it stops, check one item against the source. Then approve, or tell it what to fix."]
+    },
+    {
+      "n": 5,
+      "title": "Turn your task into a skill",
+      "goal": "Take a job that went well today and save the method as a skill. Then run it on an example it has not seen.",
+      "done": "The skill ran on a new example, and you checked the result against what you would have done.",
+      "prompts": ["Turn what we did into a skill. Name it, say when to use it, list the steps and the checks."],
+      "openai": ["In the chat where the job went well, paste the prompt.", "Say: Save this as a skill. Confirm when it asks.", "New chat, new input. Does it use the skill without being told?", "Something wrong? Fix the skill, not the output. Run it again."],
+      "claude": ["In the chat where the job went well, paste the prompt.", "Save it under Settings, Capabilities, Skills.", "New chat, new input. Does it use the skill without being told?", "Something wrong? Fix the skill, not the output. Run it again."]
+    },
+    {
+      "n": 6,
+      "home": true,
+      "title": "Build your own glue (take-home, about 30 minutes)",
+      "goal": "Pick the one place you copy and paste between two tools. Have the agent build the view or the connection, working on exports, not on your live systems.",
+      "done": "It ran on your sample, and three rows you checked by hand match the source.",
+      "prompts": ["Every week I copy [what] from [tool A] into [tool B]. Exports of both are here. Build me [a one-page view of ... | a file I can import into ...]. Ask me three questions first.", "Write a README: what this reads, what it writes, and how I run it next week."],
+      "openai": ["Make a folder called glue. Put in a small export from each tool: 10 to 20 rows, no bank or card details.", "Open the folder in Codex and paste the first prompt, with your own words in the brackets.", "Open what it made. Check three rows by hand against the source.", "Paste the second prompt."],
+      "claude": ["Make a folder called glue. Put in a small export from each tool: 10 to 20 rows, no bank or card details.", "Open the folder in the Code tab and paste the first prompt, with your own words in the brackets.", "Open what it made. Check three rows by hand against the source.", "Paste the second prompt."]
+    },
+    {
+      "n": 7,
+      "title": "One job that runs without you",
+      "goal": "Pick one thing you check every week and set it up as a scheduled task, with the rules written into it. Nothing connected? Pick a job that needs no connector: a weekly check of a supplier's public price page, or a summary of one folder.",
+      "done": "The task exists, with its rules written in, and it ran once when you pressed run.",
+      "prompts": ["Every [day] at [time], [the job]. You may read and draft. Ask before you send anything. Never pay or delete. Tell me what you could not find."],
+      "openai": ["Pick the job: a Monday brief, an inbox digest, a price check on a public web page, a to-do refresh.", "In a new chat, paste the prompt with your own words in the brackets.", "Find it under Scheduled in the sidebar. Run it once now.", "Read the result. Tighten the wording, then leave it on."],
+      "claude": ["Pick the job: a Monday brief, an inbox digest, a price check on a public web page, a to-do refresh.", "Scheduled, New task, Create with Claude. Paste the prompt with your own words in the brackets.", "Check the approval mode, then run it once now.", "Read the result. Tighten the wording, then leave it on."]
+    }
+  ],
+  "policy": {
+    "title": "Homework: a one-page AI use policy",
+    "lead": "Ten minutes, in either app. Run it in your business Project, so it already knows what you do. Privacy law is good practice for everyone and a legal duty for some businesses. This is not legal advice.",
+    "prompt": "Interview me, one question at a time, to write a one-page AI use policy for my business. Cover five things: what we use AI for, what never goes in, who checks work before it leaves, what we tell clients, and what we do if it stops working. Use plain words. Keep it to one page."
+  },
+  "plan": {
+    "title": "Your next 30 days",
+    "lead": "One habit a week. Copy this into your Project and put your own job names in.",
+    "weeks": [
+      ["Use it every day", "Open your Project every working day for the task from Lab 2. Each time it misses, add one line to the instructions."],
+      ["Test the skill", "Run your skill on five real jobs. When one fails, fix the skill, not the answer."],
+      ["Leave one job running", "Let your scheduled task run. Read every result. Tighten the rules where it guessed."],
+      ["Measure, then ask again", "Time the job again and write the measured number beside your estimate. Pick the next job to hand over, and retry one ask from your try-again list."]
+    ],
+    "day30": "Day 30: write down your measured number."
+  },
+  "tryAgain": {
+    "title": "Your try-again list",
+    "lead": "When an ask fails, do not cross it off. Write it down with the date and the app, and ask again when the next model arrives. Copy this table into your Project.",
+    "template": "| Date | App | What I asked for | What went wrong | Retried on | Result |\n|---|---|---|---|---|---|\n|  |  |  |  |  |  |"
+  },
+  "cases": {
+    "title": "More cases",
+    "lead": "Small businesses that have said in public what they changed. The tag says who published the story. Most hard numbers come from someone with something to sell, so read them as each business's own report.",
+    "items": [
+      { "biz": "Mothership Coffee Roasters", "where": "Six cafes, Las Vegas", "tool": "Claude", "did": "A Monday brief from the tills, the books, Slack and email.", "got": "In-store margins up to 22%, partly from tighter ordering and rosters.", "src": "Anthropic, Sep 2026", "kind": "Vendor" },
+      { "biz": "Bella Manufacturing", "where": "Food-truck fit-outs, Australia", "tool": "Tool not named", "did": "Had AI read and compare the insurance quotes.", "got": "Saved several thousand dollars and found a gap in the cover.", "src": "NAB, Apr 2026", "kind": "Bank" },
+      { "biz": "Bundilla Pest Control", "where": "Pest control, Australia, founded 1985", "tool": "Salesforce, built with AI coding help", "did": "Their developer built a proposal engine in two weeks. One entry on site now runs everything after it.", "got": "They joined the tools they had instead of buying a new one.", "src": "SmartCompany partner content, sponsored by Salesforce, Aug 2026", "kind": "Sponsored" },
+      { "biz": "A carpenter", "where": "Carpentry, Queensland", "tool": "Custom tool", "did": "A three-step form drafts each quote in his voice with supplier prices. He reviews it for two minutes.", "got": "45 minutes a quote down to 8. Paid for itself in 7 weeks.", "src": "Batten Digital, Apr 2026", "kind": "Builder" },
+      { "biz": "Willoughby Plumbing and Gas", "where": "Plumbing, New Zealand", "tool": "Call answering", "did": "Every missed call gets a reply in seconds. Urgent jobs ping straight through; a summary lands at lunch and at night.", "got": "\"I'm able to complete the job I'm on without worrying about the calls.\"", "src": "Call Catcher, Oct 2026", "kind": "Vendor" },
+      { "biz": "Tongariro Crossing Shuttles", "where": "Alpine shuttles, Tongariro, NZ", "tool": "Website chat", "did": "Answers routes, pick-ups and weather questions all night, for walkers in other time zones.", "got": "Up to 75 percent of enquiries handled end to end. About 37 staff hours saved in a month.", "src": "Yonder", "kind": "Vendor" },
+      { "biz": "A dental practice", "where": "Dentistry, Darwin", "tool": "Voice receptionist", "did": "Picks up after a few rings, books into the practice system and hands over to a person when it should.", "got": "Zero missed calls in three months.", "src": "AI Adaptive, Mar 2026", "kind": "Self-published" },
+      { "biz": "ATV Big Air Tour", "where": "Touring events, run by two people", "tool": "ChatGPT", "did": "Counts the merchandise, recommends what to reorder, and checks the event listings for mistakes on a schedule.", "got": "Listing checks went from eight hours a week to one.", "src": "OpenAI, Sep 2026", "kind": "Vendor" },
+      { "biz": "Oak Creek Plumbing & Remodeling", "where": "Plumbing, about 20 plumbers", "tool": "ChatGPT", "did": "A tablet in every home visit: photos of the broken heater in, options, invoice and proposal out.", "got": "\"Some of our older guys have learned to ask ChatGPT the right questions.\"", "src": "CNN, Oct 2025", "kind": "Press" },
+      { "biz": "Matthew Zonderop", "where": "Dairy, 370 cows, Te Poi, NZ", "tool": "ChatGPT", "did": "Uploads his herd's genomic spreadsheets and soil tests. Grazing plans and feed budgets are done with AI.", "got": "A sharemilker, not a programmer, doing his own analysis.", "src": "Farmers Weekly NZ, Nov 2024", "kind": "Press" }
+    ]
+  }
+}

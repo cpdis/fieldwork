@@ -82,6 +82,10 @@ const TickedVsVerified: Page = () => {
             ? `${t} ticked. ${v} actually fixed in the document. Check the document, not the checklist.`
             : `The checklist says ${t} ${t === 1 ? 'item is' : 'items are'} done. Tick or untick a few, then check the revised document.`}
         </p>
+        <p className="b8-ai">
+          Where AI comes in: <b>have the agent check the document against the list. Then you check the agent</b>, on the three items that matter
+          most.
+        </p>
         <div className="pbtns">
           <button className="rb primary" type="button" onClick={() => setChecked(true)}>
             Check the revised document
@@ -200,11 +204,6 @@ const LINES: { q: string; who: string; what: string }[] = [
     what: 'Put AI-generated pictures on his menu. Customers pushed back in reviews. Local artists are drawing the new ones.',
   },
   {
-    q: '“Our customers do not interact with AI when they’re trying to get our services.”',
-    who: 'Eros Puentes, La Maracucha, Florida',
-    what: 'Uses AI for the menu and the back of house, and keeps it away from the counter on purpose.',
-  },
-  {
     q: '“It takes less than 10 seconds to walk in and put your eyes on what’s stacked up in boxes with labels on them.”',
     who: 'Lee Dedrick, Northwest Seafood, Florida',
     what: 'Decided he does not need it for stock. That is a fine answer too.',
@@ -217,7 +216,7 @@ const DrewTheLine: Page = () => {
       <Head
         eb={eb('trust', 'Trust · in their words')}
         title="Where owners drew the line"
-        sum="Saying yes to AI is not saying yes to everything. Four owners, four lines, all in their own words."
+        sum="Saying yes to AI is not saying yes to everything. Three owners, three lines, all in their own words."
       />
       <PageNo />
       <div className={`b8-lines ${on ? '' : 'pre'}`}>
@@ -250,8 +249,8 @@ const PolicyOnePage: Page = () => {
     <Frame label="An AI policy on one page">
       <Head
         eb={eb('trust', 'Trust · your policy')}
-        title="Your AI policy, on one page"
-        sum="Not a legal document. One page your team can read in two minutes, and one you would be happy for a client to see."
+        title="Homework: your AI policy, on one page"
+        sum="Not a legal document. One page your team can read in two minutes, and one you would be happy for a client to see. This is an example. Yours takes ten minutes at your desk this week."
       />
       <PageNo />
       <div className="b8-sheet">
@@ -268,7 +267,7 @@ const PolicyOnePage: Page = () => {
         ))}
       </div>
       <div className="b8-sheet-side">
-        <span className="dk-k">Make yours in ten minutes, in either app</span>
+        <span className="dk-k">Homework · ten minutes, in either app{COURSE.companion ? ` · the prompt is at ${COURSE.companion}#policy` : ''}</span>
         <p className="b8-prompt">{PROMPT}</p>
         <div className="pbtns">
           <button
@@ -285,7 +284,7 @@ const PolicyOnePage: Page = () => {
           </button>
         </div>
         <p className="dk-body" style={{ fontSize: '1.2cqw', color: 'var(--muted)' }}>
-          Run it in your business Project, so it already knows what you do. Section 2 is where the Australian Privacy Principles come in.
+          Run it in your business Project, so it already knows what you do. Section 2 is where privacy law comes in, if it applies to you.
         </p>
       </div>
       <Src>Five sections follow the transparency, accountability and dependency themes in Anthropic’s AI Fluency course for small businesses.</Src>
@@ -303,17 +302,17 @@ const BeforeAfter: Page = () => {
   const money = hrs * rate;
   const fmtM = (m: number) => (m >= 60 ? `${Math.floor(m / 60)} h${m % 60 ? ` ${m % 60} min` : ''}` : `${m} min`);
   return (
-    <Frame label="Before and after">
+    <Frame label="A number to beat">
       <Head
         eb={eb('trust', 'Trust · your number')}
-        title="Put one number on it"
-        sum="Pick the task you worked on today. Time it before, time it after, and say it out loud round the table. One honest number beats a page of claims."
+        title="A number to beat"
+        sum="Pick the job you worked on today. Write down what it costs you each week now, and your honest estimate of what it will cost in a month. The measured number comes on day 30. One honest number beats a page of claims."
       />
       <PageNo />
       <div className="b8-calc" data-osd-interactive>
         {[
-          ['Before, each week', before, setBefore, 15, 600, 5, fmtM(before)],
-          ['After, each week', after, setAfter, 0, 600, 5, fmtM(after)],
+          ['Today, each week', before, setBefore, 15, 600, 5, fmtM(before)],
+          ['My estimate for day 30, each week', after, setAfter, 0, 600, 5, fmtM(after)],
           ['What an hour of your time is worth', rate, setRate, 30, 300, 5, `$${rate}`],
         ].map(([k, v, set, min, max, step, shown]) => (
           <label key={k as string}>
@@ -333,7 +332,7 @@ const BeforeAfter: Page = () => {
       <div className="b8-calc-out">
         <div className="num">
           <b>{hrs} h</b>
-          <span>back each year (48 working weeks)</span>
+          <span>back each year, if the estimate holds (48 working weeks)</span>
         </div>
         <div className="num v">
           <b>${money.toLocaleString('en-AU')}</b>
@@ -342,16 +341,16 @@ const BeforeAfter: Page = () => {
       </div>
       <div className="b8-table">
         <div className="th">
-          <span>Task</span>
-          <span>Before</span>
-          <span>After</span>
-          <span>How I measured</span>
+          <span>Job</span>
+          <span>Today</span>
+          <span>My estimate</span>
+          <span>Day 30, measured</span>
         </div>
         <div className="tr">
           <span>Quote follow-up emails</span>
           <span>3 h a week</span>
           <span>40 min a week</span>
-          <span>Timed two weeks of each, with a phone timer</span>
+          <span>Time two weeks with a phone timer, then fill this in</span>
         </div>
         <div className="tr blank">
           <span>Yours</span>
@@ -372,7 +371,7 @@ const Regrade: Page = () => (
       title="Where are you now?"
       sum={
         <>
-          Same staff as this morning. Count the room again. The marks show where hands were at 9:00 and where they are now. Today’s target was <Hl>L4, with one L5 workflow</Hl>.
+          Same staff as this morning. Count the room again. The marks show where hands were at 9:00 and where they are now. Today’s target was <Hl>L4 once, with one L5 workflow saved</Hl>. One run is a start, not a grade.
         </>
       }
     />
@@ -387,7 +386,7 @@ const WEEKS: [string, string][] = [
   ['Use it every day', 'Open your Project every working day for the task from Lab 2. Each time it misses, add one line to the instructions.'],
   ['Test the skill', 'Run your skill on five real jobs. When one fails, fix the skill, not the answer.'],
   ['Leave one job running', 'Let your scheduled task run. Read every result. Tighten the rules where it guessed.'],
-  ['Measure, then ask again', 'Time the task again and write down before and after. Pick the next job to hand over, and retry one ask that failed this month.'],
+  ['Measure, then ask again', 'Time the job again and write the measured number beside your estimate. Pick the next job to hand over, and retry one ask from your try-again list.'],
 ];
 const ThirtyDays: Page = () => {
   const on = usePlay(150);
@@ -396,7 +395,12 @@ const ThirtyDays: Page = () => {
       <Head
         eb={eb('trust', 'Trust · your plan')}
         title="Your next 30 days"
-        sum="One habit a week. Small enough to keep, specific enough to check. Before you leave, paste this into your Project and put your own task names in."
+        sum={
+          <>
+            One habit a week. Small enough to keep, specific enough to check. Before you leave, copy the plan from{' '}
+            {COURSE.companion ? <b>{COURSE.companion}#plan</b> : 'the companion page'} into your Project and put your own job names in.
+          </>
+        }
       />
       <PageNo />
       <div className={`b8-days ${on ? '' : 'pre'}`}>
@@ -416,7 +420,7 @@ const ThirtyDays: Page = () => {
         ))}
       </div>
       <p className="b8-day30">
-        Day 30: <Hl>write down your number.</Hl>
+        Day 30: <Hl>write down your measured number.</Hl>
         {COURSE.contact ? ` Then send it to ${COURSE.contact}. I read every one.` : ' It is where your next 30 days start.'}
       </p>
     </Frame>
@@ -444,10 +448,22 @@ const Close: Page = () => {
           <p>
             {COURSE.cohort} · {COURSE.where} · {COURSE.when}
           </p>
+          {COURSE.feedback && (
+            <p className="ct fb">
+              <span className="dk-k">Before you go · ten quick questions, five minutes</span>
+              <b>{COURSE.feedback}</b>
+            </p>
+          )}
           {COURSE.contact && (
             <p className="ct">
-              <span className="dk-k">Questions, or your day-30 number</span>
+              <span className="dk-k">Questions, your day-30 number, or help putting this to work</span>
               <b>{COURSE.contact}</b>
+            </p>
+          )}
+          {!COURSE.contact && !COURSE.feedback && (
+            <p className="ct">
+              <span className="dk-k">Before you go</span>
+              <b>One thing that worked, one thing that didn’t. Tell {COURSE.instructor} on the way out.</b>
             </p>
           )}
         </div>
@@ -472,10 +488,10 @@ const Close: Page = () => {
 };
 
 export const pages: [Page, string][] = [
-  [Open, '15:35 · Block 8 opener. Twenty-five minutes to finish: checking, rules, policy, your number, the regrade, the plan. If time is short, the policy interview goes home as homework.'],
+  [Open, '15:30 · Block 8 opener. Thirty minutes to finish: checking, rules, your number, the recount, the plan, the feedback form. The policy is homework. Skip "Where owners drew the line" unless you are ahead.'],
   [
     TickedVsVerified,
-    '4 min. A builder checking a subcontractor’s revised safety plan; any trade that reviews other people’s paperwork has this job. Untick two items, then "Check the revised document". The point: the checklist is a claim; the document is the evidence. Have the agent check the document, and you check the agent.',
+    '4 min. A builder checking a subcontractor’s revised safety plan; any trade that reviews other people’s paperwork has this job. Untick two items, then "Check the revised document". The point: the checklist is a claim; the document is the evidence. Then the line on the page: have the agent check the document, and you check the agent.',
   ],
   [
     HiddenInstruction,
@@ -484,17 +500,17 @@ export const pages: [Page, string][] = [
   [ThreeRules, '3 min. Three rules, then the quote from a Melbourne design-firm owner. Say it in your own words: the tool does the work, you own the decision. Ask the room for one example of each rule.'],
   [
     DrewTheLine,
-    '2 min. Optional in the 25-minute block. Read the first and second quotes; let the room read the rest. The cafe owner is the warning: customers noticed. The seafood owner is the permission: not every job needs AI.',
+    '2 min. Optional: skip it unless you are ahead. Read the first quote; let the room read the rest. The cafe owner is the warning: customers noticed. The seafood owner is the permission: not every job needs AI. Two of the three are from one Florida student newspaper; say so if asked.',
   ],
   [
     PolicyOnePage,
-    '5 min. Show the example, then everyone runs the interview prompt in their Project for five minutes. They finish it at home. Mention the Privacy Act and the APPs in one sentence; no legal advice.',
+    '2 min. Homework, and the page says so. Show the example, point at the five headings, and tell them the interview prompt is on the companion page. Nobody runs it now. One sentence on privacy law: good practice for everyone, a legal duty for some; no legal advice.',
   ],
   [
     BeforeAfter,
-    '5 min. Set the sliders to one person’s real numbers. Then go round the table: task, before, after. Keep each answer to twenty seconds.',
+    '5 min. Nobody has a measured "after" yet, so do not ask for one. Set the sliders to one person’s numbers: what the job costs each week today (from their intake form) and their honest estimate. Then go round the table: job, today, estimate. Twenty seconds each. The measured number is due on day 30, and you will ask for it.',
   ],
-  [Regrade, '3 min. Count hands level by level, as at 9:00. The marks show this morning’s count beside this afternoon’s.'],
-  [ThirtyDays, '2 min. Ask everyone to paste the plan into their Project now and fill in their own task names, so it is there tomorrow.'],
-  [Close, '16:00. Say the one line on the page out loud: it is the whole day in a sentence. Then thank them. Leave this up while people pack. Ask for one sentence of feedback each, on the way out.'],
+  [Regrade, '3 min. Count hands level by level, as at 9:00. The marks show this morning’s count beside this afternoon’s; the morning count is saved on this laptop, so it is still there after a reload. Keep it light: one agent run is a start, not a grade.'],
+  [ThirtyDays, '3 min. Ask everyone to copy the plan from the companion page into their Project now and fill in their own job names, so it is there tomorrow. Then ask for the try-again lists: who has something on it? Read one out. Week 4 is when they retry it.'],
+  [Close, '16:00, with four minutes kept for the form. Say the one line on the page out loud: it is the whole day in a sentence. Then ask everyone to fill in the feedback form before they stand up: five questions, two minutes. Say what happens next: you will write to them in two weeks to ask what they still use, and again on day 30 for their number. Thank them. Leave this up while people pack.'],
 ];

@@ -20,7 +20,7 @@ This repo holds the Fieldwork course decks. The brand is fixed, so where `slide-
 - Use the five brand fonts that `brand.tsx` loads. Never the system stack, never another font.
 - Yellow (`--accent`) is a highlighter fill with ink on it, never text on paper, about 2% of a page, and never on the Claude half.
 - On dual-track pages, OpenAI (ChatGPT and Codex) is always on the left and Claude always on the right, with equal weight.
-- Never show a real company's name unless that company is in the training audience. Use made-up stand-ins.
+- Never show a client's or an employer's name or data, or anything a business has not made public. Published third-party cases are fine when the page carries a source line that names the publisher. Demo businesses and their data are made up.
 - Gate timers and autoplay with `useIsActivePage()`.
 - Keep `@open-slide/core` pinned to an exact version. Don't upgrade in the four weeks before a course date.
 

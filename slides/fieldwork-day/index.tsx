@@ -19,7 +19,7 @@ import './mocks.css';
 
 const Break1 = breakPage({ title: 'Break', back: '11:00', sub: 'Fifteen minutes. Your Project is saved. Coffee is at the back.' });
 const Lunch = breakPage({ title: 'Lunch', back: '13:00', sub: 'An hour. After lunch: agents that do the work while you watch.' });
-const Break2 = breakPage({ title: 'Break', back: '15:15', sub: 'Fifteen minutes. Your skill and your glue are saved. Last stretch after this.' });
+const Break2 = breakPage({ title: 'Break', back: '15:00', sub: 'Fifteen minutes. Your skill is saved. Last stretch after this: one job that runs without you.' });
 
 const all: [Page, string][] = [
   ...b0,
@@ -31,7 +31,7 @@ const all: [Page, string][] = [
   [Lunch, 'Lunch page. Counts down to 13:00. Ask two people over lunch what they built in Lab 3; use one as the example at 13:00.'],
   ...b5,
   ...b6,
-  [Break2, 'Break page. Counts down to 15:15. Walk the room: whose glue ran on a fresh export? Ask one of them to show it at 15:15.'],
+  [Break2, 'Break page. Counts down to 15:00. Walk the room: whose skill ran on a new example without being told? Ask one of them to show it at 15:00.'],
   ...b7,
   ...b8,
 ];

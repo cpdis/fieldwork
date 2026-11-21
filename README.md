@@ -26,9 +26,9 @@ Node 20.19+ or 22.12+. In the editor, press `f` to present full screen, or `p` t
 
 ## The full-day deck
 
-`slides/fieldwork-day/` is the whole course day, 9:00 to 16:00: the opening, eight blocks, two breaks and lunch, about 80 pages.
+`slides/fieldwork-day/` is the whole course day, 9:00 to 16:00: the opening, eight blocks, two breaks and lunch, 85 pages.
 
-- `course.ts` holds the settings for one run: cohort, date, venue, instructor, contact and Wi-Fi (shown only when set), and the timetable. The break and lunch pages count down to the times in it, and the block openers and day bar read it too.
+- `course.ts` holds the settings for one run: cohort, date, venue, instructor, contact, Wi-Fi, the companion page address, the feedback form address (each shown only when set), and the timetable. `PLANS` holds the plan names and prices shown in Block 2; fill in the prices before each cohort, or leave them blank and the page shows names only. `menusChecked` is the date you last checked menu names against the live apps. The break and lunch pages count down to the times in it, and the block openers and day bar read it too.
 - `blocks/b0-opening.tsx` to `blocks/b8-trust.tsx` hold one block each. Each exports `[page, speaker note]` pairs, so notes can't drift out of line with pages. Notes show in the presenter view (`p`).
 - `kit.tsx` and `kit.css` are the deck's own pieces: the levelling staff, block openers, the day bar, live-demo pages, labs with a room timer, break pages and source lines.
 - `deck.css` styles the pages. `mocks.css` holds the deliberately off-brand examples (other people's documents and sites).
@@ -39,9 +39,14 @@ Node 20.19+ or 22.12+. In the editor, press `f` to present full screen, or `p` t
 
 - `drag/` holds the pages the room sorts by dragging, built on [Dragology](https://github.com/declarative-dragging/dragology) ("declarative dragging": you declare the states a card can be dropped into and the library animates the rest). `drag/vendor/` is Dragology 0.1.7 bundled into one file (MIT, see `SOURCE.md` and `LICENSES.md`), so the deck gains no package dependency. `drag/sort-board.tsx` is the one component the pages use: an SVG laid over the page's own HTML, with each card a `<foreignObject>` in the brand fonts; the zone under the pointer takes the card, the others make room, and a state the page sets (show the answers, reset) animates into place. Used by Block 2 (fine, think first or never), Block 5 (choose by stakes) and Block 7 (the three rule lists). Dragging works with the clicker's arrow keys untouched, and the thumbnails and presenter preview show the finished sort.
 
+- `persist.ts` saves what the room does (hand counts, lab timers, sorts, ticked cards) in the browser on the presenting laptop, keyed by cohort and date, so a reload or a crash loses nothing. The "New session" button on the cover clears it; press it once before people arrive.
+- `companion.json` is the attendee companion page: every lab prompt, the policy homework, the 30-day plan, the try-again list and the cases the deck has no room for. `node scripts/companion.mjs fieldwork-day` writes it to `dist-companion/index.html` as one self-contained file. Host it anywhere and put the address in `COURSE.companion`; lab pages then show a "Copy the prompts" link to `#lab1` to `#lab7`. When a lab prompt changes in a block file, change it in `companion.json` too.
+
 Conventions on the day:
 
 - **LIVE IN THE APP** pages (black) are cue cards for switching to the ChatGPT and Claude desktop apps. Each one names the page that runs the same demo inside the deck, if the Wi-Fi or an app misbehaves.
+- One app is live in each block and the other is open on a finished run: ChatGPT is live in Blocks 2, 4 and 6, Claude in Blocks 3, 5 and 7. Each `live()` page takes `liveIn` and labels the two sides to match. Equal weight is kept across the day, not inside each demo.
+- Speaker notes that say **CHECK BEFORE EACH COHORT** name a product fact (a menu name, a plan limit, a price) that changes often.
 - **Lab** pages have a room timer (Start, +5 min, Reset). It keeps running if you move to another page and back.
 - Interactive pages (buttons, sliders, checkboxes, cards you drag) don't advance the slide when clicked. Use the arrow keys or the space bar to move on. The drag pages each have a "Show the answers" (or "Show ours") button and a Reset, so a sort the room gets wrong is a conversation, not a dead end.
 - Check menu names and plan details against the live apps before each cohort. The pages that need it say "check names each cohort".
