@@ -3,7 +3,7 @@ import type { Page } from '@open-slide/core';
 import { useState } from 'react';
 import { Frame, Hl, Mark } from '@assets/fieldwork/brand';
 import { COURSE, DAY } from '../course';
-import { Head, PageNo, Src, Staff, eb, opener, usePlay } from '../kit';
+import { Head, PageNo, Shot, Src, Staff, eb, opener, usePlay } from '../kit';
 import { StaffPoll } from './b0-opening';
 
 const Open = opener(
@@ -105,6 +105,43 @@ const TickedVsVerified: Page = () => {
     </Frame>
   );
 };
+
+/* ---------- the log was lying (Tiny Perth, first full render) ---------- */
+const LIED = [
+  ['Look at all of it at once', 'Not the log. The picture. Every shot shrunk and laid out on one page is what showed the gap.'],
+  ['Make failures loud', 'Before making anything faster. The job got faster, Google refused requests, and the script saved blurry stand-ins as finished work.'],
+  ['Each check is a past failure', 'Every check now in the project exists because a real result once failed that exact way.'],
+];
+const LogLied: Page = () => (
+  <Frame label="The log was lying">
+    <Head
+      eb={eb('trust', 'Trust · checking')}
+      title={
+        <>
+          “731 rendered, 0 failed.” <Hl>It was lying.</Hl>
+        </>
+      }
+      sum="The map project from this morning. The script reported a clean run. One picture of everything it made showed a band of the city missing and a block of blur."
+    />
+    <PageNo />
+    <div className="b8-lied">
+      <Shot id="tinyperth-render" fit="contain" pos="center" />
+      <div className="ls">
+        {LIED.map(([t, d], i) => (
+          <div key={t}>
+            <span className="dk-k">0{i + 1}</span>
+            <b>{t}</b>
+            <span>{d}</span>
+          </div>
+        ))}
+        <p className="b8-ai">
+          For you: when an agent says <b>done</b>, ask it to show every result in one view. A table of every line, a page of thumbnails, a total you can recount.
+        </p>
+      </div>
+    </div>
+    <Src>Tiny Perth write-up, Nov 2026: the first full render of inner Perth, stitched into one picture. Magenta is missing shots.</Src>
+  </Frame>
+);
 
 /* ---------- the hidden instruction ---------- */
 const HiddenInstruction: Page = () => {
@@ -492,6 +529,10 @@ export const pages: [Page, string][] = [
   [
     TickedVsVerified,
     '4 min. A builder checking a subcontractor’s revised safety plan; any trade that reviews other people’s paperwork has this job. Untick two items, then "Check the revised document". The point: the checklist is a claim; the document is the evidence. Then the line on the page: have the agent check the document, and you check the agent.',
+  ],
+  [
+    LogLied,
+    '1.5 min. The same lesson from your own project, so it does not sound like theory. Read the title, let the picture land, then the three lines. Land on the bottom line: "done" is a claim, one view of everything is the evidence. To pay for this page, skip "Where owners drew the line", which is already the optional page in this block.',
   ],
   [
     HiddenInstruction,
