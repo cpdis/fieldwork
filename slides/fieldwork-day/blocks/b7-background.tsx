@@ -352,11 +352,13 @@ const WhereItLives: Page = () => (
   </Frame>
 );
 
-/* ---------- a team of agents (demo only) ---------- */
+/* ---------- a team of agents: the real one (Tiny Perth, 18 Nov 2026) ---------- */
+// Facts from the tinyperth repo: CLAUDE.md (the rules), git log for 18 Nov 2026 (threads and merged PRs),
+// writeup/journal.md (road snap: 17 of 18 spots right by eye; agents: 132 of 132 views unchanged).
 const HELPERS = [
-  { t: 'Read the 60-page spec. List every survey requirement.', r: '31 requirements, 4 unclear', d: 2.6 },
-  { t: 'Price each item from our rates file.', r: '27 priced, 4 need a rate', d: 3.2 },
-  { t: 'Check last year’s similar job for what we missed.', r: 'Missed last time: council lodgement fees', d: 2.1 },
+  { t: 'Put cars, trains, weather and night on the map.', r: 'Trains on the real Transperth timetable', d: 2.6 },
+  { t: 'Snap the cars onto the drawn roads.', r: 'Six versions. 17 of 18 spots right by eye', d: 3.2 },
+  { t: 'Let AI agents drive the map: links, an API, a guide.', r: '132 of 132 views unchanged after', d: 2.1 },
 ];
 const TeamOfAgents: Page = () => {
   const active = useIsActivePage();
@@ -373,11 +375,11 @@ const TeamOfAgents: Page = () => {
     <Frame label="A team of agents">
       <Head
         eb={eb('background', 'Background · levels 7 and 8')}
-        title="A team of agents, for a look"
-        sum="Not for today, but worth seeing. A lead agent splits a big job, three helpers work at once, and the lead puts it back together for you to review."
+        title="A team of agents, for real"
+        sum="One day on the map project from this morning. Seven agent threads worked at once, each on its own part. The person in the middle wrote the rules and reviewed what came back."
       />
       <PageNo />
-      <div className="b7-team" data-ph={ph}>
+      <div className="b7-team real" data-ph={ph}>
         <svg viewBox="0 0 928 280" aria-hidden="true">
           {ys.map((y) => (
             <path key={`o${y}`} className="out" pathLength={1} d={`M180 140 C 255 140, 255 ${y}, 330 ${y}`} />
@@ -387,13 +389,13 @@ const TeamOfAgents: Page = () => {
           ))}
         </svg>
         <div className="lead">
-          <span className="dk-k">Lead agent</span>
-          <b>Tender for the Coastal subdivision, 42 lots</b>
-          <span className="st2">{ph === 0 ? 'Reading the job' : ph < 4 ? 'Waiting on helpers' : 'Combining'}</span>
+          <span className="dk-k">One person · 18 Nov</span>
+          <b>Tiny Perth: make the map move</b>
+          <span className="st2">{ph === 0 ? 'Writing the jobs' : ph < 4 ? 'Threads working' : 'Reviewing'}</span>
         </div>
         {HELPERS.map((h, i) => (
           <div key={h.t} className={`helper ${ph >= 3 ? 'fin' : ph >= 2 ? 'busy' : ''}`} style={{ top: `${ys[i] / 10 - 4}cqw`, ['--d' as string]: `${h.d}s` }}>
-            <span className="dk-k">Helper {i + 1}</span>
+            <span className="dk-k">Thread {i + 1} of 7</span>
             <span className="t">{h.t}</span>
             <span className="bar">
               <i />
@@ -402,9 +404,9 @@ const TeamOfAgents: Page = () => {
           </div>
         ))}
         <div className={`result ${ph >= 5 ? 'on' : ''}`}>
-          <span className="dk-k">For you to review</span>
-          <b>Draft tender, a price, and six questions for the client</b>
-          <span className="st2">The lead checked the helpers’ work against the spec first.</span>
+          <span className="dk-k">By the end of the day</span>
+          <b>18 pieces of work reviewed and merged</b>
+          <span className="st2">Each one arrived as a proposed change to read, check and approve. Nothing went live on its own.</span>
         </div>
         <button className="rb" type="button" onClick={() => setRun((x) => x + 1)}>
           Run it again
@@ -412,14 +414,21 @@ const TeamOfAgents: Page = () => {
       </div>
       <div className="b7-team-foot">
         <div>
-          <span className="dk-k">Where it pays</span>
-          <span>A big tender, month-end, research across hundreds of files. Jobs that split cleanly into parts.</span>
+          <span className="dk-k">The rules came first</span>
+          <span>
+            One file every thread reads: <b>ask before any paid run over $10</b>. Never delete data. Ask before publishing anything.
+          </span>
         </div>
         <div>
-          <span className="dk-k">The right scale</span>
-          <span>One agent, plus two or three helpers when a job splits. Not hundreds. That is enough for most small businesses.</span>
+          <span className="dk-k">A second opinion</span>
+          <span>Before the big spend, a different model was told to attack the plan. It found three things the first one missed.</span>
+        </div>
+        <div>
+          <span className="dk-k">The right scale for you</span>
+          <span>One agent, plus two or three helpers when a job splits cleanly: a tender, month-end, a pile of files. Grow it once the rules hold.</span>
         </div>
       </div>
+      <Src>Tiny Perth project records, 18 Nov 2026: the agent rules file, the day’s merged changes and the build journal.</Src>
     </Frame>
   );
 };
@@ -501,7 +510,7 @@ export const pages: [Page, string][] = [
   ],
   [
     TeamOfAgents,
-    'Skip unless you are ahead; keep it as a backup. 3 min if used. Demo only. Let it run once. The point is scale: you already have what you need at L5 and L6.',
+    '2 min. Optional if you are behind. This is the real version of a team of agents, from the map you showed this morning: 18 Nov 2026, seven threads, 18 changes merged in a day. Let it run once. Say what made it safe, not what made it fast: the rules file came first (ask before any paid run over $10, never delete, ask before publishing), and a different model reviewed the plan before the big spend. Then the bottom right: they do not need seven. One agent and two or three helpers covers most small-business jobs, and the rules they wrote on the last page are what lets them add more.',
   ],
   [
     Live,
