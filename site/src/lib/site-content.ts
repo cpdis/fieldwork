@@ -30,7 +30,7 @@ export const FALLBACK_DAYS: PublicDay[] = [
     starts_at: '2026-12-02T09:00:00+08:00',
     ends_at: '2026-12-02T16:00:00+08:00',
     venue: null,
-    capacity: 8,
+    capacity: 10,
     price_cents: 0,
     mode: 'request',
     seats_left: null,
@@ -45,7 +45,7 @@ export const PRICES = [
     k: 'Pilot day',
     v: 'By invitation',
     sub: 'Wednesday 2 December 2026',
-    lines: ['Six to eight people who run their own business', 'In return: honest feedback and a two-week follow-up', 'Ask below if you would like a seat'],
+    lines: ['Ten people who run their own business', 'In return: honest feedback and a two-week follow-up', 'Ask below if you would like a seat'],
   },
   {
     k: 'Founding day',
@@ -64,7 +64,7 @@ export const PRICES = [
 
 export const PRICE_NOTES = [
   'Prices are per person, in Australian dollars, and include lunch.',
-  'Bring a laptop with ChatGPT or Claude on a paid plan (about A$30 to A$35 a month). The plan is not included.',
+  'Bring a laptop with ChatGPT or Claude on a paid plan. The plan is not included.',
   'Full refund up to 14 days before the day. You can send someone in your place at any time.',
 ];
 

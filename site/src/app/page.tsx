@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Mark, Seats } from '@/components/Chrome';
 import { BothApps } from '@/components/marketing/BothApps';
 import { Enhance } from '@/components/marketing/Enhance';
+import { HeroRuns } from '@/components/marketing/HeroRuns';
 import { NEXT_DAY } from '@/lib/interest';
 import { getPublicDays } from '@/lib/public-days';
 import { CONTACT_EMAIL, DAY, FAQ, PRICE_NOTES, PRICES, type PublicDay } from '@/lib/site-content';
@@ -10,13 +11,6 @@ import './marketing.css';
 
 export const dynamic = 'force-dynamic';
 
-const PROMPTS = [
-  'Here’s a photo of the whiteboard from this morning. Turn it into a job list with who and when.',
-  'Read these three supplier quotes and tell me which is cheapest delivered, and what each one leaves out.',
-  'Chase every invoice older than 30 days. Draft the emails, don’t send them.',
-  'Make our price list look like it came from the same business as our website.',
-  'Every Monday at 7, read the weekend’s enquiries and put the ones worth a call at the top.',
-];
 
 type Search = Promise<Record<string, string | undefined>>;
 
@@ -108,7 +102,7 @@ export default async function Home({ searchParams }: { searchParams: Search }) {
           </a>
           <nav className="mk-nav" aria-label="Sections">
             <a href="#habit">The idea</a>
-            <a href="#day">The day</a>
+            <a href="#day">Schedule</a>
             <a href="#price">Price</a>
             <a href="#faq">FAQ</a>
           </nav>
@@ -122,12 +116,11 @@ export default async function Home({ searchParams }: { searchParams: Search }) {
         {/* Hero */}
         <section className="wrap hero">
           <div className="hero-copy">
-            <p className="eyebrow">One day · in person · Perth</p>
             <h1>
               The models are already good enough. The gap is the habit of <span className="hl">asking</span>.
             </h1>
             <p className="lede">
-              Fieldwork is one hands-on day for people who run a small business. ChatGPT and Claude side by side, on real work from your own week.
+              Fieldwork is one hands-on day for people who run small businesses in Perth. ChatGPT and Claude side by side, on real work.
               You leave with things that already work, and the habit to keep going.
             </p>
             <div className="row hero-cta">
@@ -135,7 +128,7 @@ export default async function Home({ searchParams }: { searchParams: Search }) {
                 Ask for a seat
               </a>
               <a className="btn quiet" href="#day">
-                See the day
+                Schedule
               </a>
             </div>
             {first && (
@@ -160,41 +153,16 @@ export default async function Home({ searchParams }: { searchParams: Search }) {
             )}
           </div>
 
-          <div className="ask" data-ask={JSON.stringify(PROMPTS)}>
-            <p className="eyebrow">Worth typing in this week</p>
-            <div className="composer">
-              <p className="composer-text">
-                <span className="typed" data-text={PROMPTS[0]} />
-                <span className="caret" aria-hidden="true" />
-              </p>
-              <div className="composer-bar">
-                <span className="mono">Attach</span>
-                <span className="send" aria-hidden="true">
-                  ↑
-                </span>
-              </div>
-            </div>
-            <ol className="ask-list">
-              {PROMPTS.map((p, i) => (
-                <li key={i}>
-                  <button type="button" data-i={i} aria-current={i === 0 ? 'true' : undefined}>
-                    <span className="num">{String(i + 1).padStart(2, '0')}</span>
-                    <span>{p}</span>
-                  </button>
-                </li>
-              ))}
-            </ol>
-          </div>
+          <HeroRuns />
         </section>
 
         {/* The habit */}
         <section className="wrap sec" id="habit">
           <div className="sec-h">
-            <p className="eyebrow">
-              <span className="idx">01</span> The idea
-            </p>
-            <h2>Most people tried it once, got a so-so answer, and stopped asking.</h2>
-            <p className="lede">The tools moved on. The habit didn&rsquo;t. The day is built around three moves you can keep doing on Monday.</p>
+            <h2>
+              <span className="secno num">01</span>Most people tried it once, got a so-so answer, and stopped asking.
+            </h2>
+            <p className="lede">The tools moved on. The habit didn&rsquo;t. The day is built around three workflows you can keep using on Monday.</p>
           </div>
           <ol className="moves">
             <li>
@@ -219,10 +187,9 @@ export default async function Home({ searchParams }: { searchParams: Search }) {
         {/* The day */}
         <section className="wrap sec" id="day">
           <div className="sec-h">
-            <p className="eyebrow">
-              <span className="idx">02</span> The day
-            </p>
-            <h2>Seven labs, all on your own business.</h2>
+            <h2>
+              <span className="secno num">02</span>Seven labs, all on your own business.
+            </h2>
             <p className="lede">
               Each block is one idea, both apps doing it, then a lab on your own files. One app is live in each block and the other is open on the same job,
               finished. Equal time for both across the day.
@@ -256,10 +223,9 @@ export default async function Home({ searchParams }: { searchParams: Search }) {
         {/* Who runs it */}
         <section className="wrap sec who" id="who">
           <div className="sec-h">
-            <p className="eyebrow">
-              <span className="idx">03</span> Who runs it
-            </p>
-            <h2>A practitioner, not a guru.</h2>
+            <h2>
+              <span className="secno num">03</span>A practitioner, not a guru.
+            </h2>
           </div>
           <div className="who-grid">
             <div className="mono-badge" aria-hidden="true">
@@ -267,8 +233,8 @@ export default async function Home({ searchParams }: { searchParams: Search }) {
             </div>
             <div className="who-copy">
               <p>
-                <strong>Colin Dismuke</strong> is an engineer and project manager in Perth. He uses these apps every working day, Codex at work and Claude at
-                home, and in the last six months built 21 things for himself, including ten live websites and three iPhone apps.
+                <strong>Colin Dismuke</strong> is an engineer and project manager in Perth. He uses ChatGPT and Claude every day, at work and at home, to
+                build tools, automations, websites, apps and more.
               </p>
               <p className="muted">
                 He works with one agent and a couple of helpers at a time, not hundreds. That is the scale a business owner can copy, and it is the scale the
@@ -281,10 +247,9 @@ export default async function Home({ searchParams }: { searchParams: Search }) {
         {/* Price */}
         <section className="wrap sec" id="price">
           <div className="sec-h">
-            <p className="eyebrow">
-              <span className="idx">04</span> Price
-            </p>
-            <h2>One day, one price, lunch included.</h2>
+            <h2>
+              <span className="secno num">04</span>One day, one price, lunch included.
+            </h2>
           </div>
           <div className="prices">
             {PRICES.map((p) => (
@@ -310,11 +275,10 @@ export default async function Home({ searchParams }: { searchParams: Search }) {
         {/* Book */}
         <section className="wrap sec" id="book">
           <div className="sec-h">
-            <p className="eyebrow">
-              <span className="idx">05</span> Dates
-            </p>
-            <h2>Ask for a seat.</h2>
-            <p className="lede">Seats are few on purpose. Tell us which day, and you&rsquo;ll hear back by email.</p>
+            <h2>
+              <span className="secno num">05</span>Ask for a seat.
+            </h2>
+            <p className="lede">Seats are limited. Tell us which day, and you&rsquo;ll hear back by email.</p>
           </div>
           <div className="book-grid">
             <div className="days">
@@ -409,10 +373,9 @@ export default async function Home({ searchParams }: { searchParams: Search }) {
         {/* FAQ */}
         <section className="wrap sec" id="faq">
           <div className="sec-h">
-            <p className="eyebrow">
-              <span className="idx">06</span> Questions
-            </p>
-            <h2>Before you ask.</h2>
+            <h2>
+              <span className="secno num">06</span>Before you ask.
+            </h2>
           </div>
           <div className="faq">
             {FAQ.map((f) => (

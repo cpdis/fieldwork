@@ -1,57 +1,32 @@
 /**
  * "Same job, both apps": one job stepped through ChatGPT (left, Instrument) and
- * Claude (right, Field notes) at once. The chips set data-step on the panel and
- * CSS shows that step; public/site.js wires the chips. Without JavaScript every
- * step shows, stacked. Equal widths, equal content, and the Claude half never
- * takes the yellow accent (the red pencil marks things there).
+ * Claude (right, Field notes) at once. The replies are real, copied from each app
+ * (src/lib/demo-transcripts.ts), so the two sides differ the way the apps do.
+ * The chips set data-step on the panel and CSS shows that step; public/site.js
+ * wires the chips. Without JavaScript every step shows, stacked. Equal widths,
+ * and the Claude half never takes the yellow accent.
  */
-
-const STEPS = [
-  { n: 1, k: 'Ask', t: 'Say the job, attach the file.' },
-  { n: 2, k: 'Read it like a draft', t: 'Check the numbers. Say what is off.' },
-  { n: 3, k: 'Ask again next model', t: 'The thing it got wrong last month.' },
-];
+import { type App, BOTH_APPS_PROMPTS, BOTH_APPS_RUNS, BOTH_APPS_STEPS } from '@/lib/demo-transcripts';
+import { Md } from './Md';
 
 const NOTES: [string, string][] = [
-  ['Fast, and mostly right', 'P3 looks wrong'],
-  ['Say what is off', 'fixed in one ask'],
-  ['It flags what it can’t read', 'it asked first. good.'],
+  ['Paste the real numbers', 'real numbers in'],
+  ['Push back on one thing', 'one nudge, not a restart'],
+  ['Next time is one line', 'now it’s reusable'],
 ];
 
-const ROWS = [
-  ['P1', '391 204.6', '6 465 118.2', '14.82'],
-  ['P2', '391 212.0', '6 465 121.9', '14.67'],
-  ['P3', '391 219.3', '6 465 125.4', '14.32'],
-  ['P4', '391 226.8', '6 465 129.0', '14.11'],
-];
-
-function Table({ side, fix }: { side: 'in' | 'fn'; fix?: boolean }) {
-  return (
-    <div className="ba-tbl" role="table" aria-label="Survey points">
-      {['Point', 'Easting', 'Northing', 'Level'].map((h) => (
-        <span key={h} className="h" role="columnheader">
-          {h}
-        </span>
-      ))}
-      {ROWS.map((r) => {
-        const flagged = r[0] === 'P3';
-        return r.map((c, i) => (
-          <span key={r[0] + i} role="cell" className={flagged && i === 3 ? (fix ? 'fixed' : 'flag') : undefined}>
-            {flagged && i === 3 && fix ? '14.82' : c}
-            {flagged && i === 3 && !fix && side === 'fn' && <i className="circle" aria-hidden="true" />}
-          </span>
-        ));
-      })}
-    </div>
-  );
+function firstLine(p: string) {
+  const [head, ...rest] = p.split('\n\n');
+  return { head, rest: rest.join('\n\n') };
 }
 
-function Half({ side }: { side: 'in' | 'fn' }) {
-  const isIn = side === 'in';
+function Half({ app }: { app: App }) {
+  const run = BOTH_APPS_RUNS[app];
+  const isIn = app === 'ChatGPT';
   return (
-    <div className={`ba-half ${side}`}>
+    <div className={`ba-half ${isIn ? 'in' : 'fn'}`}>
       <div className="ba-label">
-        <span className="nm">{isIn ? 'ChatGPT' : 'Claude'}</span>
+        <span className="nm">{app}</span>
         <span className="sub">{isIn ? 'Chat · Work · Codex' : 'Chat · Cowork · Code'}</span>
       </div>
       <div className="ba-win">
@@ -61,28 +36,29 @@ function Half({ side }: { side: 'in' | 'fn' }) {
             <i />
             <i />
           </span>
-          <span>{isIn ? 'ChatGPT' : 'Claude'}</span>
+          <span>{app}</span>
+          {run.model && <span className="ba-model">{run.model}</span>}
         </div>
         <div className="ba-body">
-          <div className="ba-step s1">
-            <p className="me">
-              <span className="att">field-book-p14.jpg</span>
-              Make this page of the field book a table: point, easting, northing, level.
-            </p>
-            <Table side={side} />
-          </div>
-          <div className="ba-step s2">
-            <p className="me">P3&rsquo;s level looks low against P2. Check it against the photo.</p>
-            <p className="ai">You&rsquo;re right. I read 14.82 as 14.32. Fixed, and the other three match the photo.</p>
-            <Table side={side} fix />
-          </div>
-          <div className="ba-step s3">
-            <p className="me">
-              <span className="att">field-book-p14.jpg</span>
-              Same page, a month later, on the newer model.
-            </p>
-            <p className="ai">All four points read. P3&rsquo;s last digit is smudged: 14.82 or 14.87? Confirm before I file it.</p>
-          </div>
+          {BOTH_APPS_PROMPTS.map((p, i) => {
+            const { head, rest } = firstLine(p);
+            const reply = run.replies[i];
+            return (
+              <div key={i} className={`ba-step s${i + 1}`}>
+                <div className="me">
+                  <p>{head}</p>
+                  {rest && <pre className="paste">{rest}</pre>}
+                </div>
+                {reply ? (
+                  <div className="ai">
+                    <Md text={reply} />
+                  </div>
+                ) : (
+                  <p className="ai pending mono">Reply not captured yet</p>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
       <div className="ba-notes" aria-hidden="true">
@@ -97,12 +73,13 @@ function Half({ side }: { side: 'in' | 'fn' }) {
 }
 
 export function BothApps() {
+  const dates = [BOTH_APPS_RUNS.ChatGPT.captured, BOTH_APPS_RUNS.Claude.captured].filter(Boolean);
   return (
     <div className="ba" data-demo data-step="1">
       <div className="ba-chips" role="tablist" aria-label="Steps">
-        {STEPS.map((s) => (
-          <button key={s.n} type="button" role="tab" className="ba-chip" data-go={s.n} aria-selected={s.n === 1}>
-            <i>{s.n}</i>
+        {BOTH_APPS_STEPS.map((s, i) => (
+          <button key={i} type="button" role="tab" className="ba-chip" data-go={i + 1} aria-selected={i === 0}>
+            <i>{i + 1}</i>
             <span>
               <b>{s.k}</b>
               <span className="muted">{s.t}</span>
@@ -111,11 +88,13 @@ export function BothApps() {
         ))}
       </div>
       <div className="ba-split">
-        <Half side="in" />
-        <Half side="fn" />
+        <Half app="ChatGPT" />
+        <Half app="Claude" />
       </div>
       <p className="ba-foot small muted">
-        A made-up survey business. The windows are simplified stand-ins for the desktop apps, which change often. On the day you use the real ones.
+        Same prompts in both apps
+        {dates.length ? `, replies copied word for word on ${new Date(String(dates[0])).toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })}` : ''}
+        . The suppliers and prices are made up. The window frames are simplified; on the day you use the real apps.
       </p>
     </div>
   );

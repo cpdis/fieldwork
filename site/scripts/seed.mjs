@@ -10,7 +10,7 @@ const sql = postgres(url, { max: 1, ssl: /localhost|127\.0\.0\.1/.test(url) ? fa
 await sql`
   insert into cohorts (slug, title, starts_at, ends_at, venue_name, venue_address, capacity, price_cents, status, joining_notes)
   values ('pilot-2026-12-02', 'Fieldwork: pilot day', '2026-12-02T09:00:00+08:00', '2026-12-02T16:00:00+08:00',
-          null, null, 8, 0, 'closed', 'Lunch is provided. Venue details to follow.')
+          null, null, 10, 0, 'closed', 'Lunch is provided. Venue details to follow.')
   on conflict (slug) do nothing
 `;
 console.log('seeded pilot-2026-12-02');
