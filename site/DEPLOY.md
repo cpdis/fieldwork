@@ -38,9 +38,22 @@ If the zone has CAA records, add `0 issue "letsencrypt.org"` so Vercel can get i
 
 ## 3. Email on the domain
 
-- **Receiving** `hello@fieldworkperth.com`: Cloudflare > Email > Email Routing > enable, then add a rule forwarding `hello@` to your own inbox. Cloudflare adds its MX and SPF records for you. Free.
-- **Sending** (confirmations, reminders): Resend > Domains > add `fieldworkperth.com` (Resend suggests the `send` subdomain for its MX and SPF). Copy each record it lists into Cloudflare DNS, all **DNS only**. When Resend says Verified, set `EMAIL_FROM="Fieldwork <hello@fieldworkperth.com>"` and `EMAIL_REPLY_TO=hello@fieldworkperth.com` in Vercel and redeploy.
-- Cloudflare Email Routing and Resend can both use SPF on the domain. If both want a TXT record at the same name, merge them into one `v=spf1 ... ~all` record rather than adding two.
+Mail for fieldworkperth.com runs on **Google Workspace**. Resend sends the site's automatic emails from a subdomain, so the two never share a record.
+
+**Google Workspace (receiving and everyday sending)**
+
+1. Sign up for Workspace with fieldworkperth.com. Google asks you to verify the domain with a TXT record at `@` (`google-site-verification=...`). Add it in Cloudflare DNS, DNS only.
+2. Add one MX record: name `@`, mail server `smtp.google.com`, priority `1`. Delete any other MX records at `@`.
+3. Add one SPF record: TXT at `@`, `v=spf1 include:_spf.google.com ~all`. There must be only one SPF record at `@`.
+4. Workspace admin > Apps > Gmail > Authenticate email > generate a DKIM key, add the TXT record it gives you (name `google._domainkey`), then press **Start authentication**.
+5. Add DMARC: TXT at `_dmarc`, `v=DMARC1; p=none; rua=mailto:<your address>`. Tighten to `p=quarantine` once a few weeks of reports look clean.
+6. Make `hello@fieldworkperth.com` an **alias** on your own Workspace user (Admin > Users > you > Add alternate emails), so it costs no extra seat. If someone else will answer it later, make it a **Google Group** instead and add members.
+
+**Resend (the site's confirmations and reminders)**
+
+1. Resend > Domains > add `fieldworkperth.com`. It puts its records on the `send` subdomain and a DKIM key: an MX and a TXT SPF at `send`, and a TXT at `resend._domainkey`. Copy each one into Cloudflare DNS, DNS only.
+2. These do not touch the apex: Resend's SPF lives at `send.fieldworkperth.com`, so the single Google SPF record at `@` stays as it is. Only if Resend ever asks for an SPF include at `@` itself would you merge it into that one record (`v=spf1 include:_spf.google.com include:<resend's> ~all`), never add a second.
+3. When Resend says Verified, set `EMAIL_FROM="Fieldwork <hello@fieldworkperth.com>"` and `EMAIL_REPLY_TO=hello@fieldworkperth.com` in Vercel and redeploy. Replies land in your Workspace inbox through the alias.
 
 ## 4. Stripe
 
