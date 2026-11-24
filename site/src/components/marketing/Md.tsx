@@ -25,9 +25,27 @@ const cells = (line: string) =>
     .map((c) => c.trim());
 
 export function Md({ text }: { text: string }) {
-  const blocks = text.replace(/\r/g, '').split(/\n{2,}/);
+  // Pull ``` fences out first so their blank lines don't split them into paragraphs.
+  const parts = text.replace(/\r/g, '').split(/```[^\n]*\n([\s\S]*?)\n?```/);
   return (
     <div className="md">
+      {parts.map((part, pi) =>
+        pi % 2 === 1 ? (
+          <pre className="md-pre" key={pi}>
+            {part}
+          </pre>
+        ) : (
+          <Blocks key={pi} text={part} />
+        ),
+      )}
+    </div>
+  );
+}
+
+function Blocks({ text }: { text: string }) {
+  const blocks = text.split(/\n{2,}/);
+  return (
+    <>
       {blocks.map((block, bi) => {
         const lines = block.split('\n').filter((l) => l.trim());
         if (!lines.length) return null;
@@ -86,6 +104,6 @@ export function Md({ text }: { text: string }) {
           </p>
         );
       })}
-    </div>
+    </>
   );
 }

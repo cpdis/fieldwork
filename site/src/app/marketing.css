@@ -77,7 +77,7 @@ html:not(.js) .hr-run[data-i="0"] { display: grid; }
 .hr-foot { margin: 10px 0 0; font-size: 12.5px; }
 
 /* captured replies */
-.md > * + * { margin-top: .7em; }
+.md > :not(:first-child) { margin-top: .7em; }
 .md p, .md ul, .md ol { margin: 0; }
 .md ul, .md ol { padding-left: 1.2em; }
 .md li + li { margin-top: .25em; }
@@ -131,7 +131,8 @@ html:not(.js) .hr-run[data-i="0"] { display: grid; }
 .ba-bar .dots i { width: 9px; height: 9px; border-radius: 50%; background: #d2d3cd; display: block; }
 .ba-body { padding: 14px; height: 460px; overflow-y: auto; overscroll-behavior: contain; }
 .ba-model { margin-left: auto; font: 400 11px/1 var(--font-mono); color: #8a8c91; }
-.ba-step { display: grid; gap: 10px; }
+.ba-step { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+.ba-step .ai, .hr-run .ai { min-width: 0; }
 .ba-step .me { justify-self: end; max-width: 92%; margin: 0; padding: 9px 12px; background: #efefea; border-radius: 12px; line-height: 1.4; }
 .ba-step .me p { margin: 0; }
 .paste { margin: 8px 0 0; font: 400 12px/1.5 var(--font-mono); white-space: pre-wrap; color: #45474c; }
@@ -261,3 +262,6 @@ fieldset.pick.inline { display: flex; flex-wrap: wrap; gap: 8px; }
   .staff-reading, .send { transition: none; }
   .js .ba-step { animation: none !important; }
 }
+
+/* Fenced code inside a captured reply (e.g. a prompt the app wrote to paste). */
+.md .md-pre { margin-bottom: 0; padding: 10px 12px; font: 400 12px/1.5 var(--font-mono); white-space: pre-wrap; overflow-wrap: anywhere; background: rgba(20, 22, 26, 0.04); border: 1px solid var(--line, rgba(20, 22, 26, 0.12)); border-radius: 6px; color: inherit; }
