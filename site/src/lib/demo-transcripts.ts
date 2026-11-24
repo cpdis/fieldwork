@@ -5,8 +5,9 @@
  * left as null shows the prompt only.
  *
  * The businesses and figures in the prompts are made up. Runs of 24 Nov 2026 were
- * in a ChatGPT temporary chat and a Claude incognito chat, so no memory or custom
- * instructions shaped them.
+ * in a ChatGPT temporary chat and a Claude incognito chat. A ChatGPT temporary chat
+ * still reads memory and custom instructions unless it is set to Unpersonalized, and
+ * that setting was not recorded for these runs.
  */
 
 export type App = 'ChatGPT' | 'Claude';

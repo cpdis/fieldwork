@@ -7,6 +7,7 @@ import { PX, SortBoard, type SortState, type Zone, cqw, stateFrom, zoneOf } from
 import { COURSE, PLANS } from '../course';
 import { Head, PageNo, Src, eb, lab, live, opener } from '../kit';
 import { useSaved } from '../persist';
+import { TALK, TALK_PROMPT } from '../real-runs';
 
 const Open = opener(
   'map',
@@ -49,13 +50,29 @@ const JOBS: Job[] = [
   },
 ];
 
-const BODY: Record<Job['id'], ReactNode> = {
-  talk: (
-    <div className="chat">
-      <div className="msg me">Rewrite this so it sounds less stiff: “Please find attached our quotation for the works as discussed.”</div>
+const Talk = ({ side }: { side: 'L' | 'R' }) => {
+  const reply = TALK[side].reply;
+  const groups: (string | string[])[] = [];
+  for (const l of reply) {
+    const last = groups[groups.length - 1];
+    if (l.startsWith('- ')) Array.isArray(last) ? last.push(l.slice(2)) : groups.push([l.slice(2)]);
+    else groups.push(l);
+  }
+  return (
+    <div className="chat b2-talk">
+      <div className="msg me">{TALK_PROMPT}</div>
       <div className="msg ai">
-        Here's a friendlier version: “Thanks for walking the site with me on Tuesday. Your quote's attached, and I'm happy to talk
-        through any of it.”
+        {groups.map((g, i) =>
+          Array.isArray(g) ? (
+            <ul key={i}>
+              {g.map((x) => (
+                <li key={x}>{x}</li>
+              ))}
+            </ul>
+          ) : (
+            <p key={i}>{g}</p>
+          ),
+        )}
       </div>
       <div />
       <div className="composer">
@@ -63,8 +80,12 @@ const BODY: Record<Job['id'], ReactNode> = {
         <span>Reply…</span>
       </div>
     </div>
-  ),
-  work: (
+  );
+};
+
+const BODY: Record<Job['id'], (side: 'L' | 'R') => ReactNode> = {
+  talk: (side) => <Talk side={side} />,
+  work: () => (
     <div className="cols3">
       <div className="col">
         <div className="mlab">Quotes folder</div>
@@ -96,7 +117,7 @@ const BODY: Record<Job['id'], ReactNode> = {
       </div>
     </div>
   ),
-  build: (
+  build: () => (
     <div className="cols3">
       <div className="col">
         <div className="mlab">booking-site</div>
@@ -161,7 +182,7 @@ export const MapOfApps: Page = () => {
           <>
             <SideLabel name="OpenAI · ChatGPT + Codex" sub="one app, three modes" />
             <InsetWindow key={`L-${j.id}`} {...j.L} height={25} hots={HOTS[j.id]}>
-              {BODY[j.id]}
+              {BODY[j.id]('L')}
             </InsetWindow>
             <div className="mapline">
               Where: {j.L.map[0]} <b>{j.L.map[1]}</b>
@@ -172,7 +193,7 @@ export const MapOfApps: Page = () => {
           <>
             <SideLabel name="Claude" sub="same job, other app" />
             <InsetWindow key={`R-${j.id}`} {...j.R} height={25} hots={HOTS[j.id]}>
-              {BODY[j.id]}
+              {BODY[j.id]('R')}
             </InsetWindow>
             <div className="mapline">{j.R.map}</div>
           </>

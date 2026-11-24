@@ -77,3 +77,10 @@
 .fw .b4-pair .ad.bad b { font-size: 2.4cqw; line-height: 1.1; font-weight: 800; }
 .fw .b4-pair .ad.bad span { font-size: 1.05cqw; opacity: .9; }
 .fw .b4-pair .ad.bad .cta { background: #fff; color: #4f46e5; padding: .6cqw 1.4cqw; border-radius: 99cqw; font-weight: 700; opacity: 1; box-shadow: 0 0 1.6cqw rgba(196,181,253,.9); }
+
+/* Block 2 Chat job: real replies (real-runs.ts). The long one scrolls inside the window. */
+.fw .b2-talk { grid-template-rows: auto minmax(0, 1fr) 0 auto; }
+.fw .b2-talk .msg.ai { max-width: 100%; overflow-y: auto; font-size: .92em; line-height: 1.38; }
+.fw .b2-talk .msg.ai p, .fw .b2-talk .msg.ai ul { margin: 0; }
+.fw .b2-talk .msg.ai > * + * { margin-top: .5cqw; }
+.fw .b2-talk .msg.ai ul { padding-left: 1.2em; }
