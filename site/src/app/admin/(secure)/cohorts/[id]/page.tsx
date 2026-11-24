@@ -288,6 +288,7 @@ export default async function CohortPage({ params, searchParams }: { params: Pro
                   <th>#</th>
                   <th>Name</th>
                   <th>Company</th>
+                  <th>Uses</th>
                   <th>Joined</th>
                   <th>Offer</th>
                   <th />
@@ -303,7 +304,11 @@ export default async function CohortPage({ params, searchParams }: { params: Pro
                         <strong>{w.name}</strong>
                         <div className="small">{w.email}</div>
                       </td>
-                      <td>{w.company}</td>
+                      <td>
+                        {w.company}
+                        {w.note && <div className="small muted">{w.note}</div>}
+                      </td>
+                      <td className="small">{w.uses ?? ''}</td>
                       <td className="num small">{formatStamp(w.created_at)}</td>
                       <td className="small">
                         {w.offered_at ? `Sent ${formatStamp(w.offered_at)}` : <span className="muted">not yet</span>}

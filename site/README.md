@@ -1,10 +1,20 @@
 # Fieldwork site and cohort admin
 
-The public booking pages and a small admin for running cohorts. Stripe Checkout takes payment, a Stripe webhook records it in Supabase Postgres, and the admin shows each cohort's roster, seats left, waitlist and dietary needs. It sends the confirmation, pre-course and follow-up emails through Resend.
+The marketing page at `/`, the public booking pages, and a small admin for running cohorts. To put it on fieldworkperth.com, see `DEPLOY.md`. Stripe Checkout takes payment, a Stripe webhook records it in Supabase Postgres, and the admin shows each cohort's roster, seats left, waitlist and dietary needs. It sends the confirmation, pre-course and follow-up emails through Resend.
 
 It does no accounting. Stripe feeds Xero for that.
 
 This is its own Next.js app with its own `package.json`. The slide deck at the repo root is untouched, and the deck's version freeze doesn't apply here.
+
+## The home page
+
+`/` is the marketing page: the pitch, the both-apps demo, the day, who runs it, prices, the dates and a form, and the FAQ.
+
+- Copy, prices, the timetable and the FAQ are in `src/lib/site-content.ts`.
+- **Dates come from the admin.** Every `open` or `closed` cohort that hasn't ended is listed. An `open` cohort with a price shows **Book and pay** (Stripe Checkout). A `closed` cohort shows **Ask for a seat**, which puts the person on that cohort's waitlist. The pilot is seeded as `closed`, price 0, venue blank ("Venue to be announced"); set the venue in the admin when it's booked.
+- The form also offers **The next public day**, which goes on a general list with no cohort. The admin home shows it under **Next public day list**, with a CSV download and a **Move** button that puts someone on a cohort's waitlist, from where **Email seat offer** works as before.
+- With no database (a preview build) or no listed cohorts, the page shows `FALLBACK_DAYS` so it never goes blank. `SITE_PREVIEW=1` makes the form answer "preview only" without posting.
+- The form posts to `/api/interest`. It works without JavaScript (a redirect back to `/#book`); with it, `public/site.js` answers in place. `site.js` also runs the typing composer, the both-apps steps and the levelling staff on the timetable. It loads after hydration and changes only attributes, so it never upsets React.
 
 ## How a booking works
 

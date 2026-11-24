@@ -54,11 +54,14 @@ export interface Booking {
 
 export interface WaitlistEntry {
   id: string;
-  cohort_id: string;
+  /** Null for the general list: "tell me about the next public day". */
+  cohort_id: string | null;
   name: string;
   email: string;
   company: string | null;
   note: string | null;
+  uses: 'chatgpt' | 'claude' | 'both' | 'neither' | null;
+  source: string;
   offered_at: Date | null;
   removed_at: Date | null;
   created_at: Date;

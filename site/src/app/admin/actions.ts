@@ -149,8 +149,27 @@ export async function offerSeat(waitlistId: string, cohortId: string) {
   revalidatePath(`/admin/cohorts/${cohortId}`);
 }
 
-export async function removeFromWaitlist(waitlistId: string, cohortId: string) {
+export async function removeFromWaitlist(waitlistId: string, cohortId: string | null) {
   await requireAdmin();
   await getSql()`update waitlist set removed_at = now() where id = ${waitlistId}`;
+  revalidatePath(cohortId ? `/admin/cohorts/${cohortId}` : '/admin');
+}
+
+/** Moves someone from the general list onto a dated cohort's waitlist (or leaves them if already there). */
+export async function moveInterestToCohort(waitlistId: string, formData: FormData) {
+  await requireAdmin();
+  const cohortId = String(formData.get('cohort_id') ?? '');
+  if (!cohortId) return;
+  const sql = getSql();
+  await sql.begin(async (tx) => {
+    await tx`
+      insert into waitlist (cohort_id, name, email, company, uses, note, source)
+      select ${cohortId}, name, email, company, uses, note, source from waitlist
+      where id = ${waitlistId} and cohort_id is null and removed_at is null
+      on conflict (cohort_id, lower(email)) do update set removed_at = null
+    `;
+    await tx`update waitlist set removed_at = now() where id = ${waitlistId} and cohort_id is null`;
+  });
+  revalidatePath('/admin');
   revalidatePath(`/admin/cohorts/${cohortId}`);
 }

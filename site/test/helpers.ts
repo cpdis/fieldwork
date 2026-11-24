@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import postgres from 'postgres';
 import Stripe from 'stripe';
 
@@ -16,7 +16,9 @@ export function setupEnv() {
 export async function resetDb() {
   const sql = postgres(process.env.TEST_DATABASE_URL!, { max: 1, onnotice: () => {} });
   await sql.unsafe(`drop schema public cascade; create schema public;`);
-  await sql.unsafe(readFileSync(new URL('../supabase/migrations/0001_cohort_admin.sql', import.meta.url), 'utf8'));
+  for (const f of readdirSync(new URL('../supabase/migrations/', import.meta.url)).filter((f) => f.endsWith('.sql')).sort()) {
+    await sql.unsafe(readFileSync(new URL(`../supabase/migrations/${f}`, import.meta.url), 'utf8'));
+  }
   await sql.end();
 }
 
