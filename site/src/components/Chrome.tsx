@@ -1,16 +1,18 @@
 import Link from 'next/link';
 
 /**
- * The mark: an abstract levelling staff (alternate ink and paper blocks) with a
- * yellow reading against it, the same device as the timetable's staff.
+ * The mark (8A "Hill", chosen 26 Nov 2026): three contour rings and a yellow
+ * summit. The favicon (public/icon.svg) uses a separate 16 px cut with one
+ * ring. Same drawing as the deck's Mark in assets/fieldwork/brand.tsx.
  */
 export function Mark() {
   return (
-    <svg className="mark" viewBox="0 0 24 24" aria-hidden="true">
-      <rect x="6.75" y="1.75" width="6.5" height="20.5" fill="var(--white, #fff)" stroke="var(--ink)" strokeWidth="1.5" />
-      <rect x="6.75" y="1.75" width="6.5" height="5.125" fill="var(--ink)" />
-      <rect x="6.75" y="12" width="6.5" height="5.125" fill="var(--ink)" />
-      <rect x="13.25" y="8.25" width="8.5" height="4" fill="var(--accent)" stroke="var(--ink)" strokeWidth="1.5" />
+    <svg className="mark" viewBox="0 0 32 32" aria-hidden="true">
+      <g fill="none" stroke="var(--ink)" strokeWidth="2" strokeLinejoin="round">
+        <path d="M27.56 21.59 C26.49 24.27 22.88 26.40 20.01 27.77 C17.14 29.14 13.09 30.70 10.33 29.80 C7.57 28.90 4.48 25.18 3.44 22.38 C2.40 19.58 3.08 15.89 4.08 13.01 C5.08 10.13 6.94 6.35 9.46 5.10 C11.98 3.85 16.37 4.40 19.20 5.49 C22.03 6.59 25.05 8.99 26.45 11.68 C27.84 14.36 28.64 18.90 27.56 21.59Z" />
+        <path d="M24.84 18.54 C24.15 20.25 21.84 21.61 20.01 22.49 C18.17 23.37 15.58 24.37 13.81 23.79 C12.04 23.22 10.07 20.83 9.40 19.04 C8.73 17.25 9.17 14.89 9.81 13.05 C10.45 11.21 11.64 8.79 13.26 7.98 C14.87 7.18 17.68 7.53 19.49 8.24 C21.30 8.94 23.23 10.48 24.13 12.19 C25.02 13.91 25.53 16.82 24.84 18.54Z" />
+      </g>
+      <path d="M21.62 15.65 C21.33 16.38 20.34 16.96 19.56 17.33 C18.78 17.70 17.68 18.13 16.93 17.88 C16.18 17.64 15.34 16.62 15.06 15.86 C14.77 15.10 14.96 14.10 15.23 13.32 C15.50 12.53 16.01 11.50 16.69 11.16 C17.38 10.82 18.57 10.97 19.34 11.27 C20.11 11.57 20.93 12.22 21.31 12.95 C21.69 13.68 21.91 14.92 21.62 15.65Z" fill="var(--accent)" stroke="var(--ink)" strokeWidth="1.5" />
     </svg>
   );
 }

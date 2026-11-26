@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   description:
     'One hands-on day in Perth for people who run a small business. ChatGPT and Claude side by side, on work from your own week. The models are already good enough; the gap is the habit of asking.',
   openGraph: { type: 'website', siteName: 'Fieldwork', locale: 'en_AU' },
-  icons: { icon: '/icon.svg' },
+  icons: { icon: '/icon.svg', apple: '/apple-icon.png' },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
