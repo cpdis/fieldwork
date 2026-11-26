@@ -53,6 +53,10 @@ Conventions on the day:
 
 Brand check: `node scripts/brand-check.mjs fieldwork-day`. It exits non-zero on a problem, so it can run in CI.
 
+## The site
+
+`site/` is the public booking site and cohort admin, a separate Next.js app with its own `package.json`. See `site/README.md`.
+
 ## Notes
 
 - `CLAUDE.md` is a symlink to `AGENTS.md`, and `.claude/skills/` links to `.agents/skills/`, so Claude Code and Codex read the same rules. On Windows, clone with `git config core.symlinks true`.

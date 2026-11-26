@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { clearRoomState, loadState, saveState } from '../persist';
 import { Eyebrow, Frame, Hl, Mark, Pad, Title } from '@assets/fieldwork/brand';
 import { COURSE, DAY, LEVELS, toMin } from '../course';
-import { Head, PageNo, Staff, usePlay } from '../kit';
+import { Head, PageNo, Shot, Staff, usePlay } from '../kit';
 
 /* ---------- cover ---------- */
 const Cover: Page = () => {
@@ -213,8 +213,8 @@ const Instructor: Page = () => (
         {[
           ['Day job', 'Engineer and project manager. 14 years at the same engineering company. Not a software company.'],
           ['Uses AI', 'Every day. Mostly Codex at work, mostly Claude at home.'],
-          ['Built since May', '21 projects in six months: 10 live sites, 3 iPhone apps in TestFlight, a pile of work tools.'],
-          ['Works at', 'The scale you can copy: one agent and a couple of helpers at a time, inside a well-set-up project.'],
+          ['Built since May', '21 projects in six months. The latest is on the right.'],
+          ['Works at', 'One agent and a couple of helpers for most jobs, inside a well-set-up project. More only once the rules are written down.'],
           ['Habit', 'Goes to the 20th version, not the first. Today shows that habit, and the deck is the evidence.'],
         ].map(([k, v]) => (
           <div key={k}>
@@ -222,6 +222,23 @@ const Instructor: Page = () => (
             <span>{v}</span>
           </div>
         ))}
+      </div>
+      <div className="tp">
+        <Shot id="tinyperth" chrome="browser" />
+        <b>Tiny Perth: the whole metro, Mindarie to Henderson, drawn as a pixel-art map</b>
+        <div className="tp-n">
+          {[
+            ['10', 'days'],
+            ['US$726', 'all in'],
+            ['2,200', 'km²'],
+            ['0', 'models trained before'],
+          ].map(([n, k]) => (
+            <div key={k}>
+              <b>{n}</b>
+              <span className="dk-k">{k}</span>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   </Frame>
@@ -275,7 +292,7 @@ export const pages: [Page, string][] = [
   ],
   [
     Instructor,
-    '2 min. Keep it short. The point is "peer, not guru": you are an engineer who uses this every day, at a scale they can copy. Add a photo at slides/fieldwork-day/assets/instructor.jpg.',
+    '2 min. Keep it short. The point is "peer, not guru": you are an engineer who uses this every day, at a scale they can copy. Tiny Perth is the one build you name today; Blocks 7 and 8 come back to how it was made, not to the map. Say the hook in one line: "I had never trained a model or rented a GPU. Ten days and about the price of a decent bike." If there is a minute, open tinyperth.com live on the landmark nearest the venue. Pilot 1 only: the A-frame boards outside Filament cafés are a nod to Aaron; leave them out of public cohorts (real company name). Add a photo at slides/fieldwork-day/assets/instructor.jpg.',
   ],
   [
     HowToday,

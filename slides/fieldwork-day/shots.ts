@@ -184,6 +184,26 @@ export const SHOTS: ShotSpec[] = [
     used: 'Block 6 method story',
     alt: 'NAB story about an accounting firm',
   },
+  /* ---- Instructor's own build: Tiny Perth (Colin's screenshots, from the project write-up) ---- */
+  {
+    id: 'tinyperth',
+    kind: 'image',
+    url: 'https://www.tinyperth.com',
+    show: 'tinyperth.com',
+    capture: 'The map page in light mode over the CBD, with the Life panel open (writeup/images/ui/desktop-light.webp in the tinyperth repo)',
+    credit: 'Colin Dismuke, Tiny Perth, Nov 2026',
+    used: 'Opening instructor page',
+    alt: 'Tiny Perth: a pixel-art map of central Perth with the Life panel open',
+  },
+  {
+    id: 'tinyperth-render',
+    kind: 'image',
+    url: 'https://www.tinyperth.com/how/',
+    capture: 'The first full render, stitched as one picture, with the magenta band of missing shots (writeup/images/full-render/run1-overview.webp)',
+    credit: 'Colin Dismuke, Tiny Perth write-up, Nov 2026',
+    used: 'Block 8 "the log was lying" page',
+    alt: 'A stitched render of Perth with a magenta band of missing shots and a block of blurry tiles',
+  },
 ];
 
 export const SHOT_BY_ID: Record<string, ShotSpec> = Object.fromEntries(SHOTS.map((s) => [s.id, s]));
