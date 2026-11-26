@@ -450,6 +450,88 @@ const Lab5 = lab({
   hand: 'fix the skill, not the answer',
 });
 
+/* ---------- one person owns the whole job ---------- */
+const LINE: [string, string][] = [
+  ['The customer asks for something new', 'Customer'],
+  ['Account manager checks the request', 'Account mgr'],
+  ['Passes it to the product manager', 'Account mgr'],
+  ['Weighs effort, value and priority', 'Product mgr'],
+  ['Designer scopes it and draws mockups', 'Designer'],
+  ['Back to the product manager for changes', 'Product mgr'],
+  ['Engineer builds it', 'Engineer'],
+  ['Product manager reviews and approves it', 'Product mgr'],
+  ['Account manager tells the customer', 'Account mgr'],
+];
+const SOLO: [string, 'cust' | 'ai' | 'you'][] = [
+  ['The customer asks for something new', 'cust'],
+  ['AI turns the request into a plan', 'ai'],
+  ['You edit the plan with your judgement', 'you'],
+  ['AI turns the plan into a first version', 'ai'],
+  ['You look at it and refine it', 'you'],
+  ['AI turns it into the working thing', 'ai'],
+  ['You test it and fix what is off', 'you'],
+  ['You ship it', 'you'],
+  ['AI drafts the note to the customer; you send it', 'ai'],
+];
+const WHO = { cust: 'Customer', ai: 'AI drafts', you: 'You' };
+const OneOwner: Page = () => {
+  const on = usePlay(120);
+  const people = new Set(LINE.map(([, w]) => w)).size;
+  const hand = LINE.filter(([, w], i) => i > 0 && w !== LINE[i - 1][1]).length;
+  return (
+    <Frame label="One person owns the whole job">
+      <Head
+        eb={eb('repeat', 'Repeatable · own the whole job')}
+        title="Same nine steps. One person, no handoffs."
+        sum="A small team that builds software for clients now gives one person each job, from the customer’s ask to the finished thing. The decisions stay the same. What goes is the handoffs."
+      />
+      <PageNo />
+      <div className={`b6-own ${on ? '' : 'pre'}`}>
+        <div className="lane">
+          <div className="lh">
+            <span className="dk-k">Handed along the line</span>
+            <span className="cnt">
+              <b>{hand}</b> handoffs · <b>{people}</b> people
+            </span>
+          </div>
+          {LINE.map(([t, w], i) => {
+            const ho = i > 0 && w !== LINE[i - 1][1];
+            return (
+              <div key={t} className={`ro dk-fade ${ho ? 'ho' : ''}`} style={{ ['--i' as string]: i }}>
+                <span className="nn">{String(i + 1).padStart(2, '0')}</span>
+                <span className="tt">{t}</span>
+                <span className="who">
+                  {ho && <i>↳ </i>}
+                  {w}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+        <div className="lane solo">
+          <div className="lh">
+            <span className="dk-k">One person, with AI</span>
+            <span className="cnt">
+              <b>0</b> handoffs · <b>1</b> person
+            </span>
+          </div>
+          {SOLO.map(([t, w], i) => (
+            <div key={t} className={`ro dk-fade w-${w}`} style={{ ['--i' as string]: i + 10 }}>
+              <span className="nn">{String(i + 1).padStart(2, '0')}</span>
+              <span className="tt">{t}</span>
+              <span className="who">{WHO[w]}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <p className="b6-own-say">
+        Every handoff loses a bit of the story. You don’t need to hire the specialists. <Hl>You need the habit of asking.</Hl>
+      </p>
+      <Src>Source: Colin (@colinmcdz), “The One-Person Product Team”, X, 24 Nov 2026. His nine software steps, in plain words.</Src>
+    </Frame>
+  );
+};
+
 /* ---------- the same idea on the Sunshine Coast ---------- */
 const PIPE = [
   ['On site', 'The tech enters the measurements. Under a minute.'],
@@ -656,6 +738,10 @@ export const pages: [Page, string][] = [
   [
     Lab5,
     '15 min. Start the timer. Common snag: the skill is too long. Tell them to cut it to what they would tell a new starter in two minutes. Early finishers can start the take-home lab two pages on.',
+  ],
+  [
+    OneOwner,
+    '2 min. Optional: skip it if the block is behind. The bridge from the skill to the glue. Let both lanes fill, then read the two counts. Same nine decisions on both sides; the left loses something at every handoff. The author runs a six-person studio building software for about fifteen clients at once, so it is software, but the point is for owners: you can own a job end to end with AI and bring a specialist in only to check the last 10% (your accountant, a designer), not to do it. Then into the copy-and-paste cards: that glue is a job you can now own.',
   ],
   [
     WherePaste,
