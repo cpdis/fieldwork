@@ -63,7 +63,7 @@ export const PRICES = [
 ];
 
 export const PRICE_NOTES = [
-  'Prices are per person, in Australian dollars, and include lunch.',
+  'Prices are per person, in Australian dollars, and include lunch. Fieldwork is not registered for GST, so no GST is charged.',
   'Bring a laptop with ChatGPT or Claude on a paid plan. The plan is not included.',
   'Full refund up to 14 days before the day. After that, move to a later day or send someone in your place.',
 ];

@@ -210,7 +210,8 @@ export function renderBookingEmail(kind: Exclude<EmailKind, 'seat_offer'>, c: Co
       });
 
     case 'follow_up': {
-      const feedback = process.env.FEEDBACK_URL;
+      // The site's own form unless FEEDBACK_URL points somewhere else.
+      const feedback = process.env.FEEDBACK_URL || `${siteUrl()}/feedback`;
       return render({
         subject: `Thanks for coming to ${c.title}`,
         label: 'Thank you',

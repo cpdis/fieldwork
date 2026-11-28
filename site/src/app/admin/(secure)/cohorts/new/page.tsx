@@ -22,7 +22,7 @@ export default function NewCohort() {
           price: '1000',
           status: 'draft',
           pre_course_days: 5,
-          follow_up_days: 1,
+          follow_up_days: 0,
         }}
       />
     </div>

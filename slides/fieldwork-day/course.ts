@@ -19,7 +19,7 @@ export const COURSE = {
    */
   companion: 'fieldworkperth.com/companion',
   /** The feedback form (five questions, filled in before people leave). Shown on the close when set. */
-  feedback: '',
+  feedback: 'fieldworkperth.com/feedback',
   /** The day both apps' menus and plan names were last checked against this deck, for example '28 Nov 2026'. */
   menusChecked: '',
 };
