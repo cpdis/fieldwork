@@ -1,0 +1,13 @@
+/* Feedback form: on the page's own paper, one question per band, room to breathe. */
+.fb { max-width: 640px; padding-top: 64px; padding-bottom: 32px; }
+.fb h1 { margin: 12px 0 0; font-size: clamp(32px, 5vw, 44px); line-height: 1.1; letter-spacing: -0.02em; }
+.fb .lede { margin: 16px 0 0; }
+.fb-form { margin-top: 48px; border-top: 1px solid var(--ink); }
+.fb .fb-q { display: grid; gap: 14px; padding: 32px 0; border-bottom: 1px solid var(--rule); font-size: 16px; font-weight: 500; }
+.fb fieldset.fb-q.pick { display: flex; flex-wrap: wrap; gap: 10px; margin: 0; padding: 32px 0; border: 0; border-bottom: 1px solid var(--rule); }
+.fb fieldset.fb-q.pick legend { float: left; width: 100%; margin-bottom: 14px; font-size: 16px; font-weight: 500; }
+.fb-q textarea { margin-top: 2px; font-weight: 400; }
+.fb-q.grid2 { font-weight: 400; }
+.fb-hint { width: 100%; margin: 4px 0 0; font-size: 14px; font-weight: 400; color: var(--muted); }
+.fb-send { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; padding-top: 32px; }
+.fb .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }

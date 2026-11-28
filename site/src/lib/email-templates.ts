@@ -211,7 +211,7 @@ export function renderBookingEmail(kind: Exclude<EmailKind, 'seat_offer'>, c: Co
 
     case 'follow_up': {
       // The site's own form unless FEEDBACK_URL points somewhere else.
-      const feedback = process.env.FEEDBACK_URL || `${siteUrl()}/feedback`;
+      const feedback = process.env.FEEDBACK_URL || `${siteUrl()}/feedback?day=${encodeURIComponent(c.slug)}`;
       return render({
         subject: `Thanks for coming to ${c.title}`,
         label: 'Thank you',

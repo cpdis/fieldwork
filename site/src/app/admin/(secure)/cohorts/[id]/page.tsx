@@ -10,16 +10,22 @@ import {
   removeFromWaitlist,
   sendEmailNow,
   sendPreCourseToAll,
+  summarizeCohortFeedback,
   updateBooking,
 } from '@/app/admin/actions';
 import { formatAbn } from '@/lib/abn';
 import { getCohortById, listBookings, listEmailLog, listWaitlist } from '@/lib/cohorts';
 import { getSql } from '@/lib/db';
+import { latestSummary, listFeedback } from '@/lib/feedback';
+import { Md } from '@/components/marketing/Md';
 import { formatMoney, formatRange, formatStamp } from '@/lib/time';
 import type { Booking, EmailLogRow } from '@/lib/types';
 import { AddAttendee } from './AddAttendee';
+import { SummarizeButton } from './SummarizeButton';
 
 export const metadata = { title: 'Cohort' };
+// Summarising feedback with Claude runs in a server action on this page and can take a minute.
+export const maxDuration = 300;
 
 const KIND_LABEL: Record<string, string> = {
   confirmation: 'Confirmed',
@@ -133,14 +139,22 @@ function BookingRow({ b, cohortId, log }: { b: Booking; cohortId: string; log: E
   );
 }
 
-export default async function CohortPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ show?: string }> }) {
+export default async function CohortPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ show?: string; fb_error?: string }> }) {
   const { id } = await params;
-  const { show } = await searchParams;
+  const { show, fb_error } = await searchParams;
   if (!/^[0-9a-f-]{36}$/i.test(id)) notFound();
   const sql = getSql();
   const cohort = await getCohortById(sql, id);
   if (!cohort) notFound();
-  const [bookings, waitlist, emails] = await Promise.all([listBookings(sql, id), listWaitlist(sql, id), listEmailLog(sql, id)]);
+  const [bookings, waitlist, emails, feedback, summary] = await Promise.all([
+    listBookings(sql, id),
+    listWaitlist(sql, id),
+    listEmailLog(sql, id),
+    listFeedback(sql, id),
+    latestSummary(sql, id),
+  ]);
+  const scores = feedback.flatMap((f) => (f.useful ? [f.useful] : []));
+  const avgUseful = scores.length ? (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1) : null;
 
   const attending = bookings.filter((b) => b.status === 'paid' || b.status === 'comp');
   const now = new Date();
@@ -330,6 +344,67 @@ export default async function CohortPage({ params, searchParams }: { params: Pro
               </tbody>
             </table>
           </div>
+        )}
+      </section>
+
+      <section className="stack" id="feedback">
+        <div className="spread">
+          <h3>
+            Feedback · {feedback.length} {feedback.length === 1 ? 'answer' : 'answers'}
+            {avgUseful && <span className="muted"> · useful {avgUseful}/5</span>}
+          </h3>
+          {feedback.length > 0 && (
+            <form action={summarizeCohortFeedback.bind(null, cohort.id)}>
+              <SummarizeButton again={Boolean(summary)} />
+            </form>
+          )}
+        </div>
+        {fb_error && <p className="notice bad">{fb_error}</p>}
+        {feedback.length === 0 ? (
+          <p className="small muted" style={{ margin: 0 }}>
+            None yet. The thank-you email links to /feedback?day={cohort.slug}; the deck&rsquo;s close page links to /feedback.
+          </p>
+        ) : (
+          <>
+            {summary && (
+              <div className="card">
+                <p className="small muted" style={{ margin: '0 0 12px' }}>
+                  Claude&rsquo;s read of {summary.response_count} answers · {summary.model} · {formatStamp(summary.created_at)}
+                  {summary.response_count < feedback.length && ` · ${feedback.length - summary.response_count} new since`}
+                </p>
+                <Md text={summary.summary} />
+              </div>
+            )}
+            <div className="card" style={{ padding: 0, overflowX: 'auto' }}>
+              <table>
+                <thead>
+                  <tr>
+                    <th>App</th>
+                    <th>Useful</th>
+                    <th>Will use this week</th>
+                    <th>Should change</th>
+                    <th>Recommend</th>
+                    <th>From</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {feedback.map((f) => (
+                    <tr key={f.id}>
+                      <td className="small">{f.app ?? ''}</td>
+                      <td className="num small">{f.useful ?? ''}</td>
+                      <td className="small">{f.keep ?? ''}</td>
+                      <td className="small">{f.change ?? ''}</td>
+                      <td className="small">{f.recommend ?? ''}</td>
+                      <td className="small">
+                        {f.name ?? <span className="muted">anonymous</span>}
+                        {f.email && <div className="muted">{f.email}</div>}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </section>
 

@@ -6,6 +6,7 @@ import { normaliseAbn, isValidAbn } from '@/lib/abn';
 import { checkPassword, endSession, requireAdmin, startSession } from '@/lib/auth';
 import { insertCohort, updateCohort, type CohortInput } from '@/lib/cohorts';
 import { getSql } from '@/lib/db';
+import { summarizeFeedback } from '@/lib/feedback';
 import { sendBookingEmail, sendSeatOffer } from '@/lib/mail';
 import { parsePerthLocal } from '@/lib/time';
 import type { CohortStatus, EmailKind } from '@/lib/types';
@@ -172,4 +173,25 @@ export async function moveInterestToCohort(waitlistId: string, formData: FormDat
   });
   revalidatePath('/admin');
   revalidatePath(`/admin/cohorts/${cohortId}`);
+}
+
+/**
+ * Asks Claude to read this cohort's feedback and stores the report. A failure comes
+ * back to the cohort page as ?fb_error=… so the button never fails silently.
+ */
+export async function summarizeCohortFeedback(cohortId: string) {
+  await requireAdmin();
+  const sql = getSql();
+  const [cohort] = await sql<{ title: string }[]>`select title from cohorts where id = ${cohortId}`;
+  let error: string | null = null;
+  try {
+    if (!cohort) throw new Error('That day no longer exists.');
+    await summarizeFeedback(sql, cohortId, cohort.title);
+  } catch (err) {
+    console.error('[feedback] summary failed', err);
+    error = err instanceof Error ? err.message : 'The summary failed. Try again.';
+  }
+  revalidatePath(`/admin/cohorts/${cohortId}`);
+  if (error) redirect(`/admin/cohorts/${cohortId}?fb_error=${encodeURIComponent(error)}#feedback`);
+  redirect(`/admin/cohorts/${cohortId}#feedback`);
 }
