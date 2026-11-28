@@ -1,3 +1,4 @@
+import { isValidAbn } from '@/lib/abn';
 import { attachCheckoutSession, releaseHold, reserveSeat } from '@/lib/bookings';
 import { getSql } from '@/lib/db';
 import { checkoutParams, getStripe } from '@/lib/stripe';
@@ -11,6 +12,7 @@ const MESSAGES = {
   not_found: 'That date is no longer listed.',
   stripe: "Payment didn't open. Nothing was charged. Please try again in a minute.",
   invalid: 'Please give your name and a valid email.',
+  abn: "That ABN doesn't check out. Please check the 11 digits, or leave it blank.",
 } as const;
 
 const field = (v: unknown, max: number) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
@@ -33,11 +35,15 @@ export async function POST(req: Request) {
   if (!slug || !name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return Response.json({ error: MESSAGES.invalid }, { status: 400 });
   }
+  const abn = field(body.abn, 20);
+  if (abn && !isValidAbn(abn)) {
+    return Response.json({ error: MESSAGES.abn, reason: 'abn' }, { status: 400 });
+  }
   const buyer = {
     name,
     email,
     company: field(body.company, 120) || null,
-    abn: field(body.abn, 20) || null,
+    abn: abn || null,
     dietary: field(body.dietary, 255) || null,
   };
 
