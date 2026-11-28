@@ -1,6 +1,9 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { isValidAbn } from '@/lib/abn';
+
+const ABN_MESSAGE = "That ABN doesn't check out. Please check the 11 digits, or leave it blank.";
 
 /**
  * Our own checkout: step one takes the buyer's details and holds a seat, step two
@@ -145,7 +148,16 @@ export function CheckoutForm({ slug, publishableKey, priceLabel }: { slug: strin
         </label>
         <label>
           ABN <span className="muted">(optional)</span>
-          <input name="abn" inputMode="numeric" autoComplete="off" maxLength={14} pattern="[0-9 ]{11,14}" title="11 digits" />
+          <input
+            name="abn"
+            inputMode="numeric"
+            autoComplete="off"
+            maxLength={14}
+            onChange={(e) => {
+              const v = e.currentTarget.value.trim();
+              e.currentTarget.setCustomValidity(v && !isValidAbn(v) ? ABN_MESSAGE : '');
+            }}
+          />
         </label>
       </div>
       <label>
