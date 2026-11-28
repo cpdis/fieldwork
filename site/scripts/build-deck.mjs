@@ -109,11 +109,43 @@ async function readManifest() {
       return { n: i + 1, title: title.replace(/\s+/g, ' ').trim().slice(0, 90), block };
     });
     console.error = quiet;
+    // The timetable (course.ts DAY), so analytics can set time on a block against its slot.
+    let day = [];
+    try {
+      day = (await server.ssrLoadModule(join(deckDir, 'course.ts'))).DAY ?? [];
+    } catch {
+      // No timetable: blocks carry no plan.
+    }
+    const mins = (t) => {
+      const [h, m] = String(t).split(':').map(Number);
+      return h * 60 + m;
+    };
+    const slotMin = (s) => (s ? mins(s.end) - mins(s.start) : null);
     // A block's name is the title of its first page ("Block 3 · Context is everything").
+    // Pages outside any block are the breaks and lunch, matched to the timetable's breaks in order.
     const blocks = [];
+    const breakSlots = day.filter((d) => d.kind === 'break');
+    let breakIndex = 0;
     for (const p of out) {
-      if (p.block === null || blocks.some((b) => b.n === p.block)) continue;
-      blocks.push({ n: p.block, name: p.block === 0 ? 'Opening' : `Block ${p.block} · ${p.title}`, first: p.n });
+      if (p.block === null) {
+        const slot = breakSlots[breakIndex++];
+        blocks.push({ n: null, name: slot?.title ?? p.title, first: p.n, last: p.n, planMin: slotMin(slot), start: slot?.start ?? null });
+        continue;
+      }
+      const prev = blocks[blocks.length - 1];
+      if (prev && prev.n === p.block) {
+        prev.last = p.n;
+        continue;
+      }
+      const slot = day.find((d) => d.kind === 'block' && d.n === p.block);
+      blocks.push({
+        n: p.block,
+        name: p.block === 0 ? 'Opening' : `Block ${p.block} · ${slot?.title ?? p.title}`,
+        first: p.n,
+        last: p.n,
+        planMin: slotMin(slot),
+        start: slot?.start ?? null,
+      });
     }
     return {
       slide: SLIDE,

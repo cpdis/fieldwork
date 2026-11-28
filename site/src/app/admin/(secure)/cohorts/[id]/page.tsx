@@ -290,7 +290,7 @@ export default async function CohortPage({ params, searchParams }: { params: Pro
         </div>
       </section>
 
-      <section className="stack">
+      <section className="stack" id="waitlist">
         <h3>Waitlist</h3>
         {waitlist.length === 0 ? (
           <p className="muted">Nobody waiting.</p>

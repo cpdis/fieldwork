@@ -1,30 +1,26 @@
 import Link from 'next/link';
 import { StatusTag } from '@/components/AdminBits';
-import { PageStrips, PaceLine, WeekBars } from '@/components/admin/Charts';
+import { HeatMap, PaceLine, WeekBars } from '@/components/admin/Charts';
 import { cohortStats, interestByWeek } from '@/lib/cohort-stats';
 import { listCohorts } from '@/lib/cohorts';
 import { getSql } from '@/lib/db';
-import { filterKey, formatDuration, listLinks, listSessions, pageStats, parseFilter, readManifest, type SessionRow } from '@/lib/deck';
+import { filterKey, formatDuration, listLinks, listSessions, pageStats, parseFilter, readManifest, runLabel, runPageTimes, sectionTimes } from '@/lib/deck';
 import { formatMoney, formatShortDate, formatStamp } from '@/lib/time';
 
 export const metadata = { title: 'Analytics' };
 
 const weekFmt = new Intl.DateTimeFormat('en-AU', { day: 'numeric', month: 'short', timeZone: 'UTC' });
 
-export function runLabel(s: Pick<SessionRow, 'viewer' | 'link_name' | 'cohort_title' | 'presented'>): string {
-  if (s.viewer === 'link') return s.link_name ?? 'Share link';
-  if (s.cohort_title) return `You · ${s.cohort_title}`;
-  return s.presented ? 'You · rehearsal, presenting' : 'You · rehearsal';
-}
-
 export default async function Analytics({ searchParams }: { searchParams: Promise<{ who?: string }> }) {
   const { who } = await searchParams;
-  const filter = parseFilter(who);
+  // Default to Colin's own runs: the timetable comparison only means something for a full run.
+  const filter = parseFilter(who ?? 'you');
   const key = filterKey(filter);
   const sql = getSql();
-  const [manifest, stats, sessions, links, cohorts, cstats, weeks] = await Promise.all([
+  const [manifest, stats, perRun, sessions, links, cohorts, cstats, weeks] = await Promise.all([
     readManifest(),
     pageStats(sql, filter),
+    runPageTimes(sql, filter),
     listSessions(sql, filter, 40),
     listLinks(sql),
     listCohorts(sql),
@@ -48,21 +44,34 @@ export default async function Analytics({ searchParams }: { searchParams: Promis
       stopped: s?.stopped ?? 0,
     };
   });
-  const totalMedian = strip.reduce((a, p) => a + p.median_s, 0);
   const mostBacks = [...strip].filter((p) => p.backs > 0).sort((a, b) => b.backs - a.backs).slice(0, 5);
   const longest = [...strip].filter((p) => p.median_s > 0).sort((a, b) => b.median_s - a.median_s).slice(0, 5);
   const finished = strip.length ? strip[strip.length - 1].reached : 0;
 
-  // Per block: the sum of median page times against the block's pages.
-  const blocks = (manifest?.blocks ?? []).map((b, i, all) => {
-    const end = all[i + 1]?.first ?? pageCount + 1;
-    const ps = strip.filter((p) => p.n >= b.first && p.n < end && p.block === b.n);
-    return { ...b, seconds: ps.reduce((a, p) => a + p.median_s, 0), backs: ps.reduce((a, p) => a + p.backs, 0), pages: ps.length };
+  // Per section of the day: the median, across runs, of each run's time on it, against the timetable.
+  const sections = manifest?.blocks ?? [];
+  const times = sectionTimes(sections, perRun);
+  const rows = sections.map((b, i) => {
+    const sec = times[i].seconds;
+    const over = b.planMin !== null && times[i].runs > 0 && sec > b.planMin * 60 + 120;
+    return {
+      ...b,
+      key: `${b.first}`,
+      name: b.n === null ? `${b.name}${b.start ? ` · ${b.start}` : ''}` : b.name,
+      time: times[i].runs ? formatMinutes(sec) : '–',
+      plan: b.planMin === null ? null : `${b.planMin}m`,
+      over,
+      seconds: sec,
+      backs: strip.slice(b.first - 1, b.last).reduce((a, p) => a + p.backs, 0),
+    };
   });
+  const typical = rows.reduce((a, r) => a + r.seconds, 0);
+  const planned = sections.reduce((a, b) => a + (b.planMin ?? 0), 0);
+  const scale = Math.max(1, ...rows.map((r) => Math.max(r.seconds / 60, r.planMin ?? 0)));
 
   const filters: { key: string; label: string }[] = [
-    { key: 'all', label: 'Everyone' },
     { key: 'you', label: 'You' },
+    { key: 'all', label: 'Everyone' },
     { key: 'rehearsal', label: 'Your rehearsals' },
     { key: 'room', label: 'In the room' },
     { key: 'links', label: 'Share links' },
@@ -82,13 +91,13 @@ export default async function Analytics({ searchParams }: { searchParams: Promis
     <div className="stack loose">
       <div>
         <p className="eyebrow">Admin</p>
-        <h2 style={{ marginTop: 6 }}>Analytics</h2>
+        <h1 className="admin-h1">Analytics</h1>
       </div>
 
       <section className="stack">
         <div className="spread">
           <div>
-            <h3>The deck, page by page</h3>
+            <h3>The day, block by block</h3>
             <p className="small muted" style={{ margin: '4px 0 0' }}>
               Every run through the deck on this site, yours and your share links&rsquo;. Time counts only while the deck is on screen; runs under 30 seconds are left out, and a
               single stop over 20 minutes counts as 20.
@@ -97,7 +106,7 @@ export default async function Analytics({ searchParams }: { searchParams: Promis
         </div>
         <div className="pills" role="group" aria-label="Whose runs">
           {shown.map((f) => (
-            <Link key={f.key} href={f.key === 'all' ? '/admin/analytics' : `/admin/analytics?who=${f.key}`} aria-current={f.key === key ? 'true' : undefined} scroll={false}>
+            <Link key={f.key} href={f.key === 'you' ? '/admin/analytics' : `/admin/analytics?who=${f.key}`} aria-current={f.key === key ? 'true' : undefined} scroll={false}>
               {f.label}
             </Link>
           ))}
@@ -117,8 +126,8 @@ export default async function Analytics({ searchParams }: { searchParams: Promis
                 <div className="k">Runs</div>
               </div>
               <div className="stat">
-                <div className="v">{formatDuration(totalMedian)}</div>
-                <div className="k">Typical run · sum of medians</div>
+                <div className="v">{formatMinutes(typical)}</div>
+                <div className="k">Typical run{planned ? ` · plan ${formatMinutes(planned * 60)}` : ''}</div>
               </div>
               <div className="stat">
                 <div className="v">
@@ -131,7 +140,36 @@ export default async function Analytics({ searchParams }: { searchParams: Promis
                 <div className="k">Steps back</div>
               </div>
             </div>
-            <PageStrips pages={strip} runs={stats.runs} blocks={manifest?.blocks ?? []} />
+            <HeatMap rows={rows} pages={strip} runs={stats.runs} deckUrl={`/admin/deck/s/${manifest?.slide ?? 'fieldwork-day'}`} />
+            {planned > 0 && (
+              <div className="card">
+                <p className="eyebrow" style={{ margin: 0 }}>
+                  Against the timetable · minutes
+                </p>
+                <div className="plan-rows">
+                  {rows
+                    .filter((r) => r.planMin !== null)
+                    .map((r) => {
+                      const d = Math.round(r.seconds / 60) - (r.planMin ?? 0);
+                      return (
+                        <div className="plan-row" key={r.key}>
+                          <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{r.name}</span>
+                          <div className="plan-bar" aria-label={`${Math.round(r.seconds / 60)} minutes against ${r.planMin} planned`}>
+                            <div className="plan" style={{ width: `${((r.planMin ?? 0) / scale) * 100}%` }} />
+                            {r.seconds > 0 && <div className="act" style={{ width: `${(r.seconds / 60 / scale) * 100}%` }} />}
+                          </div>
+                          <span className="num" style={{ textAlign: 'right', fontWeight: d > 2 ? 600 : 400 }}>
+                            {r.seconds === 0 ? '–' : `${d > 0 ? '+' : d < 0 ? '−' : ''}${Math.abs(d)}m`}
+                          </span>
+                        </div>
+                      );
+                    })}
+                </div>
+                <p className="small muted" style={{ margin: '14px 0 0' }}>
+                  Outline: the slot in the deck&rsquo;s timetable (course.ts). Bar: the typical time across these runs.
+                </p>
+              </div>
+            )}
             <div className="grid2" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))' }}>
               <div className="card">
                 <p className="eyebrow" style={{ margin: 0 }}>Longest on</p>
@@ -160,30 +198,6 @@ export default async function Analytics({ searchParams }: { searchParams: Promis
                 )}
               </div>
             </div>
-            {blocks.length > 0 && (
-              <div className="tablebox">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Block</th>
-                      <th>Pages</th>
-                      <th>Typical time</th>
-                      <th>Steps back</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {blocks.map((b) => (
-                      <tr key={b.n}>
-                        <td>{b.name}</td>
-                        <td className="num">{b.pages}</td>
-                        <td className="num">{formatDuration(b.seconds)}</td>
-                        <td className="num">{b.backs}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
             <details>
               <summary className="small">Every page as a table</summary>
               <div className="tablebox" style={{ marginTop: 12 }}>
@@ -344,4 +358,10 @@ export default async function Analytics({ searchParams }: { searchParams: Promis
       </section>
     </div>
   );
+}
+
+/** "1h 04m", "58m". */
+function formatMinutes(seconds: number): string {
+  const m = Math.round(seconds / 60);
+  return m < 60 ? `${m}m` : `${Math.floor(m / 60)}h ${String(m % 60).padStart(2, '0')}m`;
 }

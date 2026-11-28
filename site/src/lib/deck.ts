@@ -12,6 +12,15 @@ export interface DeckPage {
   /** Block number (0 is the opening); null for breaks and lunch. */
   block: number | null;
 }
+export interface DeckSection {
+  n: number | null;
+  name: string;
+  first: number;
+  last: number;
+  /** Minutes the timetable (course.ts) gives it; null for the opening. */
+  planMin: number | null;
+  start: string | null;
+}
 export interface DeckManifest {
   slide: string;
   title: string;
@@ -20,7 +29,8 @@ export interface DeckManifest {
   message: string | null;
   pageCount: number;
   pages: DeckPage[];
-  blocks: { n: number; name: string; first: number }[];
+  /** The day in order: blocks (n 0 is the opening) and the breaks between them (n null). */
+  blocks: DeckSection[];
 }
 
 const BUILD_DIR = join(process.cwd(), 'deck-build');
@@ -552,4 +562,44 @@ export function formatDuration(seconds: number): string {
   const m = Math.floor(s / 60);
   if (m < 60) return `${m}m ${String(s % 60).padStart(2, '0')}s`;
   return `${Math.floor(m / 60)}h ${String(m % 60).padStart(2, '0')}m`;
+}
+
+/** Seconds per page per run, over the same runs pageStats counts. */
+export async function runPageTimes(sql: Sql, f: DeckFilter, minSeconds = 30): Promise<{ session_id: string; page: number; s: number }[]> {
+  return sql<{ session_id: string; page: number; s: number }[]>`
+    with runs as (
+      select s.id from deck_sessions s join deck_views v on v.session_id = s.id
+      where ${where(sql, f)}
+      group by s.id having sum(least(v.dwell_ms, ${DWELL_CAP_MS})) >= ${minSeconds * 1000}
+    )
+    select v.session_id, v.page::int, (sum(least(v.dwell_ms, ${DWELL_CAP_MS})) / 1000)::int as s
+    from deck_views v join runs r on r.id = v.session_id
+    group by v.session_id, v.page
+  `;
+}
+
+export function median(xs: number[]): number {
+  if (xs.length === 0) return 0;
+  const a = [...xs].sort((x, y) => x - y);
+  const m = a.length >> 1;
+  return a.length % 2 ? a[m] : (a[m - 1] + a[m]) / 2;
+}
+
+/**
+ * Typical time on each section of the day: for every run that reached the section, its total
+ * time on the section's pages; then the median across those runs.
+ */
+export function sectionTimes(sections: Pick<DeckSection, 'first' | 'last'>[], rows: { session_id: string; page: number; s: number }[]): { seconds: number; runs: number }[] {
+  return sections.map((sec) => {
+    const per = new Map<string, number>();
+    for (const r of rows) if (r.page >= sec.first && r.page <= sec.last) per.set(r.session_id, (per.get(r.session_id) ?? 0) + r.s);
+    return { seconds: Math.round(median([...per.values()])), runs: per.size };
+  });
+}
+
+/** "Alex", "You · Fieldwork: pilot day", "You · rehearsal, presenting". */
+export function runLabel(s: Pick<SessionRow, 'viewer' | 'link_name' | 'cohort_title' | 'presented'>): string {
+  if (s.viewer === 'link') return s.link_name ?? 'Share link';
+  if (s.cohort_title) return `You · ${s.cohort_title}`;
+  return s.presented ? 'You · rehearsal, presenting' : 'You · rehearsal';
 }

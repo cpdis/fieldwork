@@ -26,7 +26,7 @@ export default async function DeckAdmin({ searchParams }: { searchParams: Promis
         <div className="spread">
           <div>
             <p className="eyebrow">Admin</p>
-            <h2 style={{ marginTop: 6 }}>{manifest?.title ?? 'The deck'}</h2>
+            <h1 className="admin-h1">{manifest?.title ?? 'The deck'}</h1>
           </div>
           {manifest && (
             <div className="row">
@@ -48,7 +48,7 @@ export default async function DeckAdmin({ searchParams }: { searchParams: Promis
               </div>
               <div>
                 <dt>Blocks</dt>
-                <dd>{manifest.blocks.filter((b) => b.n > 0).length}</dd>
+                <dd>{manifest.blocks.filter((b) => b.n !== null && b.n > 0).length}</dd>
               </div>
               <div>
                 <dt>Built</dt>
@@ -100,7 +100,7 @@ export default async function DeckAdmin({ searchParams }: { searchParams: Promis
         )}
       </section>
 
-      <section className="stack">
+      <section className="stack" id="links">
         <div>
           <h3>Share links</h3>
           <p className="small muted" style={{ margin: '4px 0 0' }}>

@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 const ITEMS = [
-  { href: '/admin', label: 'Overview', match: (p: string) => p === '/admin' || p.startsWith('/admin/cohorts') },
+  { href: '/admin', label: 'Overview', match: (p: string) => p === '/admin' },
+  { href: '/admin/cohorts', label: 'Cohorts', match: (p: string) => p.startsWith('/admin/cohorts') },
   { href: '/admin/deck', label: 'Deck', match: (p: string) => p.startsWith('/admin/deck') },
   { href: '/admin/analytics', label: 'Analytics', match: (p: string) => p.startsWith('/admin/analytics') },
 ];
