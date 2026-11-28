@@ -349,6 +349,45 @@ const GoodGoal: Page = () => {
   );
 };
 
+/* ---------- words that work (after Konstantopoulos, "Effective Swarm Riding for Engineers", Paradigm, Nov 2026) ---------- */
+const WORDS: [string, string, string][] = [
+  ['Give it a number', '“Make this quote clearer.”', '“Cut this quote to one page a client can read in two minutes. Keep every price.”'],
+  ['Name the check', '“Fix the errors in the invoices.”', '“Check every invoice against its job sheet. List each line that doesn’t match.”'],
+  ['Sweep all of it', '“Update the old call-out fee.”', '“Find every file in the shared drive that still quotes the old call-out fee. List them, file by file.”'],
+  ['Tell it to keep going', '“Do some of these.”', '“There are 40. I’m away for an hour. Work through all of them and stop only for the ones that need me.”'],
+];
+const WordsThatWork: Page = () => {
+  const [better, setBetter] = useState(false);
+  return (
+    <Frame label="Words that work">
+      <Head
+        eb={eb('agents', 'Agents · the words')}
+        title="Words that work"
+        sum="The same job, in better words. Engineers running dozens of agents found a few phrasings that reliably get more done. All four work for an owner."
+      />
+      <PageNo />
+      <div className="b5-goal-tog">
+        <Chip n={1} label="How most people ask" state={!better ? 'on' : ''} onClick={() => setBetter(false)} />
+        <Chip n={2} label="Words that work" state={better ? 'on' : ''} onClick={() => setBetter(true)} />
+      </div>
+      <div className="b5-words">
+        {WORDS.map(([k, v, b], i) => (
+          <div key={k} className="dk-fade" style={{ ['--i' as string]: i }}>
+            <span className="dk-k">0{i + 1} · {k}</span>
+            <span className={better ? 'b' : 'v'} key={better ? 'b' : 'v'}>
+              {better ? b : v}
+            </span>
+          </div>
+        ))}
+      </div>
+      <p className="b5-words-foot">
+        A number, a check, all of it, and permission to keep going. <Hl>Then get out of the way.</Hl>
+      </p>
+      <Src>After Georgios Konstantopoulos, “Effective Swarm Riding for Engineers”, Paradigm, 20 Nov 2026.</Src>
+    </Frame>
+  );
+};
+
 /* ---------- choose by stakes ---------- */
 type Q = 'run' | 'check' | 'approve' | 'human';
 const QUAD: Record<Q, { t: string; d: string; x: number; y: number }> = {
@@ -566,6 +605,10 @@ export const pages: [Page, string][] = [
   [
     GoodGoal,
     '4 min. Click 1 then 2. Read the good goal out loud; the labels show the five parts. This page is the template for the lab.',
+  ],
+  [
+    WordsThatWork,
+    '3 min. Click 1, read the four vague asks, then click 2. One line per row: a number it can hit, a check it can run, a sweep across everything, and permission to keep going. The source is an engineer writing about running dozens of coding agents at once; say that the same four moves work on quotes and invoices. Ask: which of these four did your Lab 4 goal already have? To pay for this page, skip "Why did we decide that?", which is already the optional page in this block.',
   ],
   [
     Stakes,
