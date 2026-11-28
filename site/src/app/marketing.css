@@ -14,10 +14,10 @@
 .mk h1 .hl { background: linear-gradient(transparent 16%, var(--accent) 16%, var(--accent) 94%, transparent 94%); padding: 0 .08em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
 .mk h2 { font-size: clamp(26px, 3.4vw, 40px); max-width: 24ch; text-wrap: balance; }
 .mk .lede { max-width: 56ch; }
-.mk section[id] { scroll-margin-top: 72px; }
+.mk section[id] { scroll-margin-top: calc(72px + env(safe-area-inset-top)); }
 
 /* header */
-.mk-top { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--paper) 92%, transparent); backdrop-filter: saturate(1.2) blur(6px); border-bottom: 1px solid var(--rule); }
+.mk-top { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--paper) 92%, transparent); backdrop-filter: saturate(1.2) blur(6px); border-bottom: 1px solid var(--rule); padding-top: env(safe-area-inset-top); }
 .mk-top-in { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 60px; }
 .mk-nav { display: none; gap: 28px; font-size: 14px; }
 .mk-nav a { text-decoration: none; color: var(--muted); }

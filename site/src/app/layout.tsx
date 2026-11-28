@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Caveat, IBM_Plex_Mono, Instrument_Sans, Newsreader } from 'next/font/google';
 import './globals.css';
 
@@ -18,6 +18,9 @@ export const metadata: Metadata = {
   openGraph: { type: 'website', siteName: 'Fieldwork', locale: 'en_AU' },
   icons: { icon: '/icon.svg', apple: '/apple-icon.png' },
 };
+
+// Paint the page under the iPhone status bar instead of leaving a white band above the header.
+export const viewport: Viewport = { viewportFit: 'cover', themeColor: '#f6f6f3' };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
