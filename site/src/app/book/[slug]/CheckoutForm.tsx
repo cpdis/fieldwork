@@ -154,7 +154,8 @@ export function CheckoutForm({ slug, publishableKey, priceLabel }: { slug: strin
       </label>
       {error && <p className="notice bad">{error}</p>}
       <div className="row">
-        <button className="btn primary" disabled={busy}>
+        <button className="btn primary" disabled={busy} aria-busy={busy}>
+          {busy && <span className="spin" aria-hidden="true" />}
           {busy ? 'Holding your seat…' : 'Continue to payment'}
         </button>
         <span className="small muted">{priceLabel}. Your seat is held for 30 minutes while you pay.</span>
@@ -274,8 +275,9 @@ function PaymentStep({
       {!ready && !error && <p className="small muted">Loading secure payment fields…</p>}
       {error && <p className="notice bad">{error}</p>}
       <div className="row">
-        <button type="button" className="btn primary" onClick={pay} disabled={!ready || !total || paying}>
-          {paying ? 'Paying…' : total ? `Pay ${total}` : 'Pay'}
+        <button type="button" className="btn primary" onClick={pay} disabled={!ready || !total || paying} aria-busy={paying}>
+          {paying && <span className="spin" aria-hidden="true" />}
+          {paying ? 'Confirming payment…' : total ? `Pay ${total}` : 'Pay'}
         </button>
         <span className="small muted">Payments are processed by Stripe. Card details never touch this site.</span>
       </div>
