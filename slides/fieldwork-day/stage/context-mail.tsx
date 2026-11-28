@@ -6,48 +6,80 @@
  * email and writes the new one in, a word at a time. Words from the step just added are
  * highlighted, words from earlier steps underlined. Drawn at scale 1 (see staged.tsx).
  */
+import { useEffect, useRef } from 'react';
 import type { Script } from './vendor/kit/act';
 import { Check } from './vendor/kit/parts/Check';
 import { Staged } from './staged';
 import './context-mail.css';
 
 type Seg = [string, number?];
+/*
+ * Real drafts, copied word for word from Claude (Fable 5.2, Medium) in incognito chats on
+ * 28 Nov 2026: the same ask each time, with the Project instructions, the notes and the email
+ * pasted in under it (see /mnt/project-files/deck/real-runs-2026-11-28 for the prompts and
+ * Claude's notes around each draft). Never edit the words. The numbers only mark which step
+ * a phrase came from, for the highlight. A paragraph starting "- " is a bullet.
+ */
 const EMAILS: { subj: Seg[]; body: Seg[][] }[] = [
   {
-    subj: [['Following up on our recent visit']],
+    subj: [['Follow-up: [site/project] visit, 27 November']],
     body: [
-      [['Dear [Client Name],']],
-      [['Thank you for taking the time to meet with us yesterday. It was a pleasure discussing your project, and we are excited about the opportunity to work with you.']],
-      [['We will be in touch shortly with next steps. Please don’t hesitate to reach out if you have any questions.']],
-      [['Best regards,'], ['\n[Your Name]']],
+      [['Hi [Name],']],
+      [['Thanks for your time on site yesterday. Summary of where we landed:']],
+      [['Observed']],
+      [['- [Finding 1]']],
+      [['- [Finding 2]']],
+      [['- [Finding 3]']],
+      [['Agreed']],
+      [['- [Decision / scope point 1]']],
+      [['- [Decision / scope point 2]']],
+      [['Open items']],
+      [['- [Item] — [owner], by [date]']],
+      [['- [Item] — [owner], by [date]']],
+      [['From you, I need [drawings / access / approvals / information] by [date] to keep [milestone] on track.']],
+      [["From me, you'll have [deliverable: quote / report / revised programme] by [date]."]],
+      [["If anything above doesn't match your understanding, let me know and I'll correct the record."]],
+      [['Regards,\n[Your name]']],
     ],
   },
   {
-    subj: [['Your '], ['boundary survey', 1], [' – next steps']],
+    subj: [['Follow-up from Friday’s site visit – [site address]']],
     body: [
-      [['Hi '], ['Anna', 1], [',']],
-      [['Thanks for having us out yesterday. '], ['Ridgeline', 1], [' will prepare a quote for the boundary survey and send it '], ['within two working days', 1], ['.']],
-      [['Any questions in the meantime, just reply to this email.']],
-      [['Cheers,', 1], ['\nJess Tran, Licensed Surveyor', 1]],
+      [['Hi [client first name],']],
+      [['Thanks for showing me around [site address] on Friday.']],
+      [['To confirm what we talked about, you’re after [survey type, e.g. feature and contour survey / boundary re-establishment] for [purpose, e.g. the rear extension / new fence line].']],
+      [['From what I saw on site, [key observation, e.g. the rear boundary pegs are missing / access down the side is tight / the retaining wall sits close to the boundary]. [What that means for the job, if anything.]']],
+      [['Our fee for this work is [price list item] at $[amount] including GST. [Any extra item and price, e.g. additional pegs at $[amount] each.]']],
+      [['Before we can book the fieldwork, I need [what you need from the client, e.g. a copy of the Certificate of Title / your written go-ahead / side gate access].']],
+      [['Once I have that, '], ['I’ll come back to you with a confirmed date', 1], [' for the fieldwork.']],
+      [['Any questions, give me a call on [phone].']],
+      [['Cheers,\nJess', 1]],
+      [['Jess Tran\nLicensed Surveyor\nRidgeline Surveying', 1]],
     ],
   },
   {
-    subj: [['14 Ashby Rd', 2], [' – '], ['boundary survey', 1], [' next steps']],
+    subj: [['14 Ashby Rd boundary survey', 2], [' – follow-up from Friday’s visit']],
     body: [
-      [['Hi '], ['Anna', 1], [',']],
-      [['Thanks for walking the block with me yesterday. Quick recap: '], ['two of the four boundary pegs are missing (NE and SE corners)', 2], ['. '], ['The eastern fence may sit up to 0.4 m inside your boundary', 2], ['; the survey will confirm it.']],
-      [['I’ll send the quote '], ['by Thursday', 2], [' so we can survey '], ['before your fencer starts on the 21st', 2], ['.']],
-      [['Cheers,', 1], ['\nJess', 1]],
+      [['Hi '], ['Anna', 2], [',']],
+      [['Thanks for '], ['walking the block', 2], [' with me on Friday.']],
+      [['A quick summary of what we found:']],
+      [['- '], ['The north-east and south-east corner pegs are missing', 2], [', so both will need to be re-established as part of the boundary survey.']],
+      [['- '], ['The east fence looks like it sits inside your boundary, by up to about 0.4 m', 2], [' in places. That’s only from what we could see on the day, and the survey will confirm where the boundary actually runs.']],
+      [['I’ll send your quote through '], ['by Thursday 3 December', 2], ['.']],
+      [['I know '], ['your fencer starts on the 21st', 2], ['. '], ['I can’t confirm a survey date yet', 1], [', but I’ll let you know what’s available when I send the quote. In the meantime, it’s worth letting your fencer know the east boundary is still to be confirmed, so the new fence isn’t set out from the old fence line.']],
+      [['If you have any questions before then, just reply to this email.']],
+      [['Regards,\n'], ['Jess', 1]],
+      [['Jess Tran\nLicensed Surveyor\nRidgeline Surveying', 1]],
     ],
   },
   {
     subj: [['14 Ashby Rd', 2], [' – '], ['what we found and what’s next', 3]],
     body: [
-      [['Hi '], ['Anna', 1], [',']],
-      [['What we found: ', 3], ['two boundary pegs missing (NE and SE corners)', 2], ['. '], ['The eastern fence may sit up to 0.4 m inside your boundary', 2], ['.']],
-      [['What happens next: ', 3], ['quote by Thursday', 2], [', survey next week, '], ['before your fencer starts on the 21st', 2], ['.']],
-      [['What we need from you: ', 3], ['your Certificate of Title, if it’s handy.', 3]],
-      [['Cheers,', 1], ['\nJess', 1]],
+      [['Hi '], ['Anna', 2], [',']],
+      [['What we found: ', 3], ['the north-east and south-east corner pegs are missing', 2], ['. '], ['The east fence looks to be up to 0.4 m inside your boundary', 2], ['. The survey will confirm that.']],
+      [['What happens next: ', 3], ['I’ll send your quote by Thursday', 2], ['. I know '], ['your fencer starts on the 21st', 2], [', so '], ['I’ll confirm a survey date with you as soon as it’s locked in', 1], ['.']],
+      [['What we need from you: ', 3], ['nothing just yet. If the fencer’s start date changes, let me know.']],
+      [['Cheers,\nJess', 3]],
     ],
   },
 ];
@@ -63,8 +95,9 @@ const MAILS = EMAILS.map((e, lv) => {
   const toks = (segs: Seg[]): Tok[] =>
     segs.flatMap(([t, k]) => (t.match(/\s*\S+\s*/g) ?? [t]).map((w) => ({ t: w, k: k ? (k === lv ? 'new' : 'old') : '', i: n++ }) as Tok));
   const subj = toks(e.subj);
-  const body = e.body.map(toks);
-  return { subj, body, words: n };
+  const li = e.body.map((p) => p[0][0].startsWith('- '));
+  const body = e.body.map((p, i) => toks(li[i] ? (p[0][0] === '- ' ? p.slice(1) : [[p[0][0].slice(2), p[0][1]] as Seg, ...p.slice(1)]) : p));
+  return { subj, body, li, words: n };
 });
 
 type S = { chips: number; pop: number; fade: boolean; mail: number; words: number; busy: boolean };
@@ -107,6 +140,22 @@ const Words = ({ toks, count }: { toks: Tok[]; count: number }) => (
 
 const Mail = ({ s }: { s: S }) => {
   const m = s.mail >= 0 ? MAILS[s.mail] : null;
+  /* The real drafts run longer than the window: keep the word being written in view. */
+  const body = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = body.current;
+    if (!el) return;
+    const on = el.querySelectorAll('.cd-w[data-on]');
+    const last = on[on.length - 1] as HTMLElement | undefined;
+    if (!last) {
+      el.scrollTop = 0;
+      return;
+    }
+    const box = el.getBoundingClientRect();
+    const k = box.height / el.offsetHeight || 1; // the deck canvas is scaled to the window
+    const bottom = (last.getBoundingClientRect().bottom - box.top) / k + el.scrollTop;
+    if (bottom > el.scrollTop + el.clientHeight - 8) el.scrollTop = bottom - el.clientHeight + 8;
+  }, [s.words, s.mail]);
   return (
     <div className="cd-mail" data-fade={s.fade || undefined}>
       <div className="cd-bar">
@@ -137,9 +186,9 @@ const Mail = ({ s }: { s: S }) => {
           <b className="cd-subj">{m && <Words toks={m.subj} count={s.words} />}</b>
         </div>
       </div>
-      <div className="cd-body">
+      <div className="cd-body" ref={body} data-long={(m && m.words > 110) || undefined}>
         {m?.body.map((p, i) => (
-          <p key={`${s.mail}-${i}`}>
+          <p key={`${s.mail}-${i}`} className={m.li[i] ? 'cd-li' : undefined}>
             <Words toks={p} count={s.words} />
           </p>
         ))}

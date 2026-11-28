@@ -170,6 +170,7 @@
 .fw .b3-mail-key i.new { background: var(--accent); }
 .fw .b3-mail-key i.old { box-shadow: inset 0 -.14cqw 0 var(--ink); }
 .fw .b3-mail-key span:last-child { margin-left: auto; }
+.fw .b3-mail-key span { white-space: nowrap; }
 
 .fw .b3-proj { display: grid; grid-template-columns: 1.15fr 1fr 1fr; gap: .8cqw; height: 100%; }
 
