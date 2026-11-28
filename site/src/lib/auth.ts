@@ -6,11 +6,12 @@ import { required } from './config';
 export const SESSION_COOKIE = 'fw_admin';
 const SESSION_DAYS = 14;
 
-function sign(payload: string): string {
+/** HMAC with the session secret. Also signs the share-link cookie (see deck.ts). */
+export function sign(payload: string): string {
   return createHmac('sha256', required('ADMIN_SESSION_SECRET')).update(payload).digest('base64url');
 }
 
-function safeEqual(a: string, b: string): boolean {
+export function safeEqual(a: string, b: string): boolean {
   const ab = Buffer.from(a);
   const bb = Buffer.from(b);
   return ab.length === bb.length && timingSafeEqual(ab, bb);

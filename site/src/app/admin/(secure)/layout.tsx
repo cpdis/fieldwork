@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { AdminNav } from '@/components/admin/AdminNav';
 import { Header } from '@/components/Chrome';
 import { requireAdmin } from '@/lib/auth';
 import { logout } from '../actions';
@@ -13,9 +13,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <Header
         right={
           <>
-            <Link href="/admin" className="small">
-              Cohorts
-            </Link>
+            <AdminNav />
             <form action={logout}>
               <button className="btn quiet small">Sign out</button>
             </form>

@@ -30,7 +30,20 @@ Each Stripe event is recorded in `stripe_events` in the same transaction that ap
 
 ## Admin
 
-`/admin`, behind a single password (`ADMIN_PASSWORD`). Per cohort:
+`/admin`, behind a single password (`ADMIN_PASSWORD`).
+
+- **Overview** (`/admin`): a numbered list of what needs you, built fresh from the database on each load (`src/lib/todos.ts`): a day with no venue, seats open while people wait, unread deck notes, share links nobody has opened, feedback not yet summarised, test bookings left on a draft. Beside it, the deck (Present, Rehearse, Share), the next day's seats and the last 7 days.
+- **Cohorts** (`/admin/cohorts`): every day, plus the next-public-day list.
+- **Deck** (`/admin/deck`): the deck itself, share links and notes left on pages.
+- **Analytics** (`/admin/analytics`): the day as a heat map (a row per block, a square per page, darker for longer, ringed where people stepped back), time per block against the timetable in the deck's `course.ts`, every run, and per cohort: fill, pace, money, waitlist and feedback. Each run has its own page with its path through the deck.
+
+### The deck on the site
+
+`npm run build` first runs `scripts/build-deck.mjs`, which builds the open-slide deck from the repo root twice: at `/admin/deck/` with the full open-slide UI and presenter view, and at `/look/` as the read-only player for share links. It also writes `deck-build/manifest.json` with every page's title (read by rendering each page once), the blocks and the timetable. So the site always serves the deck as it is on the commit being deployed. Locally, run `npm run build:deck` once; the output is gitignored.
+
+The deck's files sit in `public/`, behind `src/proxy.ts`: `/admin/deck/…` needs the admin session, `/look/…` needs the cookie a share link sets. A share link is `/look/<name>-<10 random characters>`; it can expire and be turned off, and turning it off stops it on the next page load. The entry pages are served by route handlers that check the database and add `public/deck-kit/fw-deck.js`, which records time on each page (only while the tab is visible) and adds the "Note on page" box. The presenter window isn't tracked; the window it drives is, and that run is marked as presented. A run you start during a cohort's day is tagged with that cohort, which is how "in the room" is told apart from a rehearsal.
+
+Per cohort:
 
 - Roster with company, ABN, dietary needs, booking status and which emails have gone.
 - Seats booked, seats left, people paying right now, waitlist count.
@@ -60,6 +73,7 @@ npm install
 cp .env.example .env.local      # fill in, see below
 npm run db:migrate              # any Postgres, or Supabase
 npm run db:seed                 # one open test cohort
+npm run build:deck              # the deck for /admin/deck and share links
 npm run dev                     # http://localhost:3000
 ```
 
@@ -69,7 +83,7 @@ For webhooks in dev, use the Stripe CLI: `stripe listen --forward-to localhost:3
 
 ## Set up for real
 
-1. **Supabase.** Create a project in the Sydney region. Run the migration with `DATABASE_URL=<session pooler string> npm run db:migrate`, or paste `supabase/migrations/0001_cohort_admin.sql` into the SQL editor. Every table has row-level security on and no policies, so the public API keys can't read bookings; the app connects as the database owner instead.
+1. **Supabase.** Create a project in the Sydney region. Run the migrations with `DATABASE_URL=<session pooler string> npm run db:migrate`, or paste each file in `supabase/migrations/` into the SQL editor in order. Every table has row-level security on and no policies, so the public API keys can't read bookings; the app connects as the database owner instead.
 2. **Stripe (test mode first).** Add a webhook endpoint at `https://<site>/api/stripe/webhook` for `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `checkout.session.async_payment_failed`, `checkout.session.expired` and `charge.refunded`. Turn on email receipts in Settings > Customer emails. A live `sk_live_` key is refused in production until you also set `STRIPE_ALLOW_LIVE=1`.
 3. **Resend.** Verify the sending domain and set `RESEND_API_KEY`, `EMAIL_FROM` and `EMAIL_REPLY_TO`.
 4. **Vercel.** New project from this repo with **Root Directory** set to `site`. Add the variables from `.env.example`. Use Supabase's transaction pooler string (port 6543) for `DATABASE_URL`. Set `CRON_SECRET` to a random string; Vercel sends it to the cron route.
