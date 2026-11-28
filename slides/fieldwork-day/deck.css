@@ -129,16 +129,22 @@
 .fw .half.fn .b2-conn > div { font-family: var(--f-body2); color: var(--fn-ink); }
 .fw .half.fn .b2-conn .dk-k { font-family: var(--f-body2); font-weight: 600; color: var(--fn-red); }
 
-.fw .b2-pw { position: absolute; inset: 0; padding: 1cqw; display: grid; grid-template-rows: auto 1fr; gap: .9cqw; }
+.fw .b2-pw { position: absolute; inset: 0; padding: 1cqw; display: grid; grid-template-rows: auto auto; align-content: start; gap: .9cqw; overflow: hidden; }
 .fw .b2-ask { justify-self: end; display: grid; gap: .6cqw; max-width: 70%; font-size: .95cqw; }
 .fw .b2-ask .thumb { width: 14cqw; height: 6.6cqw; overflow: hidden; border-radius: .4cqw; position: relative; background: var(--soft); justify-self: end; }
-.fw .b2-out { display: grid; gap: .8cqw; align-content: start; }
-.fw .b2-tbl { grid-template-columns: 1.3fr 1.3fr 1.4fr .5fr; }
+.fw .b2-out { display: grid; gap: .6cqw; align-content: start; font-size: .86cqw; line-height: 1.38; }
+.fw .b2-out p, .fw .b2-out ul { margin: 0; }
+.fw .b2-out ul { padding-left: 1.2em; display: grid; gap: .25cqw; list-style: disc; }
+.fw .b2-after { position: relative; display: grid; gap: .6cqw; }
+.fw .b2-out > p, .fw .b2-after { animation: dk-rowin .35s var(--ease) both; }
+.fw .b2-out code { font-family: var(--f-mono); font-size: .92em; background: var(--soft); padding: 0 .2em; border-radius: .2em; display: inline; }
+.fw .b2-tbl { justify-content: start; font-size: .74cqw; }
+.fw .b2-tbl span { padding: .3cqw .45cqw .3cqw 0; }
 .fw .b2-tbl span { animation: dk-rowin .35s var(--ease) both; }
 @keyframes dk-rowin { from { opacity: 0; transform: translateY(.3cqw); } }
 .fw .in .b2-tbl .flag { background: var(--accent); font-weight: 600; }
+.fw .b2-tbl .flag { padding-left: .3cqw; }
 .fw .fn .b2-tbl .flag { box-shadow: inset 0 0 0 .14cqw var(--fn-red); border-radius: 40%; font-weight: 600; }
-.fw .b2-note { font-size: .92cqw; line-height: 1.35; background: var(--soft); padding: .6cqw .8cqw; border-radius: .4cqw; max-width: 88%; }
 
 /* ---------- b3 · context ---------- */
 .fw .rb[disabled] { opacity: .4; cursor: default; }

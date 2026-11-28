@@ -1,13 +1,13 @@
 /* Block 2 · 9:30 · The map of the apps. */
 import type { Page } from '@open-slide/core';
 import { useIsActivePage } from '@open-slide/core';
-import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Chip, Frame, Hl, type Hotspot, InsetWindow, SideLabel, Split } from '@assets/fieldwork/brand';
 import { PX, SortBoard, type SortState, type Zone, cqw, stateFrom, zoneOf } from '../drag/sort-board';
 import { COURSE, PLANS } from '../course';
 import { Head, PageNo, Src, eb, lab, live, opener } from '../kit';
 import { useSaved } from '../persist';
-import { TALK, TALK_PROMPT } from '../real-runs';
+import { PHOTO, PHOTO_PROMPT, TALK, TALK_PROMPT } from '../real-runs';
 
 const Open = opener(
   'map',
@@ -432,7 +432,7 @@ const SHEET = [
   ['Dave Kowalski', 'Northline', '0491 572 549', '7:11'],
   ['Sam Ho', 'Coastal Plumbing', '0491 573 770', '7:15'],
 ];
-const UNSURE = 2; // Priya's 6 looks like a 0
+const UNSURE = 2; // an ink blot over Priya's second-last digit
 
 const SignSheet = () => (
   <div className="b2-sheet">
@@ -471,8 +471,54 @@ const SignSheet = () => (
   </div>
 );
 
+/* **bold** and `code` inside a captured reply line. */
+const inl = (t: string) =>
+  t.split(/(\*\*[^*]+\*\*|`[^`]+`)/).map((x, i) =>
+    x.startsWith('**') ? <b key={i}>{x.slice(2, -2)}</b> : x.startsWith('`') ? <code key={i}>{x.slice(1, -1)}</code> : x,
+  );
+const Para = ({ text }: { text: string }) => (
+  <p>
+    {text.split('\n').map((l, i) => (
+      <span key={i}>
+        {i > 0 && <br />}
+        {inl(l)}
+      </span>
+    ))}
+  </p>
+);
+const Paras = ({ lines }: { lines: string[] }) => {
+  const groups: (string | string[])[] = [];
+  for (const l of lines) {
+    const last = groups[groups.length - 1];
+    if (l.startsWith('- ')) Array.isArray(last) ? last.push(l.slice(2)) : groups.push([l.slice(2)]);
+    else groups.push(l);
+  }
+  return (
+    <>
+      {groups.map((g, i) =>
+        Array.isArray(g) ? (
+          <ul key={i}>
+            {g.map((x) => (
+              <li key={x}>{inl(x)}</li>
+            ))}
+          </ul>
+        ) : (
+          <Para key={i} text={g} />
+        ),
+      )}
+    </>
+  );
+};
+
 const PhotoWindow = ({ side, rows, flagged }: { side: 'L' | 'R'; rows: number; flagged: boolean }) => {
   const isL = side === 'L';
+  const run = PHOTO[side];
+  const out = useRef<HTMLDivElement>(null);
+  // Follow the reply as it writes; the flags sit below the table.
+  useEffect(() => {
+    const el = out.current?.parentElement;
+    if (el) el.scrollTo({ top: rows > 0 ? el.scrollHeight : 0, behavior: 'smooth' });
+  }, [rows, flagged]);
   return (
     <div className="win">
       <div className="win-bar">
@@ -489,40 +535,42 @@ const PhotoWindow = ({ side, rows, flagged }: { side: 'L' | 'R'; rows: number; f
             <div className="thumb">
               <SignSheet />
             </div>
-            <span>Turn this into a table I can paste into Excel. Flag anything you can't read.</span>
+            <span>{PHOTO_PROMPT}</span>
           </div>
-          <div className="b2-out">
-            <div className="tbl b2-tbl">
-              {['Name', 'Company', 'Mobile', 'In'].map((h) => (
-                <span key={h} className="h">
-                  {h}
-                </span>
-              ))}
-              {SHEET.slice(0, rows).flatMap((r, i) =>
-                r.map((c, j) => (
-                  <span key={`${i}${j}`} className={i === UNSURE && j === 2 && flagged ? 'flag' : ''}>
-                    {c}
+          <div className="b2-out" ref={out}>
+            {rows > 0 && run.before.map((b, i) => <Para key={i} text={b} />)}
+            {rows > 0 && (
+              <div className="tbl b2-tbl" style={{ gridTemplateColumns: `repeat(${run.table[0].length}, auto)` }}>
+                {run.table[0].map((h) => (
+                  <span key={h} className="h">
+                    {h}
                   </span>
-                )),
-              )}
-            </div>
+                ))}
+                {run.table.slice(1, rows + 1).flatMap((r, i) =>
+                  r.map((c, j) => (
+                    <span key={`${i}${j}`} className={flagged && i + 1 === run.flag[0] && j === run.flag[1] ? 'flag' : ''}>
+                      {c}
+                    </span>
+                  )),
+                )}
+              </div>
+            )}
             {flagged && (
-              <div className="b2-note">
-                <b>1 to check:</b> Priya Nair's mobile. The second-last digit could be a 6 or a 0. I've used 6.
+              <div className="b2-after">
+                <Paras lines={run.after} />
+                {isL ? (
+                  <div className="tagnote" style={{ right: 0, top: 0 }}>
+                    It tells you what it guessed
+                  </div>
+                ) : (
+                  <div className="handnote" style={{ right: 0, top: '-.4cqw' }}>
+                    it flags its own guess ✓
+                  </div>
+                )}
               </div>
             )}
           </div>
         </div>
-        {flagged &&
-          (isL ? (
-            <div className="tagnote" style={{ right: '1cqw', top: '1cqw' }}>
-              It tells you what it guessed
-            </div>
-          ) : (
-            <div className="handnote" style={{ right: '1.2cqw', bottom: '1cqw' }}>
-              it flags its own guess ✓
-            </div>
-          ))}
       </div>
     </div>
   );
@@ -659,7 +707,7 @@ export const pages: [Page, string][] = [
   ],
   [
     PhotoToTable,
-    '2 min. Press "Run it". Point at the flag at the end: a good answer tells you what it guessed. That is the habit for the whole day.',
+    '2 min. Press "Run it". Both replies are real runs on this made-up sheet. Point at the flags: a good answer tells you what it guessed. Both caught the blot on Priya\'s number, and Claude also noticed that 4 Nov 2026 is a Wednesday, not a Tuesday. That is the habit for the whole day.',
   ],
   [
     Live,
