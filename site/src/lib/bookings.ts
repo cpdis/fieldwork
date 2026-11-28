@@ -19,7 +19,15 @@ export type ReserveResult =
  * duration of the count and insert, so two buyers racing for the last seat
  * cannot both get it.
  */
-export async function reserveSeat(sql: Sql, slug: string, now = new Date()): Promise<ReserveResult> {
+export interface BuyerDetails {
+  name: string;
+  email: string;
+  company: string | null;
+  abn: string | null;
+  dietary: string | null;
+}
+
+export async function reserveSeat(sql: Sql, slug: string, now = new Date(), buyer?: BuyerDetails): Promise<ReserveResult> {
   return sql.begin(async (tx) => {
     const [cohort] = await tx<Cohort[]>`select * from cohorts where slug = ${slug} for update`;
     if (!cohort) return { ok: false, reason: 'not_found' } as const;
@@ -32,9 +40,12 @@ export async function reserveSeat(sql: Sql, slug: string, now = new Date()): Pro
     `;
     if (n >= cohort.capacity) return { ok: false, reason: 'sold_out' } as const;
 
+    const abn = normaliseAbn(buyer?.abn);
     const [booking] = await tx<Booking[]>`
-      insert into bookings (cohort_id, status, source, hold_expires_at, currency)
-      values (${cohort.id}, 'pending', 'stripe', ${new Date(now.getTime() + HOLD_LIFETIME_MS)}, ${cohort.currency})
+      insert into bookings (cohort_id, status, source, hold_expires_at, currency, name, email, company, abn, abn_valid, dietary)
+      values (${cohort.id}, 'pending', 'stripe', ${new Date(now.getTime() + HOLD_LIFETIME_MS)}, ${cohort.currency},
+        ${buyer?.name ?? null}, ${buyer?.email.toLowerCase() ?? null}, ${buyer?.company ?? null},
+        ${abn}, ${abn ? isValidAbn(abn) : null}, ${buyer?.dietary ?? null})
       returning *
     `;
     return { ok: true, cohort, booking } as const;
@@ -96,16 +107,22 @@ async function bookingForSession(tx: Sql, session: Stripe.Checkout.Session): Pro
   return null;
 }
 
-function detailsFrom(session: Stripe.Checkout.Session) {
-  const abn = normaliseAbn(customValue(session.custom_fields, 'abn'));
+/**
+ * What the session tells us about the buyer. Our own checkout page stores the
+ * details on the booking before payment, so anything the session lacks keeps
+ * the booking's value; a hosted Checkout or Payment Link session supplies them
+ * through Stripe's custom fields instead.
+ */
+function detailsFrom(session: Stripe.Checkout.Session, booking: Booking) {
+  const abn = normaliseAbn(customValue(session.custom_fields, 'abn')) ?? booking.abn;
   return {
-    name: session.customer_details?.name ?? null,
-    email: session.customer_details?.email?.toLowerCase() ?? null,
-    phone: session.customer_details?.phone ?? null,
-    company: customValue(session.custom_fields, 'company'),
+    name: booking.name ?? session.customer_details?.name ?? null,
+    email: session.customer_details?.email?.toLowerCase() ?? booking.email,
+    phone: session.customer_details?.phone ?? booking.phone,
+    company: customValue(session.custom_fields, 'company') ?? booking.company,
     abn,
     abn_valid: abn ? isValidAbn(abn) : null,
-    dietary: customValue(session.custom_fields, 'dietary'),
+    dietary: customValue(session.custom_fields, 'dietary') ?? booking.dietary,
     stripe_checkout_session_id: session.id,
     stripe_payment_intent_id: idOf(session.payment_intent),
     amount_total_cents: session.amount_total ?? null,
@@ -114,7 +131,7 @@ function detailsFrom(session: Stripe.Checkout.Session) {
 }
 
 async function markPaid(tx: Sql, booking: Booking, session: Stripe.Checkout.Session, now: Date) {
-  const d = detailsFrom(session);
+  const d = detailsFrom(session, booking);
   await tx`
     update bookings set ${tx(d)}, status = 'paid', paid_at = ${now}, hold_expires_at = null
     where id = ${booking.id}
@@ -138,7 +155,7 @@ export async function applyStripeEvent(tx: Sql, event: Stripe.Event, now = new D
         return { confirmed: [booking.id] };
       }
       // Delayed method such as BECS direct debit: record who it is and keep holding the seat.
-      const d = detailsFrom(session);
+      const d = detailsFrom(session, booking);
       await tx`
         update bookings set ${tx(d)}, status = 'pending',
           hold_expires_at = ${new Date(now.getTime() + ASYNC_PAYMENT_HOLD_MS)}

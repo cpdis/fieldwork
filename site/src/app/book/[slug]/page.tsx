@@ -4,7 +4,7 @@ import { Footer, Header, Seats } from '@/components/Chrome';
 import { getCohortBySlug } from '@/lib/cohorts';
 import { getSql } from '@/lib/db';
 import { formatMoney, formatRange } from '@/lib/time';
-import { startCheckout } from '../actions';
+import { CheckoutForm } from './CheckoutForm';
 import { WaitlistForm } from './WaitlistForm';
 
 export const dynamic = 'force-dynamic';
@@ -67,14 +67,15 @@ export default async function BookPage({ params, searchParams }: Props) {
           <Seats capacity={cohort.capacity} taken={cohort.seats_taken} held={cohort.seats_held} />
 
           {bookable ? (
-            <form action={startCheckout} className="stack">
-              <input type="hidden" name="slug" value={cohort.slug} />
-              <p className="small muted">
-                Payment is by card through Stripe. Checkout asks for your company name and ABN if you want them on the invoice, and any dietary
-                needs for lunch. Your seat is held for 30 minutes while you pay.
-              </p>
-              <button className="btn primary">Continue to payment</button>
-            </form>
+            process.env.STRIPE_PUBLISHABLE_KEY ? (
+              <CheckoutForm
+                slug={cohort.slug}
+                publishableKey={process.env.STRIPE_PUBLISHABLE_KEY}
+                priceLabel={`${formatMoney(cohort.price_cents, cohort.currency)} for one seat`}
+              />
+            ) : (
+              <p className="notice bad">Online booking isn&rsquo;t open yet. Email hello@fieldworkperth.com to book a seat.</p>
+            )
           ) : (
             <div className="stack">
               <p className="small">

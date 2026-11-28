@@ -72,16 +72,22 @@ describe('seat holds', () => {
     expect(await reserveSeat(sql, 'nope')).toEqual({ ok: false, reason: 'not_found' });
   });
 
-  it('builds a Checkout session with three custom fields and a lifetime Stripe accepts', async () => {
+  it('stores the buyer on the hold and builds an elements session with a lifetime Stripe accepts', async () => {
     const c = await makeCohort();
-    const { booking, cohort } = await reserveWithSession(c.slug);
+    const r = await reserveSeat(sql, c.slug, new Date(), {
+      name: 'Sam Rivera', email: 'Sam@Example.com', company: 'Example Survey Co', abn: '51 824 753 556', dietary: 'Vegetarian',
+    });
+    if (!r.ok) throw new Error(r.reason);
+    const { booking, cohort } = r;
+    expect(booking).toMatchObject({ name: 'Sam Rivera', email: 'sam@example.com', abn: '51824753556', abn_valid: true, dietary: 'Vegetarian' });
     const now = new Date();
     const p = checkoutParams(cohort, booking, now);
-    expect(p.custom_fields?.map((f) => f.key)).toEqual(['company', 'abn', 'dietary']);
-    expect(p.custom_fields?.every((f) => f.label.custom!.length <= 50)).toBe(true);
+    expect(p.ui_mode).toBe('elements');
+    expect(p.custom_fields).toBeUndefined();
+    expect(p.customer_email).toBe('sam@example.com');
     expect(p.expires_at! - Math.floor(now.getTime() / 1000)).toBeGreaterThanOrEqual(30 * 60);
-    expect(p.metadata).toEqual({ booking_id: booking.id, cohort_id: cohort.id });
-    expect(p.success_url).toBe('https://fieldwork.test/book/success?session_id={CHECKOUT_SESSION_ID}');
+    expect(p.metadata).toEqual({ booking_id: booking.id, cohort_id: cohort.id, company: 'Example Survey Co', abn: '51824753556' });
+    expect(p.return_url).toBe('https://fieldwork.test/book/success?session_id={CHECKOUT_SESSION_ID}');
     // The hold must outlast the session.
     expect(booking.hold_expires_at!.getTime()).toBeGreaterThan(p.expires_at! * 1000);
   });
@@ -130,6 +136,20 @@ describe('Stripe webhook', () => {
     await webhook.POST(signedRequest(event('checkout.session.completed', session)));
     const [b] = await sql`select status, abn_valid from bookings where stripe_checkout_session_id = ${sessionId}`;
     expect(b).toEqual({ status: 'paid', abn_valid: false });
+  });
+
+  it('keeps the details from our own checkout page when the session has no custom fields', async () => {
+    const c = await makeCohort();
+    const r = await reserveSeat(sql, c.slug, new Date(), {
+      name: 'Alex Example', email: 'alex@example.com', company: 'Example Pty Ltd', abn: null, dietary: 'No nuts',
+    });
+    if (!r.ok) throw new Error(r.reason);
+    const sessionId = `cs_test_el_${r.booking.id.slice(0, 8)}`;
+    await attachCheckoutSession(sql, r.booking.id, sessionId);
+    const session = completedSession({ id: sessionId, custom_fields: [], customer_details: { name: null, email: 'alex@example.com', phone: null } });
+    await webhook.POST(signedRequest(event('checkout.session.completed', session)));
+    const [b] = await sql`select status, name, email, company, dietary from bookings where id = ${r.booking.id}`;
+    expect(b).toEqual({ status: 'paid', name: 'Alex Example', email: 'alex@example.com', company: 'Example Pty Ltd', dietary: 'No nuts' });
   });
 
   it('creates a booking for a session that only names the cohort (e.g. a Payment Link)', async () => {
