@@ -6,6 +6,11 @@ const config: NextConfig = {
   outputFileTracingRoot: import.meta.dirname,
   turbopack: { root: import.meta.dirname },
   // The attendee companion page (built from the deck by scripts/companion.mjs) lives at /companion.
+  // The built deck's entry pages are read from deck-build/ by the routes that serve them.
+  outputFileTracingIncludes: {
+    '/admin/**': ['./deck-build/**'],
+    '/look/**': ['./deck-build/**'],
+  },
   async rewrites() {
     return [{ source: '/companion', destination: '/companion.html' }];
   },
@@ -17,6 +22,19 @@ const config: NextConfig = {
           { key: 'X-Robots-Tag', value: 'noindex, nofollow' },
           { key: 'Cache-Control', value: 'no-store' },
         ],
+      },
+      {
+        // The deck's files have content hashes in their names, so the browser can keep them.
+        // Listed after /admin/:path* so this Cache-Control wins for them. src/proxy.ts gates both.
+        source: '/:area(admin/deck|look)/assets/:file*',
+        headers: [
+          { key: 'Cache-Control', value: 'private, max-age=31536000, immutable' },
+          { key: 'X-Robots-Tag', value: 'noindex, nofollow' },
+        ],
+      },
+      {
+        source: '/look/:path*',
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
       },
       {
         source: '/:path*',
