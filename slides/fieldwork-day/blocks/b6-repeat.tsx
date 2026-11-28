@@ -222,7 +222,7 @@ const WhereSkills: Page = () => (
       top="16.4cqw"
       left={
         <>
-          <SideLabel name="OpenAI · ChatGPT + Codex" sub="check names each cohort" />
+          <SideLabel name="OpenAI · ChatGPT + Codex" sub="where skills and connectors live" />
           <div className="b2-conn">
             {[
               ['Skills', 'Make one from a chat, or upload a skill folder'],
@@ -240,7 +240,7 @@ const WhereSkills: Page = () => (
       }
       right={
         <>
-          <SideLabel name="Claude" sub="check names each cohort" />
+          <SideLabel name="Claude" sub="where skills and connectors live" />
           <div className="b2-conn">
             {[
               ['Skills', 'Settings → Capabilities → Skills, or ask Claude to make one'],
@@ -271,7 +271,7 @@ const OneOff: Page = () => {
       <Head
         eb={eb('repeat', 'Repeatable · a real story')}
         title="One firm’s way of working, written down once"
-        sum="Indepth Accounting, a 13-person firm in Maroochydore, wrote down “the InDepth way”. Now anyone on the team can ask how a job is done, and get the firm’s own answer."
+        sum="InDepth Accounting, a 13-person firm in Maroochydore, wrote down “the InDepth way”. Now anyone on the team can ask how a job is done, and get the firm’s own answer."
       />
       <PageNo />
       <div className={`b6-story ${on ? '' : 'pre'}`}>
@@ -443,7 +443,7 @@ const Lab5 = lab({
     <>
       In the chat where the job went well: <span className="dk-say">Turn what we did into a skill. Name it, say when to use it, list the steps and the checks.</span>
     </>,
-    'Save it: Settings → Capabilities → Skills.',
+    'Ask Claude to package it as a skill, then save it from the chat, or upload it in Settings → Capabilities → Skills.',
     'New chat, new input. Does it use the skill without being told?',
     'Something wrong? Fix the skill, not the output. Run it again.',
   ],
@@ -650,7 +650,7 @@ const WherePaste: Page = () => {
 
 const GlueDemo = live({
   block: 'repeat',
-  title: 'Build your own glue, in five minutes',
+  title: 'Build your own glue',
   minutes: 4,
   liveIn: 'none',
   apps: [
@@ -685,21 +685,21 @@ const Lab6 = lab({
   openai: [
     'Make a folder called glue. Put in a small export from each tool: 10 to 20 rows, no bank or card details.',
     <>
-      Open the folder in Codex: <span className="dk-say">Every week I copy [what] from [tool A] into [tool B]. Exports of both are here. Build me [a one-page view of … | a file I can import into …]. Ask me three questions first.</span>
+      Open the folder in Codex: <span className="dk-say">Every week I copy [what] from [tool A] into [tool B]. Exports of both are here. Build me [a one-page view of … OR a file I can import into …]. Ask me three questions first.</span>
     </>,
     'Open what it made. Check three rows by hand against the source.',
     <>
-      Then: <span className="dk-say">Write a README: what this reads, what it writes, and how I run it next week.</span>
+      Then: <span className="dk-say">Write a short instruction note (a README): what this reads, what it makes, and how I run it next week.</span>
     </>,
   ],
   claude: [
     'Make a folder called glue. Put in a small export from each tool: 10 to 20 rows, no bank or card details.',
     <>
-      Open the folder in the Code tab: <span className="dk-say">Every week I copy [what] from [tool A] into [tool B]. Exports of both are here. Build me [a one-page view of … | a file I can import into …]. Ask me three questions first.</span>
+      Open the folder in the Code tab: <span className="dk-say">Every week I copy [what] from [tool A] into [tool B]. Exports of both are here. Build me [a one-page view of … OR a file I can import into …]. Ask me three questions first.</span>
     </>,
     'Open what it made. Check three rows by hand against the source.',
     <>
-      Then: <span className="dk-say">Write a README: what this reads, what it writes, and how I run it next week.</span>
+      Then: <span className="dk-say">Write a short instruction note (a README): what this reads, what it makes, and how I run it next week.</span>
     </>,
   ],
   hand: 'it reads and drafts; you import',
@@ -736,10 +736,6 @@ export const pages: [Page, string][] = [
     '4 min. ChatGPT runs live this block; the Claude skill is already made. Use the Ridgeline chat from Block 3.',
   ],
   [
-    Lab5,
-    '15 min. Start the timer. Common snag: the skill is too long. Tell them to cut it to what they would tell a new starter in two minutes. Early finishers can start the take-home lab two pages on.',
-  ],
-  [
     OneOwner,
     '2 min. Optional: skip it if the block is behind. The bridge from the skill to the glue. Let both lanes fill, then read the two counts. Same nine decisions on both sides; the left loses something at every handoff. The author runs a six-person studio building software for about fifteen clients at once, so it is software, but the point is for owners: you can own a job end to end with AI and bring a specialist in only to check the last 10% (your accountant, a designer), not to do it. Then into the copy-and-paste cards: that glue is a job you can now own.',
   ],
@@ -754,6 +750,10 @@ export const pages: [Page, string][] = [
   [
     Bundilla,
     '2 min. Optional: skip it if the block is behind. The same idea at Australian small-business scale. Let the chain light up. The point: they did not buy a new tool, they joined the ones they had. Be straight that this is sponsored content and that their developer did the building, inside Salesforce, with AI coding help.',
+  ],
+  [
+    Lab5,
+    '15 min. Start the timer. Common snag: the skill is too long. Tell them to cut it to what they would tell a new starter in two minutes. Early finishers can open the take-home lab (the next page) on the companion page. Leave the next page up into the break.',
   ],
   [
     Lab6,

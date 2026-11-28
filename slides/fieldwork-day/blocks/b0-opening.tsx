@@ -21,7 +21,7 @@ const Cover: Page = () => {
           <span className="wm">Fieldwork</span>
         </div>
         <p className={`b0-tag ${on ? '' : 'pre'}`}>
-          The Claude and ChatGPT desktop apps, for people who run a business.
+          The ChatGPT and Claude desktop apps, for people who run a business.
         </p>
         <div className="cover-list">
           <div>

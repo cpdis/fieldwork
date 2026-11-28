@@ -147,8 +147,8 @@ const BODY: Record<Job['id'], (side: 'L' | 'R') => ReactNode> = {
 
 const HOTS: Record<Job['id'], Hotspot[]> = {
   talk: [
-    { x: 58, y: 47, k: 'The answer', t: "It only knows what's in this chat, plus anything you attach or connect." },
-    { x: 28, y: 88, k: 'Attach', t: 'Drop in a file or a photo. The fastest way to give it context.' },
+    { x: 96, y: 22, k: 'The answer', t: "It only knows what's in this chat, plus anything you attach or connect." },
+    { x: 4, y: 76, k: 'Attach', t: 'Drop in a file or a photo. The fastest way to give it context.' },
   ],
   work: [
     { x: 27, y: 32, k: 'Your files', t: 'It works inside a folder you choose, or connected apps like Outlook and OneDrive.' },
@@ -285,7 +285,7 @@ const Plans: Page = () => (
             </span>
           </div>
           <div className="handnote" style={{ right: '3.4cqw', bottom: '2.4cqw' }}>
-            {COURSE.menusChecked ? `checked ${COURSE.menusChecked}` : 'names change. check each cohort'}
+            {COURSE.menusChecked ? `checked ${COURSE.menusChecked}` : 'plan names change. check before you buy'}
           </div>
         </>
       }
@@ -360,7 +360,7 @@ const NotToPaste: Page = () => {
       <Head
         eb={eb('map', 'The map · privacy')}
         title="Fine, think first, or never?"
-        sum="Two cards per column. Drag each one to where the room says it goes, then show the answers. The rule of thumb is on the right."
+        sum="Six everyday items, three columns. Drag each one to where the room says it goes, then show the answers. The rule of thumb is on the right."
       />
       <PageNo />
       <div className="b2-sort" style={{ left: cqw(PB.x), top: cqw(PB.y), width: cqw(PB.w), height: cqw(PB.h) }}>
@@ -674,7 +674,7 @@ const Lab1 = lab({
   keep: 'The prompt. You will reuse it all day.',
   openai: [
     'Open ChatGPT desktop. Start a new chat.',
-    'Photograph a docket, receipt, timesheet or whiteboard. Drop the photo in.',
+    'Photograph a docket, receipt, stocktake sheet or whiteboard with the phone app, or drop a screenshot into the laptop app. Skip real staff or client details on a personal plan.',
     <>
       Say: <span className="dk-say">Turn this into a table I can paste into Excel. Flag anything you can't read.</span>
     </>,
@@ -682,7 +682,7 @@ const Lab1 = lab({
   ],
   claude: [
     'Open Claude desktop. Start a new chat.',
-    'Photograph a docket, receipt, timesheet or whiteboard. Drop the photo in.',
+    'Photograph a docket, receipt, stocktake sheet or whiteboard with the phone app, or drop a screenshot into the laptop app. Skip real staff or client details on a personal plan.',
     <>
       Say: <span className="dk-say">Turn this into a table I can paste into Excel. Flag anything you can't read.</span>
     </>,
@@ -695,7 +695,7 @@ export const pages: [Page, string][] = [
   [Open, '9:30 · Block 2 opener. Thirty minutes. Ends with a 12-minute lab.'],
   [
     MapOfApps,
-    '5 min. Click the three chips in turn. On each, click a numbered dot in both windows. The big idea: ChatGPT has one app with three modes (Chat, Work, Codex); Claude has one app with Chat, Cowork and Code. Same three jobs. CHECK BEFORE EACH COHORT: open both apps and compare the tab names with this page. They have moved before (Cowork has been folding into the main Claude app). The tab names are two constants at the top of b2-map.tsx.',
+    '5 min. Click the three chips in turn. On each, click a numbered dot in both windows. On chip 1 the replies differ in length: ChatGPT gave one clean line, Claude gave three options and why. Say it is a style difference, not a score, and that either one can be asked to do it the other way. The big idea: ChatGPT has one app with three modes (Chat, Work, Codex); Claude has one app with Chat, Cowork and Code. Same three jobs. CHECK BEFORE EACH COHORT: open both apps and compare the tab names with this page. They have moved before (Cowork has been folding into the main Claude app). The tab names are two constants at the top of b2-map.tsx.',
   ],
   [
     Plans,
@@ -707,7 +707,7 @@ export const pages: [Page, string][] = [
   ],
   [
     PhotoToTable,
-    '2 min. Press "Run it". Both replies are real runs on this made-up sheet. Point at the flags: a good answer tells you what it guessed. Both caught the blot on Priya\'s number, and Claude also noticed that 4 Nov 2026 is a Wednesday, not a Tuesday. That is the habit for the whole day.',
+    '2 min. Backup for the live demo on the next page: if the live run works, skip this and save the two minutes. Press "Run it". Both replies are real runs on this made-up sheet. Point at the flags: a good answer tells you what it guessed. Both caught the blot on Priya\'s number, and Claude also noticed that 4 Nov 2026 is a Wednesday, not a Tuesday. That is the habit for the whole day.',
   ],
   [
     Live,

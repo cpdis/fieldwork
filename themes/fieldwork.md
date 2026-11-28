@@ -33,7 +33,7 @@ import { Frame, Pad, Eyebrow, Title, Hl, Mark, Split, SideLabel, InsetWindow, Ch
 | red pencil | `--fn-red` | `#c0392b` | marks on the Claude half (replaces the accent there) |
 | status | `--ok` `--warn` `--bad` | `#1f7a4d` `#a86400` `#c2311f` | outlined status tags only |
 
-Light only. No dark variant.
+Light only. No dark variant. One exception: the "live in the app" slate (`live()` in the deck kit) is ink, so the room sees at a glance that the presenter has switched to the real app. Its step numbers are paper on both sides, never yellow.
 
 ## Accent rules
 
@@ -67,7 +67,7 @@ All live in `assets/fieldwork/brand.tsx`:
 
 - `Frame` is the page root: tokens, paper, and the cqw container.
 - `Pad`, `Eyebrow`, `Title` and `Hl` make up the header.
-- `Mark` is the benchmark mark: a yellow bar over a tripod.
+- `Mark` is the contour mark ("Hill"): three contour rings and a yellow summit.
 - `Split` and `SideLabel` build the dual-track layout.
 - `InsetWindow` is a simplified app window with numbered hotspots that zoom and show a callout. It adapts to the half it sits in.
 - `Chip` is a numbered step or job picker.

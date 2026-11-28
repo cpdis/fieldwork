@@ -14,7 +14,7 @@
 .fw .b2-sheet .r.hdr { height: 2cqw; font: 600 .75cqw/1 var(--f-body2); color: #555; letter-spacing: .04em; text-transform: uppercase; border-bottom-color: #222; }
 .fw .b2-sheet .r svg { height: 1.4cqw; width: 5cqw; }
 .fw .b2-sheet .smudge { display: inline-block; filter: blur(.06cqw); text-shadow: .08cqw 0 0 #2d3a6b; transform: scaleX(1.15) rotate(8deg); }
-.fw .b2-ask .thumb .b2-sheet { position: absolute; left: -.6cqw; top: -.5cqw; transform: scale(.36) rotate(-1.6deg); transform-origin: top left; }
+.fw .b2-ask .thumb .b2-sheet { position: absolute; left: .2cqw; top: .3cqw; transform: scale(.34) rotate(-1.6deg); transform-origin: top left; }
 .fw .b4-slop { position: absolute; inset: 0; background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 45%, #2563eb 100%); color: #fff; font-family: var(--f-body2); display: grid; grid-template-rows: auto 1fr auto auto; padding: 0 0 1cqw; }
 .fw .b4-slop .nav { display: flex; gap: 1.6cqw; align-items: center; padding: 1cqw 1.6cqw; font-size: .8cqw; opacity: .95; }
 .fw .b4-slop .logo { font-size: 1.4cqw; font-weight: 800; background: linear-gradient(90deg, #f0abfc, #93c5fd); -webkit-background-clip: text; background-clip: text; color: transparent; margin-right: auto; }

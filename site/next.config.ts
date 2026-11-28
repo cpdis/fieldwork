@@ -5,6 +5,10 @@ const config: NextConfig = {
   // The repo root holds the slide deck's own lockfile; this app is its own root.
   outputFileTracingRoot: import.meta.dirname,
   turbopack: { root: import.meta.dirname },
+  // The attendee companion page (built from the deck by scripts/companion.mjs) lives at /companion.
+  async rewrites() {
+    return [{ source: '/companion', destination: '/companion.html' }];
+  },
   async headers() {
     return [
       {

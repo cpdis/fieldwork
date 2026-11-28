@@ -374,7 +374,7 @@ const Pictures: Page = () => {
   return (
     <Frame label="Pictures that don't look made up">
       <Head
-        eb={eb('make', 'Making things · pictures and video')}
+        eb={eb('make', 'Making things · pictures')}
         title="Pictures that look like your business"
         sum="Most people have only seen bad AI images. The difference is a reference photo of the real thing, and a prompt with five parts. Click the parts on and off."
       />
@@ -491,7 +491,7 @@ const BrandFile: Page = () => (
       <p className="dk-body" style={{ fontSize: '1.5cqw' }}>
         Colours, fonts, five nevers, three voice rules. <Hl>Anyone can write this.</Hl> You will, in the lab.
       </p>
-      <span className="dk-k">The real file is in the deck's repository</span>
+      <span className="dk-k">This deck was built from that file</span>
     </div>
   </Frame>
 );
@@ -551,7 +551,7 @@ const OneFile: Page = () => (
     <Head
       eb={eb('make', 'How this deck was made · 3 of 3 · in your app')}
       title="One file, both apps"
-      sum="You don't need an agent framework. Put the brand file where each app reads it first, and add one short skill that checks against it."
+      sum="You don't need special software. Put the brand file where each app reads it first, and ask it to check its own work against that file."
     />
     <PageNo />
     <Split
@@ -562,8 +562,8 @@ const OneFile: Page = () => (
           <div className="b2-conn">
             {[
               ['Chat, Work', 'Project instructions, or the brand file in Project files'],
-              ['Codex', 'AGENTS.md in the project folder'],
-              ['The check', 'A “brand check” skill: “list every colour, font and word that breaks brand.md”'],
+              ['Codex', 'A rules file called AGENTS.md in the project folder'],
+              ['The check', 'End with: “list every colour, font and word that breaks brand.md”. After lunch, checks like this become saved skills.'],
             ].map(([k, v]) => (
               <div key={k}>
                 <span className="dk-k">{k}</span>
@@ -579,8 +579,8 @@ const OneFile: Page = () => (
           <div className="b2-conn">
             {[
               ['Chat, Cowork', 'Project instructions, or the brand file in Project knowledge'],
-              ['Code', 'CLAUDE.md in the project folder'],
-              ['The check', 'The same skill. Skills work the same way in both apps.'],
+              ['Code', 'A rules file called CLAUDE.md in the project folder'],
+              ['The check', 'The same check. After lunch we save checks like this so they run on their own.'],
             ].map(([k, v]) => (
               <div key={k}>
                 <span className="dk-k">{k}</span>
@@ -639,23 +639,23 @@ const Lab3 = lab({
     <>
       In your Project, new chat: <span className="dk-say">Interview me to write a one-page brand file: colours, fonts, five nevers, three voice rules.</span>
     </>,
-    'Save the answer as brand.md in the Project files.',
-    'Ask for the asset. Early finishers: ask again in a chat outside the Project, and compare the two.',
+    'Ask for it as a file you can download (brand.md is plain text), then add that file to the Project.',
+    'Ask for the piece you picked. Early finishers: ask again in a chat outside the Project, and compare the two.',
     <>
-      <span className="dk-say">Check this against brand.md. List every miss, then fix them.</span>
+      <span className="dk-say">Check this against my brand file. List anything that breaks it, then fix it.</span>
     </>,
   ],
   claude: [
     <>
       In your Project, new chat: <span className="dk-say">Interview me to write a one-page brand file: colours, fonts, five nevers, three voice rules.</span>
     </>,
-    'Save the answer as brand.md in Project knowledge.',
-    'Ask for the asset. Early finishers: ask again in a chat outside the Project, and compare the two.',
+    'Ask for it as a file you can download (brand.md is plain text), then add that file to Project knowledge.',
+    'Ask for the piece you picked. Early finishers: ask again in a chat outside the Project, and compare the two.',
     <>
-      <span className="dk-say">Check this against brand.md. List every miss, then fix them.</span>
+      <span className="dk-say">Check this against my brand file. List anything that breaks it, then fix it.</span>
     </>,
   ],
-  hand: 'psst: that was your first skill',
+  hand: 'write it once, check with it all year',
 });
 
 export const pages: [Page, string][] = [

@@ -471,7 +471,7 @@ export const lab = ({
         <Pad style={{ paddingBottom: 0 }}>
           <Eyebrow>
             {home
-              ? `Take-home lab · Block ${b.n} · about ${minutes} min at your desk · your own business`
+              ? `Lab ${n} · take-home · Block ${b.n} · about ${minutes} min at your desk · your own business`
               : `Lab ${n} · Block ${b.n} · ${minutes} min · your own business`}
           </Eyebrow>
           <Title>{title}</Title>

@@ -80,7 +80,6 @@ const BEATS: Script<S>[] = STEPS_NW.map((_, b) => async (a) => {
 
 const Scene = ({ s, beat, go }: { s: S; beat: number; go: (b: number) => void }) => {
   const cur = STEPS_NW[s.step];
-  const max = Math.max(...cur.cands.map((c) => c[1]));
   return (
     <div className="nw-scene">
       <div className="nw-sent">
@@ -103,7 +102,7 @@ const Scene = ({ s, beat, go }: { s: S; beat: number; go: (b: number) => void })
             className="nw-bar"
             data-hl={(i === s.hl && !s.picked) || undefined}
             data-pick={(s.picked && i === PICK[s.step]) || undefined}
-            style={{ ['--w' as string]: `${(p / max) * 100}%`, ['--i' as string]: i }}
+            style={{ ['--w' as string]: `${p}%`, ['--i' as string]: i }}
           >
             <span className="nw-w">{w}</span>
             <span className="nw-track">

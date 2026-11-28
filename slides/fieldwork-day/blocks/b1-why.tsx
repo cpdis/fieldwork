@@ -24,12 +24,10 @@ type Owner = {
   got: string;
   src: string;
   kind: string;
-  pos?: string;
 };
 const OWNERS: Owner[] = [
   {
     id: 'oakcreek',
-    pos: 'left top',
     biz: 'Oak Creek Plumbing & Remodeling',
     where: 'Plumbing · about 20 plumbers · US',
     tool: 'ChatGPT',
@@ -86,7 +84,8 @@ const Owners: Page = () => {
         {OWNERS.map((o, i) => (
           <div key={o.biz} className={`dk-tile ${i === hot ? 'lit' : ''}`}>
             {o.id ? (
-              <Shot id={o.id} className="pic sm" pos={o.pos ?? 'center top'} style={{ height: '100%' }} />
+              // contain, not cover: the whole clipping shows, so no headline or table is cut mid-word.
+              <Shot id={o.id} className="pic sm" fit="contain" pos="center" style={{ height: '100%', background: 'var(--white)' }} />
             ) : (
               <div className="qt">{o.quote}</div>
             )}
@@ -129,7 +128,7 @@ const TryOne: Page = () => (
     <RoomTimer id="try0" minutes={2} />
     <div className="b1-try">
       {[
-        ['If you are stuck for an idea', 'Photograph something handwritten on your desk and ask for it as a table.'],
+        ['If you are stuck for an idea', 'Photograph something handwritten on your desk with the phone app, or drop a screenshot into the laptop app, and ask for it as a table.'],
         ['Or', 'Paste the last long email you received and ask what it wants from you, and by when.'],
         ['Or', 'Describe a job you quoted last week and ask what you forgot to price.'],
       ].map(([k, v]) => (
@@ -261,7 +260,7 @@ const Shallow: Page = () => {
         title="Everyone has it. Almost no one measures it"
         sum={
           <>
-            Out of every 100 companies in the S&amp;P 500, about 30 say AI has had a measurable effect, and about 2 track a number.
+            Among the 500 biggest US listed companies, about 30 in every 100 say AI has had a measurable effect, and about 2 track a number.
             Investors call this “the diffusion gap”. If the biggest companies have not closed it, a small business that measures one job is
             already ahead.
           </>
@@ -402,7 +401,7 @@ const Farmer: Page = () => (
     <Head
       eb={eb('why', 'Why now · built by an owner')}
       title="A row-crop farmer built thirty tools for his farm this year"
-      sum="Travis Senter grows cotton, rice, soybeans and corn in Osceola, Arkansas. His bio reads “Farmer, Fabricator.” His latest tool reads public lidar data to show where rain will drain across any field."
+      sum="Travis Senter grows cotton, rice, soybeans and corn in Osceola, Arkansas. His bio reads “Farmer, Fabricator.” His latest tool reads public elevation data (lidar) to show where rain will drain across any field."
     />
     <PageNo />
     <div className="b1-farm">
@@ -450,14 +449,14 @@ const UseThem: Page = () => (
       </div>
       <div className="b1-mod-next">
         <span className="dk-k">Next</span>
-        <span>Apps open. Ten minutes from now you will have done something useful with your own paperwork.</span>
+        <span>Apps open. Before 10:00 you will have done something useful with your own paperwork.</span>
       </div>
     </Pad>
   </Frame>
 );
 
 export const pages: [Page, string][] = [
-  [Open, '9:00 · Block 1 opener. Thirty minutes, with one two-minute exercise. The job of this block: make them want the rest of the day.'],
+  [Open, '9:07 · Block 1 opener. About 22 minutes left before 9:30, including the two-minute exercise. The job of this block: make them want the rest of the day.'],
   [
     AlreadyEnough,
     '3 min. The thesis of the day, and it comes first, so say it plainly: the models are not the bottleneck; the habit of asking is. Read each old reflex aloud, ask who has said it this month, then click to reframe. Do not argue about which company is ahead; both apps are already more capable than anyone here will use today. Point at the quote: a man built a whole game with prompts that plain. End on: if it fails, write it down and try again on the next model. This line comes back on every lab page and at the close.',
@@ -488,7 +487,7 @@ export const pages: [Page, string][] = [
   ],
   [
     Overhang,
-    '2 min. Read the big quote slowly. Mollick studies how people actually use AI; Levie runs a large software company. Both are saying the same thing: the tools are ahead of us. Then the small one: his father set up a new laptop by asking Codex to do it. If a retiree can, so can a business owner.',
+    '2 min. Optional: skip it if Block 1 is behind; pages 7 and 13 already make this point. Read the big quote slowly. Mollick studies how people actually use AI; Levie runs a large software company. Both are saying the same thing: the tools are ahead of us. Then the small one: his father set up a new laptop by asking Codex to do it. If a retiree can, so can a business owner.',
   ],
   [UseThem, '30 sec. Read the quote, pause, move on. Transition straight into the map of the apps.'],
 ];

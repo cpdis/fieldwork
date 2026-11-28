@@ -36,7 +36,8 @@
 .fw .split { position: absolute; left: 0; right: 0; bottom: 0; display: grid; grid-template-columns: 1fr 1fr; border-top: .1cqw solid var(--rule); }
 .fw .half { position: relative; padding: 1.4cqw 3.6cqw 2.2cqw; display: grid; align-content: start; gap: .9cqw; min-width: 0; }
 .fw .half.fn { background-color: var(--fn-paper); background-image: linear-gradient(var(--fn-grid) .08cqw, transparent .08cqw), linear-gradient(90deg, var(--fn-grid) .08cqw, transparent .08cqw); background-size: 1.6cqw 1.6cqw; border-left: .12cqw solid var(--ink); }
-.fw .side-label { display: flex; justify-content: space-between; align-items: baseline; }
+/* Fixed height so the OpenAI (mono) and Claude (serif) labels take the same room and the content below lines up. */
+.fw .side-label { display: flex; justify-content: space-between; align-items: baseline; height: 2.2cqw; }
 .fw .half.in .side-label span:first-child { font: 500 .95cqw/1 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; }
 .fw .half.fn .side-label span:first-child { font: 500 1.7cqw/1 var(--f-serif); color: var(--fn-ink); }
 .fw .side-label .sub { font: 400 .9cqw/1 var(--f-mono); color: var(--muted); }

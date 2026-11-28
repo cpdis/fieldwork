@@ -178,7 +178,7 @@ export const SHOTS: ShotSpec[] = [
     id: 'indepth',
     kind: 'image',
     url: 'https://www.nab.com.au/news/technology-ai/how-australian-small-businesses-are-using-ai-to-save-time',
-    show: 'nab.com.au · How Australian small businesses are using AI to save time',
+    show: 'nab.com.au · small businesses using AI',
     capture: 'The Indepth Accounting section of the article, with its photo, 1600 × 1000 browser window',
     credit: 'NAB, Aug 2026',
     used: 'Block 6 method story',

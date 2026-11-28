@@ -74,7 +74,7 @@ const STEPS = [
   { c: 'Plan', log: 'Plan: 3 steps', note: 'It writes a plan first. Read it: this is the cheapest moment to correct it.', hand: 'read the plan!', tag: 'Step 2 · plan' },
   { c: 'Email', log: 'Read 3 emails in Outlook', note: 'It reads your email through a connector. One supplier only gives prices on its website.', hand: 'connector = plugged in', tag: 'Step 3 · connector' },
   { c: 'Portal', log: 'Opened Northline trade portal', note: 'That website has no connector, so the agent uses the screen like you would: clicking and downloading. This is computer use.', hand: 'no connector → it clicks', tag: 'Step 4 · computer use' },
-  { c: 'Compare', log: 'Built the comparison', note: "It checks each quote against your rule. The cheapest supplier can't deliver by Friday, so it picks Northline.", hand: 'cheapest ≠ best', tag: 'Step 5 · judgment' },
+  { c: 'Compare', log: 'Built the comparison', note: "It checks each quote against your rule. The cheapest supplier can't deliver by Friday, so it picks Northline.", hand: 'cheapest ≠ best', tag: 'Step 5 · judgement' },
   { c: 'Draft', log: 'Drafted reply · waiting for you', note: 'It drafts the reply and stops. Nothing is sent until you approve it.', hand: 'it waits for you ✓', tag: 'Step 6 · your call' },
 ];
 
@@ -190,10 +190,10 @@ const ConnectorOrScreen: Page = () => (
     <div className="b5-limits">
       <span className="dk-k">Where the switch is missing</span>
       <span>
-        <b>Claude:</b> computer use is a beta on Pro and Max. Team and Enterprise seats do not have it unless an admin has it turned on.
+        <b>ChatGPT on Windows:</b> it works in the window in front only, so you cannot use the computer while it runs.
       </span>
       <span>
-        <b>ChatGPT on Windows:</b> it works in the window in front only, so you cannot use the computer while it runs.
+        <b>Claude:</b> computer use is a beta on Pro and Max. Team and Enterprise seats do not have it unless an admin has it turned on.
       </span>
       <span className="dk-muted">No switch on your plan? Watch today, and do the lab on files. Nothing else this afternoon needs it.</span>
     </div>
@@ -219,7 +219,7 @@ const Live = live({
       app: 'Claude desktop',
       mode: 'Cowork · computer use',
       steps: [
-        'Paste the goal from the next page. Read the plan out loud before it starts.',
+        'Paste the five-part goal from the last page. Read the plan out loud before it starts.',
         'Watch it open the supplier page and find the price. Narrate each click.',
         'Stop at the draft. Do not send. Compare its table with the recording: same winner, same reasons?',
       ],
@@ -304,7 +304,7 @@ const PARTS: { t: string; k?: string }[] = [
   { t: 'Stop before sending anything.', k: 'Where to stop' },
 ];
 const GoodGoal: Page = () => {
-  const [good, setGood] = useState(true);
+  const [good, setGood] = useState(false);
   const on = usePlay(120);
   return (
     <Frame label="Write a goal it can finish">
@@ -560,23 +560,23 @@ const Lab4 = lab({
   block: 'agents',
   minutes: 25,
   title: 'An admin job, done by an agent',
-  goal: 'Hand an agent one real multi-step job on a folder of your own files: reconcile two lists, sort and rename a folder of documents, compile quotes from PDFs, fill a form from a document. Connected your email? Triage one folder of it instead.',
+  goal: 'Hand an agent one real multi-step job on a folder of your own files: reconcile two lists, sort and rename a folder of documents, compile quotes from PDFs, fill a form from a document. Connected your email? Sort one folder of emails instead.',
   done: 'It finished or stopped where you told it to, and you checked one result against the source before approving.',
   keep: 'The goal you wrote. Next time, try the same job with less watching.',
   openai: [
     <>
-      ChatGPT desktop → <b>Work</b>. Pick the folder, or the connected app, it may use.
+      ChatGPT desktop → <b>Work</b>. Make a copy of the folder first, then pick the copy, or the connected app, it may use.
     </>,
-    'Write the goal with all five parts: the job, where things are, what good means, what you want back, where to stop.',
+    'Write the goal with all five parts: the job, where things are, what good means, what you want back, where to stop. End with: “Show me your plan and wait for my okay.”',
     'Read the plan before it starts. Correct it there; that is the cheapest moment.',
     'When it stops, check one item against the source. Then approve, or tell it what to fix.',
     'Optional, if your plan has computer use: give it one step on a website with no connector, and watch every click.',
   ],
   claude: [
     <>
-      Claude desktop → <b>Cowork</b>. Pick the folder, or the connected app, it may use.
+      Claude desktop → <b>Cowork</b>. Make a copy of the folder first, then pick the copy, or the connected app, it may use.
     </>,
-    'Write the goal with all five parts: the job, where things are, what good means, what you want back, where to stop.',
+    'Write the goal with all five parts: the job, where things are, what good means, what you want back, where to stop. End with: “Show me your plan and wait for my okay.”',
     'Read the plan before it starts. Correct it there; that is the cheapest moment.',
     'When it stops, check one item against the source. Then approve, or tell it what to fix.',
     'Optional, on Pro or Max: switch on computer use, give it one step on a website with no connector, and watch every click.',
@@ -599,16 +599,16 @@ export const pages: [Page, string][] = [
     '3 min. Connector first, screen second. Be honest that computer use is slower and can misclick. Set the rule: it asks before it signs in, pays or submits. Then read the strip at the bottom, because half the room will otherwise go looking for a switch that is not on their plan. CHECK BEFORE EACH COHORT: which plans have computer use in each app, and the Windows limit.',
   ],
   [
-    Live,
-    '6 min. The riskiest demo of the day, so only one app runs live: Claude this block, with a recording of the same job in Codex playing beside it. Swap them for the next cohort. Use the demo inbox with the three quote emails and the supplier page you control (never a real supplier). If the live run stalls, the page before last runs the same thing in the deck. Never let it press Send.',
-  ],
-  [
     GoodGoal,
     '4 min. Click 1 then 2. Read the good goal out loud; the labels show the five parts. This page is the template for the lab.',
   ],
   [
+    Live,
+    '6 min. The riskiest demo of the day, so only one app runs live: Claude this block, with a recording of the same job in Codex playing beside it. Swap them for the next cohort. Use the demo inbox with the three quote emails and the supplier page you control (never a real supplier). If the live run stalls, the page before last runs the same thing in the deck. Never let it press Send.',
+  ],
+  [
     WordsThatWork,
-    '3 min. Click 1, read the four vague asks, then click 2. One line per row: a number it can hit, a check it can run, a sweep across everything, and permission to keep going. The source is an engineer writing about running dozens of coding agents at once; say that the same four moves work on quotes and invoices. Ask: which of these four did your Lab 4 goal already have? To pay for this page, skip "Why did we decide that?", which is already the optional page in this block.',
+    '3 min. Click 1, read the four vague asks, then click 2. One line per row: a number it can hit, a check it can run, a sweep across everything, and permission to keep going. The source is an engineer writing about running dozens of coding agents at once; say that the same four moves work on quotes and invoices. Tell them: pick one of these four to use in your Lab 4 goal in a few minutes. To pay for this page, skip "Why did we decide that?", which is already the optional page in this block.',
   ],
   [
     Stakes,
