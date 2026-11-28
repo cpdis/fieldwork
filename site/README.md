@@ -18,10 +18,10 @@ This is its own Next.js app with its own `package.json`. The slide deck at the r
 
 ## How a booking works
 
-1. `/book/<slug>` shows the cohort. **Continue to payment** locks the cohort row, checks seats, and inserts a `pending` booking that holds a seat for 35 minutes.
-2. A Checkout session opens for 31 minutes (Stripe's minimum is 30) with three custom fields: company name, ABN (11 digits, optional) and dietary needs.
-3. `checkout.session.completed` marks the booking `paid`, copies the buyer's details and custom fields, checks the ABN checksum (a bad one is flagged, not rejected), and sends the confirmation email.
-4. If the buyer walks away, `checkout.session.expired` frees the seat. A BECS bank debit keeps the seat held for up to 10 days until `async_payment_succeeded` or `async_payment_failed`.
+1. `/book/<slug>` shows the cohort and our own checkout form (`src/app/book/[slug]/CheckoutForm.tsx`). Step one asks for name, email, company and ABN (both optional, for a tax invoice) and dietary needs. **Continue to payment** posts to `/api/checkout`, which locks the cohort row, checks seats, inserts a `pending` booking with those details that holds a seat for 35 minutes, and opens a Checkout session with `ui_mode: 'elements'` for 31 minutes (Stripe's minimum is 30).
+2. Step two mounts Stripe's Payment Element in place, styled to the site's tokens through the Appearance API, and a **Pay** button showing the session's total. Card and bank details go from Stripe's fields straight to Stripe. Stripe.js is loaded from js.stripe.com, pinned to the release that matches the server library's API version (`STRIPE_JS` in the form).
+3. `checkout.session.completed` marks the booking `paid`, checks the ABN checksum (a bad one is flagged, not rejected), and sends the confirmation email. Details already on the booking are kept; a hosted Checkout session or Payment Link still works and supplies them through custom fields.
+4. If the buyer walks away, `checkout.session.expired` frees the seat, and the page tells them the hold ran out. A BECS bank debit keeps the seat held for up to 10 days until `async_payment_succeeded` or `async_payment_failed`.
 5. A full refund in the Stripe dashboard (`charge.refunded`) marks the booking `refunded`. A partial refund is noted on the booking.
 
 When a cohort is full, the page offers a waitlist instead. From the admin you can email a waitlisted person a seat offer once a seat frees up. First to book gets it.

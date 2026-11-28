@@ -18,19 +18,30 @@ export function getStripe(): Stripe {
 }
 
 /**
- * Parameters for one seat at one cohort. The three custom fields are Stripe's
- * maximum. Company and ABN are for business buyers who want a tax invoice;
- * dietary needs go to the caterer.
+ * Parameters for one seat at one cohort, for our own checkout page
+ * (`ui_mode: 'elements'`): the page collects the buyer's details itself and
+ * Stripe's Payment Element takes the card or bank details. Name, email,
+ * company, ABN and dietary needs are already on the booking by the time the
+ * session is created; they go to Stripe as metadata so they show on the payment.
  */
 export function checkoutParams(cohort: Cohort, booking: Booking, now = new Date()): Stripe.Checkout.SessionCreateParams {
   const base = siteUrl();
+  const meta = {
+    booking_id: booking.id,
+    cohort_id: cohort.id,
+    ...(booking.company ? { company: booking.company } : {}),
+    ...(booking.abn ? { abn: booking.abn } : {}),
+  };
   return {
+    ui_mode: 'elements',
     mode: 'payment',
     client_reference_id: booking.id,
-    metadata: { booking_id: booking.id, cohort_id: cohort.id },
+    metadata: meta,
+    ...(booking.email ? { customer_email: booking.email } : {}),
     payment_intent_data: {
       description: `Fieldwork: ${cohort.title}, ${formatShortDate(cohort.starts_at)}`,
-      metadata: { booking_id: booking.id, cohort_id: cohort.id },
+      metadata: meta,
+      ...(booking.email ? { receipt_email: booking.email } : {}),
     },
     line_items: [
       {
@@ -45,33 +56,8 @@ export function checkoutParams(cohort: Cohort, booking: Booking, now = new Date(
         },
       },
     ],
-    custom_fields: [
-      {
-        key: 'company',
-        label: { type: 'custom', custom: 'Company name (for your invoice)' },
-        type: 'text',
-        optional: true,
-        text: { maximum_length: 120 },
-      },
-      {
-        key: 'abn',
-        label: { type: 'custom', custom: 'ABN (11 digits, optional)' },
-        type: 'numeric',
-        optional: true,
-        numeric: { minimum_length: 11, maximum_length: 11 },
-      },
-      {
-        key: 'dietary',
-        label: { type: 'custom', custom: 'Dietary needs for lunch' },
-        type: 'text',
-        optional: true,
-        text: { maximum_length: 255 },
-      },
-    ],
     customer_creation: 'always',
-    allow_promotion_codes: true,
     expires_at: Math.floor((now.getTime() + CHECKOUT_LIFETIME_MS) / 1000),
-    success_url: `${base}/book/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${base}/book/${cohort.slug}?cancelled=1`,
+    return_url: `${base}/book/success?session_id={CHECKOUT_SESSION_ID}`,
   };
 }

@@ -1,30 +1,6 @@
 'use server';
 
-import { redirect } from 'next/navigation';
-import { attachCheckoutSession, releaseHold, reserveSeat } from '@/lib/bookings';
 import { getSql } from '@/lib/db';
-import { checkoutParams, getStripe } from '@/lib/stripe';
-
-export async function startCheckout(formData: FormData) {
-  const slug = String(formData.get('slug') ?? '');
-  const sql = getSql();
-  const result = await reserveSeat(sql, slug);
-  if (!result.ok) redirect(`/book/${encodeURIComponent(slug)}?error=${result.reason}`);
-
-  let url: string | null = null;
-  try {
-    const session = await getStripe().checkout.sessions.create(checkoutParams(result.cohort, result.booking), {
-      idempotencyKey: `checkout:${result.booking.id}`,
-    });
-    await attachCheckoutSession(sql, result.booking.id, session.id);
-    url = session.url;
-  } catch (err) {
-    console.error('[checkout] create failed', err);
-    await releaseHold(sql, result.booking.id);
-  }
-  if (!url) redirect(`/book/${encodeURIComponent(slug)}?error=stripe`);
-  redirect(url);
-}
 
 export interface WaitlistState {
   ok: boolean;

@@ -116,3 +116,11 @@ td form { display: inline; }
 details summary { cursor: pointer; }
 footer.foot { margin-top: 64px; }
 footer.foot > div { border-top: 1px solid var(--rule); padding: 24px 0 40px; }
+
+/* Booking page checkout (src/app/book/[slug]/CheckoutForm.tsx) */
+.co-step { display: flex; align-items: center; gap: 10px; margin: 8px 0 0; padding-top: 16px; border-top: 1px solid var(--ink); font: 500 11px/1 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; }
+.co-n { display: inline-grid; place-items: center; width: 20px; height: 20px; border: 1px solid var(--ink); border-radius: 3px; font-variant-numeric: tabular-nums; }
+.co-who { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 0; }
+.co-who dt { font: 500 11px/1.4 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.co-who dd { margin: 4px 0 0; font-size: 15px; font-weight: 500; overflow-wrap: anywhere; }
+.co-pe { min-height: 120px; }
