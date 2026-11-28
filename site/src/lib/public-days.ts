@@ -6,6 +6,9 @@ import { FALLBACK_DAYS, type PublicDay } from './site-content';
  * The days shown on the home page: open and closed cohorts from the admin, or
  * FALLBACK_DAYS when there is no database (a preview build) or nothing listed yet.
  */
+/** "pilot day" -> "Pilot day", so a lower-case admin title still reads as a label. */
+const sentenceCase = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
+
 export async function getPublicDays(): Promise<PublicDay[]> {
   if (!process.env.DATABASE_URL) return FALLBACK_DAYS;
   try {
@@ -14,7 +17,7 @@ export async function getPublicDays(): Promise<PublicDay[]> {
     const now = new Date();
     return cohorts.map((c) => ({
       slug: c.slug,
-      title: c.title.replace(/^Fieldwork:\s*/i, ''),
+      title: sentenceCase(c.title.replace(/^Fieldwork:\s*/i, '')),
       starts_at: c.starts_at.toISOString(),
       ends_at: c.ends_at.toISOString(),
       venue: c.venue_name,

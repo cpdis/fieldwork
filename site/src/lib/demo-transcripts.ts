@@ -26,7 +26,7 @@ export interface Run {
 
 export const BOTH_APPS_STEPS = [
   { k: 'Ask', t: 'Say the job and paste the real numbers.' },
-  { k: 'Read it like a draft', t: 'Push back on the one thing it missed.' },
+  { k: 'Read it like a draft', t: 'Add what it was missing, and ask again.' },
   { k: 'Keep it for next time', t: 'Ask it to write the instruction.' },
 ];
 

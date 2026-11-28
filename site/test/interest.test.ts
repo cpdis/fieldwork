@@ -45,6 +45,13 @@ describe('home page form', () => {
     expect(rows[0]).toMatchObject({ company: 'Tan Electrical', uses: 'chatgpt' });
   });
 
+  it('puts a request for the undated fallback day on the general list, naming the day', async () => {
+    const res = await route.POST(post({ day: 'pilot-tba', name: 'Ana Ruiz', email: 'ana@example.com', note: 'Two of us' }));
+    expect(res.status).toBe(200);
+    const [row] = await sql`select cohort_id, note from waitlist where email = 'ana@example.com'`;
+    expect(row).toMatchObject({ cohort_id: null, note: 'Asked for a seat on: Pilot day\nTwo of us' });
+  });
+
   it('refuses a draft cohort, a bad email, and drops an unknown app value', async () => {
     expect((await route.POST(post({ day: 'hidden', name: 'A', email: 'a@example.com' }))).status).toBe(404);
     expect((await route.POST(post({ day: 'next', name: 'A', email: 'nope' }))).status).toBe(400);

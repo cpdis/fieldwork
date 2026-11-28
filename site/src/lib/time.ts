@@ -22,6 +22,12 @@ const timeFmt = new Intl.DateTimeFormat('en-AU', {
   minute: '2-digit',
   hour12: true,
 });
+const time24Fmt = new Intl.DateTimeFormat('en-AU', {
+  timeZone: TIME_ZONE,
+  hour: '2-digit',
+  minute: '2-digit',
+  hourCycle: 'h23',
+});
 const stampFmt = new Intl.DateTimeFormat('en-AU', {
   timeZone: TIME_ZONE,
   day: 'numeric',
@@ -34,6 +40,8 @@ const stampFmt = new Intl.DateTimeFormat('en-AU', {
 export const formatDate = (d: Date) => dateFmt.format(d);
 export const formatShortDate = (d: Date) => shortDateFmt.format(d);
 export const formatTime = (d: Date) => timeFmt.format(d).replace(' ', '').toLowerCase();
+/** 24-hour Perth time without a leading zero, e.g. "9:00", "16:00". The marketing page's clock. */
+export const formatTime24 = (d: Date) => time24Fmt.format(d).replace(/^0/, '');
 export const formatStamp = (d: Date) => stampFmt.format(d);
 
 export function formatRange(start: Date, end: Date): string {

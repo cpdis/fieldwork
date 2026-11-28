@@ -1,5 +1,7 @@
 import { getSql } from '@/lib/db';
-import { addInterest, readInterest } from '@/lib/interest';
+import { addInterest, NEXT_DAY, readInterest, renderInterestAlert } from '@/lib/interest';
+import { deliver } from '@/lib/mail';
+import { CONTACT_EMAIL } from '@/lib/site-content';
 
 /**
  * The marketing page's form posts here. With JavaScript the page sends
@@ -24,6 +26,7 @@ export async function POST(req: Request) {
 
   try {
     const result = await addInterest(getSql(), input);
+    if (result.ok && !input.website) await alertColin(input);
     return reply(wantsJson, req, result, result.ok ? 200 : result.error === 'invalid' ? 400 : 404);
   } catch (err) {
     console.error('[interest] failed', err);
@@ -37,4 +40,19 @@ function reply(json: boolean, req: Request, body: { ok: boolean; message: string
   url.searchParams.set(body.ok ? 'sent' : 'error', body.ok ? '1' : (body.error ?? 'server'));
   url.hash = 'book';
   return Response.redirect(url, 303);
+}
+
+/**
+ * Emails Colin about each new request. INTEREST_ALERT_TO wins, then CONTACT_EMAIL.
+ * A failed alert is logged and never fails the visitor's request: the row is saved.
+ */
+async function alertColin(input: Parameters<typeof renderInterestAlert>[0]) {
+  const to = process.env.INTEREST_ALERT_TO || CONTACT_EMAIL;
+  if (!to) return;
+  const day = input.day === NEXT_DAY ? 'Next public day' : input.day;
+  try {
+    await deliver(to, renderInterestAlert(input, day), `interest:${input.email}:${input.day}:${Date.now()}`);
+  } catch (err) {
+    console.error('[interest] alert failed', err);
+  }
 }

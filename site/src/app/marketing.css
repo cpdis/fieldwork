@@ -44,7 +44,8 @@
 .hr-app { display: none; }
 .hr[data-i="0"] .hr-app[data-i="0"], .hr[data-i="1"] .hr-app[data-i="1"], .hr[data-i="2"] .hr-app[data-i="2"], .hr[data-i="3"] .hr-app[data-i="3"] { display: inline; }
 html:not(.js) .hr-app[data-i="0"] { display: inline; }
-.hr-chat { height: 380px; overflow: hidden; padding: 16px; scroll-behavior: smooth; }
+/* Scrolls, so a tall reply is never cut off; JS keeps it pinned to the newest line. */
+.hr-chat { height: 380px; overflow-y: auto; overscroll-behavior: contain; padding: 16px; scroll-behavior: smooth; }
 .hr-run { display: none; gap: 12px; align-content: start; }
 .hr[data-i="0"] .hr-run[data-i="0"], .hr[data-i="1"] .hr-run[data-i="1"], .hr[data-i="2"] .hr-run[data-i="2"], .hr[data-i="3"] .hr-run[data-i="3"] { display: grid; }
 html:not(.js) .hr-run[data-i="0"] { display: grid; }
@@ -68,7 +69,7 @@ html:not(.js) .hr-run[data-i="0"] { display: grid; }
 .hr.sending .send { transform: translateY(-3px); }
 .hr-list { list-style: none; margin: 14px 0 0; padding: 0; border-top: 1px solid var(--ink); }
 .hr-list li + li { border-top: 1px solid var(--rule); }
-.hr-list button { all: unset; box-sizing: border-box; display: grid; grid-template-columns: 28px 1fr auto; gap: 8px; align-items: center; width: 100%; padding: 10px 0; font-size: 14px; color: var(--muted); cursor: pointer; }
+.hr-list button { all: unset; box-sizing: border-box; display: grid; grid-template-columns: 28px 1fr auto; gap: 8px; align-items: center; width: 100%; min-height: 44px; padding: 10px 0; font-size: 14px; color: var(--muted); cursor: pointer; }
 .hr-list button:hover, .hr-list button[aria-current] { color: var(--ink); }
 .hr-list button[aria-current] .num { background: var(--ink); color: var(--paper); }
 .hr-list .num { font-size: 11px; justify-self: start; padding: 2px 4px; }
@@ -109,8 +110,8 @@ html:not(.js) .hr-run[data-i="0"] { display: grid; }
 .ba-chip { all: unset; box-sizing: border-box; display: grid; grid-template-columns: 28px 1fr; gap: 10px; align-items: start; padding: 12px 14px; border: 1px solid var(--alu); background: var(--white); cursor: pointer; font-size: 14px; line-height: 1.35; }
 .ba-chip i { font: 500 12px/1 var(--font-mono); font-style: normal; width: 22px; height: 22px; display: grid; place-items: center; border: 1px solid var(--ink); }
 .ba-chip b { display: block; font-weight: 600; }
-.ba-chip[aria-selected="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
-.ba-chip[aria-selected="true"] .muted { color: #b9bbc0; }
+.ba-chip[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.ba-chip[aria-pressed="true"] .muted { color: #b9bbc0; }
 .ba-chip[aria-selected="true"] i { background: var(--accent); color: var(--ink); border-color: var(--accent); }
 .ba-chip:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; box-shadow: 0 0 0 5px var(--accent); }
 
@@ -129,8 +130,9 @@ html:not(.js) .hr-run[data-i="0"] { display: grid; }
 .ba-bar { display: flex; align-items: center; gap: 10px; height: 30px; padding: 0 12px; border-bottom: 1px solid #e6e6e1; background: #f3f3f0; font-size: 12px; color: #45474c; }
 .ba-bar .dots { display: flex; gap: 5px; }
 .ba-bar .dots i { width: 9px; height: 9px; border-radius: 50%; background: #d2d3cd; display: block; }
-.ba-body { padding: 14px; height: 460px; overflow-y: auto; overscroll-behavior: contain; }
-.ba-model { margin-left: auto; font: 400 11px/1 var(--font-mono); color: #8a8c91; }
+/* Grows to fit the reply, so the advice line under each table is always on show. */
+.ba-body { padding: 14px; }
+.ba-model { margin-left: auto; font: 400 11px/1 var(--font-mono); color: #5c5e63; }
 .ba-step { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
 .ba-step .ai, .hr-run .ai { min-width: 0; }
 .ba-step .me { justify-self: end; max-width: 92%; margin: 0; padding: 9px 12px; background: #efefea; border-radius: 12px; line-height: 1.4; }
@@ -162,7 +164,9 @@ html:not(.js) .ba-step + .ba-step { margin-top: 18px; padding-top: 14px; border-
 @keyframes mk-rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
 /* the day, with a levelling staff that reads the time of the block you're on */
-.day-grid { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 16px; margin-top: 48px; }
+/* Phones: no staff (its labels don't fit), so the schedule gets the full width. */
+.day-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; margin-top: 48px; }
+@media (max-width: 819px) { .staff { display: none; } }
 @media (min-width: 820px) { .day-grid { grid-template-columns: 64px minmax(0, 1fr); gap: 28px; } }
 .staff { position: sticky; top: 96px; height: min(70vh, 560px); align-self: start; }
 .staff-bar { position: absolute; left: 0; top: 0; bottom: 0; width: 14px; display: grid; grid-template-rows: repeat(14, 1fr); border: 1px solid var(--ink); }
@@ -258,10 +262,15 @@ fieldset.pick.inline { display: flex; flex-wrap: wrap; gap: 8px; }
 .mk-foot .fine { margin: 8px 0 48px; max-width: 70ch; font-size: 12.5px; }
 
 @media (prefers-reduced-motion: reduce) {
-  .caret { animation: none; }
+  .caret, .hr-run .think i { animation: none; }
+  .js .hr-run[data-state="reply"] .ai { animation: none; }
   .staff-reading, .send { transition: none; }
   .js .ba-step { animation: none !important; }
 }
 
 /* Fenced code inside a captured reply (e.g. a prompt the app wrote to paste). */
 .md .md-pre { margin-bottom: 0; padding: 10px 12px; font: 400 12px/1.5 var(--font-mono); white-space: pre-wrap; overflow-wrap: anywhere; background: rgba(20, 22, 26, 0.04); border: 1px solid var(--line, rgba(20, 22, 26, 0.12)); border-radius: 6px; color: inherit; }
+
+/* Skip link: hidden until a keyboard user tabs to it. */
+.skip { position: absolute; left: 16px; top: -48px; z-index: 50; padding: 8px 12px; background: var(--ink); color: var(--paper); }
+.skip:focus { top: 12px; }

@@ -137,7 +137,7 @@ ${(e.outro ?? []).map(para).join('\n')}
 <tr><td style="padding:40px 0 32px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid ${C.rule}"><tr>
 <td style="padding-top:14px;font:13px/1.5 ${SANS};color:${C.muted}">Fieldwork &middot; Perth, Western Australia<br><a href="${site}" style="color:${C.muted};text-decoration:underline">${esc(host)}</a></td>
-<td align="right" valign="top" style="padding-top:16px;font:500 11px/1.4 ${MONO};letter-spacing:.04em;text-transform:uppercase;color:${C.muted}">Claude and ChatGPT,<br>side by side</td>
+<td align="right" valign="top" style="padding-top:16px;font:500 11px/1.4 ${MONO};letter-spacing:.04em;text-transform:uppercase;color:${C.muted}">ChatGPT and Claude,<br>side by side</td>
 </tr></table>
 </td></tr>
 
@@ -169,8 +169,8 @@ function notes(c: Cohort): string[] {
 
 const SETUP = [
   'A laptop (Mac or Windows) with its charger.',
-  'The Claude desktop app and the ChatGPT desktop app installed and signed in.',
-  'A paid plan on each: Claude Pro and ChatGPT Plus are enough. Bring the logins if you use a work account.',
+  'The ChatGPT or Claude desktop app installed and signed in: whichever one you already pay for.',
+  'A paid plan on that app: ChatGPT Plus or Claude Pro is enough. Bring the login if you use a work account.',
   'One real task from your week that you would happily hand to an assistant.',
 ];
 
