@@ -200,6 +200,7 @@ html:not(.js) .ba-step + .ba-step { margin-top: 18px; padding-top: 14px; border-
 /* who */
 .who-grid { display: grid; gap: 24px; margin-top: 36px; grid-template-columns: 72px minmax(0, 1fr); align-items: start; }
 .mono-badge { width: 72px; height: 72px; display: grid; place-items: center; border: 1px solid var(--ink); font: 500 20px/1 var(--font-mono); background: var(--white); }
+.mono-badge.photo { object-fit: cover; padding: 0; }
 .who-copy p { margin: 0; max-width: 60ch; font-size: 17px; }
 .who-copy p + p { margin-top: 12px; }
 

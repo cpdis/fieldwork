@@ -242,9 +242,7 @@ export default async function Home({ searchParams }: { searchParams: Search }) {
             </h2>
           </div>
           <div className="who-grid">
-            <div className="mono-badge" aria-hidden="true">
-              CD
-            </div>
+            <img className="mono-badge photo" src="/colin.jpg" alt="Colin Dismuke" width={72} height={72} />
             <div className="who-copy">
               <p>
                 <strong>Colin Dismuke</strong> is an engineer and project manager in Perth. He uses ChatGPT and Claude every day, at work and at home, to
