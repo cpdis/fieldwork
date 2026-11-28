@@ -73,7 +73,7 @@ export const ContextDial: Page = () => {
         <span>
           <i className="old" /> from earlier steps
         </span>
-        <span>Ridgeline Surveying is a made-up business.</span>
+        <span>Real Claude drafts. Ridgeline is made up.</span>
       </div>
     </Frame>
   );

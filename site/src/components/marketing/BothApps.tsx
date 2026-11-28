@@ -73,7 +73,8 @@ function Half({ app }: { app: App }) {
 }
 
 export function BothApps() {
-  const dates = [BOTH_APPS_RUNS.ChatGPT.captured, BOTH_APPS_RUNS.Claude.captured].filter(Boolean);
+  const fmt = (d: string) => new Date(d).toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
+  const dates = [...new Set([BOTH_APPS_RUNS.ChatGPT.captured, BOTH_APPS_RUNS.Claude.captured].filter((d): d is string => Boolean(d)))].sort();
   return (
     <div className="ba" data-demo data-step="1">
       <div className="ba-chips" role="tablist" aria-label="Steps">
@@ -93,7 +94,7 @@ export function BothApps() {
       </div>
       <p className="ba-foot small muted">
         Same prompts in both apps
-        {dates.length ? `, replies copied word for word on ${new Date(String(dates[0])).toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })}` : ''}
+        {dates.length ? `, replies copied word for word on ${dates.map(fmt).join(' and ')}` : ''}
         . The suppliers and prices are made up. The window frames are simplified; on the day you use the real apps.
       </p>
     </div>

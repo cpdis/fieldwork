@@ -38,3 +38,9 @@
 .cd-w[data-on] { opacity: 1; }
 .cd-w.new { background: var(--accent); }
 .cd-w.old { box-shadow: inset 0 -.14cqw 0 var(--ink); }
+
+/* Real drafts (28 Nov 2026) are longer than the old mock: the body scrolls with the writing. */
+.cd-body { overflow: hidden; position: relative; }
+.cd-body[data-long] { font-size: 1.02cqw; gap: .55cqw; line-height: 1.42; }
+.cd .cd-body p.cd-li { padding-left: 1.1em; position: relative; }
+.cd .cd-body p.cd-li::before { content: "•"; position: absolute; left: .25em; }
