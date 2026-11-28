@@ -56,7 +56,7 @@ export function CohortForm({
         <label>
           Price (A$, per seat) <input name="price" type="number" min={0} step="0.01" defaultValue={defaults.price} required />
         </label>
-        <label>
+        <label className="input-bottom">
           Status
           <select name="status" defaultValue={defaults.status}>
             <option value="draft">Draft: hidden</option>
@@ -66,11 +66,11 @@ export function CohortForm({
           </select>
         </label>
         <div className="grid2">
-          <label>
+          <label className="input-bottom">
             Pre-course email, days before
             <input name="pre_course_days" type="number" min={0} max={60} defaultValue={defaults.pre_course_days} />
           </label>
-          <label>
+          <label className="input-bottom">
             Follow-up email, days after (0 = the evening of the day, about 7 pm)
             <input name="follow_up_days" type="number" min={0} max={60} defaultValue={defaults.follow_up_days} />
           </label>
