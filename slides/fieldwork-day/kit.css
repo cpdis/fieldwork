@@ -92,7 +92,7 @@
 .fw .dk-app .n span { font: 500 .95cqw/1 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; border: .1cqw solid rgba(246,246,243,.6); padding: .35cqw .55cqw; }
 .fw .dk-app ol { margin: .4cqw 0 0; padding: 0; list-style: none; display: grid; gap: .7cqw; counter-reset: s; }
 .fw .dk-app li { counter-increment: s; display: grid; grid-template-columns: 2cqw minmax(0,1fr); font-size: 1.25cqw; line-height: 1.38; color: rgba(246,246,243,.88); }
-.fw .dk-app li::before { content: counter(s); font: 500 .95cqw/1.6 var(--f-mono); color: var(--accent); }
+.fw .dk-app li::before { content: counter(s); font: 500 .95cqw/1.6 var(--f-mono); color: var(--paper); }
 .fw .dk-live-foot { position: absolute; left: 3.6cqw; right: 3.6cqw; bottom: 3cqw; display: flex; justify-content: space-between; align-items: baseline; gap: 2cqw; font: 400 .92cqw/1.4 var(--f-mono); color: rgba(246,246,243,.6); }
 .fw .dk-live-foot b { color: var(--paper); font-weight: 500; }
 .fw .dk-key { display: inline-block; border: .1cqw solid rgba(246,246,243,.5); padding: .1cqw .4cqw; margin: 0 .15cqw; color: var(--paper); }
@@ -152,7 +152,7 @@
 .fw .dk-shot.sm .todo .src { display: none; }
 .fw .dk-shot.sm .todo .dk-k { font-size: .8cqw; }
 .fw .dk-shot.sm .todo .u { font-size: .8cqw; }
-.fw .dk-shot .note { position: absolute; left: .5cqw; bottom: .5cqw; font: 500 .8cqw/1 var(--f-mono); letter-spacing: .04em; text-transform: uppercase; color: var(--ink); background: var(--white); padding: .3cqw .45cqw; border: .06cqw solid var(--alu); }
+.fw .dk-shot .note { position: absolute; left: 0; right: 0; bottom: 0; text-align: center; font: 500 .8cqw/1 var(--f-mono); letter-spacing: .04em; text-transform: uppercase; color: var(--ink); background: var(--white); padding: .3cqw .45cqw; border: .06cqw solid var(--alu); }
 
 /* ---------- added with the review pass (Nov 2026) ---------- */
 .fw .dk-open-about { position: absolute; left: 0; top: calc(100% + .9cqw); white-space: nowrap; font: 500 .92cqw/1 var(--f-mono); letter-spacing: .04em; color: var(--muted); }

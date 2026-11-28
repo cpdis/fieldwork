@@ -71,7 +71,7 @@ export function CohortForm({
             <input name="pre_course_days" type="number" min={0} max={60} defaultValue={defaults.pre_course_days} />
           </label>
           <label>
-            Follow-up email, days after
+            Follow-up email, days after (0 = the evening of the day, about 7 pm)
             <input name="follow_up_days" type="number" min={0} max={60} defaultValue={defaults.follow_up_days} />
           </label>
         </div>

@@ -1,4 +1,6 @@
 import type { Sql } from './db';
+import type { Rendered } from './email-templates';
+import { FALLBACK_DAYS } from './site-content';
 
 export const USES = ['chatgpt', 'claude', 'both', 'neither'] as const;
 export type Uses = (typeof USES)[number];
@@ -49,16 +51,7 @@ export async function addInterest(sql: Sql, input: InterestInput): Promise<Inter
   const { name, email, company, uses, note } = input;
 
   if (input.day === NEXT_DAY) {
-    await sql`
-      insert into waitlist (cohort_id, name, email, company, uses, note)
-      values (null, ${name}, ${email}, ${company}, ${uses}, ${note})
-      on conflict (lower(email)) where cohort_id is null do update
-        set name = excluded.name,
-            company = coalesce(excluded.company, waitlist.company),
-            uses = coalesce(excluded.uses, waitlist.uses),
-            note = coalesce(excluded.note, waitlist.note),
-            removed_at = null
-    `;
+    await addGeneral(sql, input, note);
     return { ok: true, message: 'Thanks. You are on the list, and you will hear about the next public day before anyone else.' };
   }
 
@@ -74,8 +67,51 @@ export async function addInterest(sql: Sql, input: InterestInput): Promise<Inter
           removed_at = null
     returning id
   `;
-  if (!rows.length) return { ok: false, error: 'not_found', message: 'That day is no longer listed. Pick another, or the next public day.' };
+  if (!rows.length) {
+    // A day shown from FALLBACK_DAYS (no dated cohort in the admin yet) has no row to
+    // attach to, so the request goes on the general list with the day named in the note.
+    const fallback = FALLBACK_DAYS.find((d) => d.slug === input.day);
+    if (!fallback) return { ok: false, error: 'not_found', message: 'That day is no longer listed. Pick another, or the next public day.' };
+    await addGeneral(sql, input, [`Asked for a seat on: ${fallback.title}`, note].filter(Boolean).join('\n'));
+  }
   return { ok: true, message: 'Thanks. Your request is in, and Colin will email you about a seat.' };
+}
+
+/** One general-list row per email (no cohort); asking again updates it. */
+async function addGeneral(sql: Sql, input: InterestInput, note: string | null) {
+  const { name, email, company, uses } = input;
+  await sql`
+    insert into waitlist (cohort_id, name, email, company, uses, note)
+    values (null, ${name}, ${email}, ${company}, ${uses}, ${note || null})
+    on conflict (lower(email)) where cohort_id is null do update
+      set name = excluded.name,
+          company = coalesce(excluded.company, waitlist.company),
+          uses = coalesce(excluded.uses, waitlist.uses),
+          note = coalesce(excluded.note, waitlist.note),
+          removed_at = null
+  `;
+}
+
+/**
+ * The note Colin gets for each new request, so one never sits unseen in the
+ * database. Plain text; the request is also in the admin and its CSV export.
+ */
+export function renderInterestAlert(input: InterestInput, dayLabel: string): Rendered {
+  const lines = [
+    `Day: ${dayLabel}`,
+    `Name: ${input.name}`,
+    `Email: ${input.email}`,
+    input.company ? `Business: ${input.company}` : null,
+    input.uses ? `Pays for: ${input.uses}` : null,
+    input.note ? `Note: ${input.note}` : null,
+  ].filter(Boolean) as string[];
+  const text = lines.join('\n');
+  const esc = (v: string) => v.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return {
+    subject: `Seat request: ${input.name} (${dayLabel})`,
+    text,
+    html: `<pre style="font:14px/1.5 ui-monospace,monospace">${esc(text)}</pre>`,
+  };
 }
 
 export interface GeneralInterest {

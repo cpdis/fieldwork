@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { CONTACT_EMAIL } from '@/lib/site-content';
 
 /**
  * The mark (8A "Hill", chosen 26 Nov 2026): three contour rings and a yellow
@@ -34,16 +35,27 @@ export function Footer() {
   return (
     <footer className="wrap foot">
       <div className="spread small muted">
-        <span>Fieldwork · Perth, Western Australia</span>
-        <span className="mono">Claude and ChatGPT, side by side</span>
+        <span>
+          Fieldwork · Perth, Western Australia
+          {CONTACT_EMAIL && (
+            <>
+              {' · '}
+              <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+            </>
+          )}
+        </span>
+        <span className="mono">ChatGPT and Claude, side by side</span>
       </div>
+      <p className="small muted" style={{ marginTop: 12 }}>
+        Fieldwork is independent. It is not made, endorsed or sponsored by OpenAI or Anthropic.
+      </p>
     </footer>
   );
 }
 
 export function Seats({ capacity, taken, held }: { capacity: number; taken: number; held: number }) {
   return (
-    <div className="seats" aria-label={`${taken} of ${capacity} seats booked`}>
+    <div className="seats" aria-label={`${taken} of ${capacity} seats booked${held ? `, ${held} being paid for now` : ''}`}>
       {Array.from({ length: Math.max(capacity, taken + held) }, (_, i) => (
         <i key={i} className={i < taken ? 'taken' : i < taken + held ? 'held' : undefined} />
       ))}

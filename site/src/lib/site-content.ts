@@ -9,9 +9,9 @@ export const CONTACT_EMAIL = process.env.CONTACT_EMAIL || '';
 export interface PublicDay {
   slug: string;
   title: string;
-  /** ISO string with the +08:00 offset. */
-  starts_at: string;
-  ends_at: string;
+  /** ISO string with the +08:00 offset, or null while the date is still to be announced. */
+  starts_at: string | null;
+  ends_at: string | null;
   venue: string | null;
   capacity: number;
   price_cents: number;
@@ -25,10 +25,10 @@ export interface PublicDay {
 
 export const FALLBACK_DAYS: PublicDay[] = [
   {
-    slug: 'pilot-2026-12-02',
+    slug: 'pilot-tba',
     title: 'Pilot day',
-    starts_at: '2026-12-02T09:00:00+08:00',
-    ends_at: '2026-12-02T16:00:00+08:00',
+    starts_at: null,
+    ends_at: null,
     venue: null,
     capacity: 10,
     price_cents: 0,
@@ -44,7 +44,7 @@ export const PRICES = [
   {
     k: 'Pilot day',
     v: 'By invitation',
-    sub: 'Wednesday 2 December 2026',
+    sub: 'Date TBA',
     lines: ['Ten people who run their own business', 'In return: honest feedback and a two-week follow-up', 'Ask below if you would like a seat'],
   },
   {
@@ -63,9 +63,9 @@ export const PRICES = [
 ];
 
 export const PRICE_NOTES = [
-  'Prices are per person, in Australian dollars, and include lunch.',
+  'Prices are per person, in Australian dollars, and include lunch. Fieldwork is not registered for GST, so no GST is charged.',
   'Bring a laptop with ChatGPT or Claude on a paid plan. The plan is not included.',
-  'Full refund up to 14 days before the day. You can send someone in your place at any time.',
+  'Full refund up to 14 days before the day. After that, move to a later day or send someone in your place.',
 ];
 
 export interface Block {
@@ -97,7 +97,7 @@ export const DAY: Block[] = [
 export const FAQ: { q: string; a: string }[] = [
   {
     q: 'Who is it for?',
-    a: 'People who own or run a small business in Perth: professional services, trades and field services, property, surveying, mining services. If you have opened ChatGPT once, you are ready. You do not need to be technical.',
+    a: 'People who own or run a small business in Perth: professional services, trades and field services, property, surveying, mining services. If you have opened ChatGPT or Claude once, you are ready. You do not need to be technical.',
   },
   {
     q: 'ChatGPT or Claude?',
@@ -105,7 +105,7 @@ export const FAQ: { q: string; a: string }[] = [
   },
   {
     q: 'What do I bring?',
-    a: 'A laptop with the ChatGPT or Claude desktop app installed and signed in on a paid plan, and a folder of your own material: a price list, a few emails, a template you use, a photo of a whiteboard. Two weeks before, you get an email that walks you through the setup.',
+    a: 'A laptop with the ChatGPT or Claude desktop app installed and signed in on a paid plan, and a folder of your own material: a price list, a few emails, a template you use, a photo of a whiteboard. A few days before the day, you get an email that walks you through the setup.',
   },
   {
     q: 'Will my business data be safe?',

@@ -6,7 +6,7 @@ import { HeroRuns } from '@/components/marketing/HeroRuns';
 import { NEXT_DAY } from '@/lib/interest';
 import { getPublicDays } from '@/lib/public-days';
 import { CONTACT_EMAIL, DAY, FAQ, PRICE_NOTES, PRICES, type PublicDay } from '@/lib/site-content';
-import { formatDate, formatMoney, formatTime } from '@/lib/time';
+import { formatDate, formatMoney, formatTime24 } from '@/lib/time';
 import './marketing.css';
 
 export const dynamic = 'force-dynamic';
@@ -20,10 +20,17 @@ const ERRORS: Record<string, string> = {
   server: 'That didn’t go through. Please try again in a minute.',
 };
 
+/** 24-hour clock, to match the schedule (9:00 to 16:00). */
+const clock = (d: Date) => formatTime24(d);
+
+/** The day's date, or "Date TBA" while it is still being set. */
+function dayDate(d: PublicDay) {
+  return d.starts_at ? formatDate(new Date(d.starts_at)) : 'Date TBA';
+}
+
 function dayLine(d: PublicDay) {
-  const s = new Date(d.starts_at);
-  const e = new Date(d.ends_at);
-  return `${formatDate(s)} · ${formatTime(s)} to ${formatTime(e)}`;
+  if (!d.starts_at || !d.ends_at) return 'Date TBA · 9:00 to 16:00';
+  return `${dayDate(d)} · ${clock(new Date(d.starts_at))} to ${clock(new Date(d.ends_at))}`;
 }
 
 function DayCard({ d }: { d: PublicDay }) {
@@ -35,7 +42,7 @@ function DayCard({ d }: { d: PublicDay }) {
         <span className="num">{price}</span>
       </div>
       <p className="day-date">{dayLine(d)}</p>
-      <p className="day-venue">{d.venue ? d.venue : <span className="tba">Venue to be announced</span>}</p>
+      <p className="day-venue">{d.venue ? d.venue : <span className="tba">Venue TBA</span>}</p>
       {d.seats_left !== null && d.mode !== 'request' ? (
         <>
           <Seats capacity={d.capacity} taken={d.seats_taken} held={d.seats_held} />
@@ -92,9 +99,16 @@ export default async function Home({ searchParams }: { searchParams: Search }) {
   const first = days[0];
   const preview = process.env.SITE_PREVIEW === '1';
   const requestable = days.filter((d) => d.mode !== 'open');
+  // Once a paid day is listed, the buttons say "Book" and the placeholder "next public day" card goes.
+  const bookable = days.some((d) => d.mode === 'open');
+  const paidListed = days.some((d) => d.price_cents > 0);
+  const cta = bookable ? 'Book a seat' : 'Ask for a seat';
 
   return (
     <div className="mk">
+      <a className="skip" href="#top">
+        Skip to content
+      </a>
       <header className="mk-top">
         <div className="wrap mk-top-in">
           <a href="#top" className="brand">
@@ -107,7 +121,7 @@ export default async function Home({ searchParams }: { searchParams: Search }) {
             <a href="#faq">FAQ</a>
           </nav>
           <a className="btn small ink" href="#book">
-            Ask for a seat
+            {cta}
           </a>
         </div>
       </header>
@@ -125,7 +139,7 @@ export default async function Home({ searchParams }: { searchParams: Search }) {
             </p>
             <div className="row hero-cta">
               <a className="btn primary" href="#book">
-                Ask for a seat
+                {cta}
               </a>
               <a className="btn quiet" href="#day">
                 Schedule
@@ -135,7 +149,7 @@ export default async function Home({ searchParams }: { searchParams: Search }) {
               <dl className="facts">
                 <div>
                   <dt>{first.title}</dt>
-                  <dd>{formatDate(new Date(first.starts_at)).replace(/ \d{4}$/, '')}</dd>
+                  <dd>{dayDate(first).replace(/ \d{4}$/, '')}</dd>
                 </div>
                 <div>
                   <dt>Where</dt>
@@ -162,7 +176,7 @@ export default async function Home({ searchParams }: { searchParams: Search }) {
             <h2>
               <span className="secno num">01</span>Most people tried it once, got a so-so answer, and stopped asking.
             </h2>
-            <p className="lede">The tools moved on. The habit didn&rsquo;t. The day is built around three workflows you can keep using on Monday.</p>
+            <p className="lede">The tools moved on. The habit didn&rsquo;t. The day is built around three habits you can keep using on Monday.</p>
           </div>
           <ol className="moves">
             <li>
@@ -199,7 +213,7 @@ export default async function Home({ searchParams }: { searchParams: Search }) {
             <Staff />
             <ol className="blocks">
               {DAY.map((b) => (
-                <li key={b.t} className={b.pause ? 'pause' : undefined} data-at={b.at} data-t={b.t} tabIndex={b.pause ? undefined : 0}>
+                <li key={b.t} className={b.pause ? 'pause' : undefined} data-at={b.at} data-t={b.t}>
                   <span className="t num">{b.t}</span>
                   <div className="b">
                     <h3>{b.name}</h3>
@@ -228,9 +242,7 @@ export default async function Home({ searchParams }: { searchParams: Search }) {
             </h2>
           </div>
           <div className="who-grid">
-            <div className="mono-badge" aria-hidden="true">
-              CD
-            </div>
+            <img className="mono-badge photo" src="/colin.jpg" alt="Colin Dismuke" width={72} height={72} />
             <div className="who-copy">
               <p>
                 <strong>Colin Dismuke</strong> is an engineer and project manager in Perth. He uses ChatGPT and Claude every day, at work and at home, to
@@ -276,15 +288,17 @@ export default async function Home({ searchParams }: { searchParams: Search }) {
         <section className="wrap sec" id="book">
           <div className="sec-h">
             <h2>
-              <span className="secno num">05</span>Ask for a seat.
+              <span className="secno num">05</span>
+              {cta}.
             </h2>
-            <p className="lede">Seats are limited. Tell us which day, and you&rsquo;ll hear back by email.</p>
+            <p className="lede">Seats are limited. Tell Colin which day, and you&rsquo;ll hear back by email.</p>
           </div>
           <div className="book-grid">
             <div className="days">
               {days.map((d) => (
                 <DayCard key={d.slug} d={d} />
               ))}
+              {!paidListed && (
               <article className="day ghost">
                 <div className="day-h">
                   <span className="eyebrow">Next public day</span>
@@ -298,6 +312,7 @@ export default async function Home({ searchParams }: { searchParams: Search }) {
                   </a>
                 </div>
               </article>
+              )}
             </div>
 
             <form className="ask-form" method="post" action="/api/interest" data-interest data-preview={preview ? '1' : undefined} noValidate>
@@ -318,7 +333,7 @@ export default async function Home({ searchParams }: { searchParams: Search }) {
                     <input type="radio" name="day" value={d.slug} defaultChecked={i === 0} />
                     <span>
                       <b>{d.title}</b>
-                      <span className="muted small">{formatDate(new Date(d.starts_at))}</span>
+                      <span className="muted small">{dayDate(d)}</span>
                     </span>
                   </label>
                 ))}
@@ -342,7 +357,9 @@ export default async function Home({ searchParams }: { searchParams: Search }) {
                 Business <span className="muted">(optional)</span> <input name="company" autoComplete="organization" />
               </label>
               <fieldset className="pick inline">
-                <legend>Which app do you pay for now?</legend>
+                <legend>
+                  Which app do you pay for now? <span className="muted">(optional)</span>
+                </legend>
                 {[
                   ['chatgpt', 'ChatGPT'],
                   ['claude', 'Claude'],
@@ -356,7 +373,7 @@ export default async function Home({ searchParams }: { searchParams: Search }) {
                 ))}
               </fieldset>
               <label>
-                Anything we should know? <span className="muted">(optional)</span>
+                Anything Colin should know? <span className="muted">(optional)</span>
                 <textarea name="note" placeholder="What you'd most like to hand over. Or: I'd like a day for my team." />
               </label>
               <p className="form-msg" role="status" aria-live="polite" />

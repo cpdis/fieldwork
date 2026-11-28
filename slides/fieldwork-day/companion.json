@@ -16,8 +16,8 @@
       "goal": "Take something on paper that you usually retype, and turn it into rows you can use.",
       "done": "A table is in Excel or Sheets, and you have checked every flagged cell against the paper.",
       "prompts": ["Turn this into a table I can paste into Excel. Flag anything you can't read."],
-      "openai": ["Open ChatGPT desktop. Start a new chat.", "Photograph a docket, receipt, timesheet or whiteboard. Drop the photo in.", "Paste the prompt.", "Paste the table into Excel or Sheets. Check each flagged cell against the paper."],
-      "claude": ["Open Claude desktop. Start a new chat.", "Photograph a docket, receipt, timesheet or whiteboard. Drop the photo in.", "Paste the prompt.", "Paste the table into Excel or Sheets. Check each flagged cell against the paper."]
+      "openai": ["Open ChatGPT desktop. Start a new chat.", "Photograph a docket, receipt, stocktake sheet or whiteboard with the phone app, or drop a screenshot into the laptop app. Skip real staff or client details on a personal plan.", "Paste the prompt.", "Paste the table into Excel or Sheets. Check each flagged cell against the paper."],
+      "claude": ["Open Claude desktop. Start a new chat.", "Photograph a docket, receipt, stocktake sheet or whiteboard with the phone app, or drop a screenshot into the laptop app. Skip real staff or client details on a personal plan.", "Paste the prompt.", "Paste the table into Excel or Sheets. Check each flagged cell against the paper."]
     },
     {
       "n": 2,
@@ -26,27 +26,27 @@
       "done": "You asked it a question a customer asked you this week, and the answer used your prices and sounded like you.",
       "prompts": ["Who we are:\nWho our customers are:\nHow we talk:\nAlways:\nNever:"],
       "promptLabel": "Instructions to fill in, five lines",
-      "openai": ["Sidebar, New project. Name it after your business.", "Add what you brought: your price list, services page and a few good past emails. Photos of paper are fine.", "Fill in the five lines and save them as the Project instructions.", "Test it with a real customer question from this week. Fix the files, not the question."],
-      "claude": ["Projects, Create project. Name it after your business.", "Add what you brought to Project knowledge: your price list, services page and a few good past emails.", "Fill in the five lines and save them as the Project instructions.", "Test it with a real customer question from this week. Fix the files, not the question."]
+      "openai": ["Sidebar, New project. Name it after your business.", "Add what you brought: your price list, services page and a few good past emails. Photos of paper are fine.", "Fill in the five lines and save them as the Project instructions.", "Test it with a real customer question from this week. If it misses, add a line to the instructions or a corrections note, then ask again."],
+      "claude": ["Projects, Create project. Name it after your business.", "Add what you brought to Project knowledge: your price list, services page and a few good past emails.", "Fill in the five lines and save them as the Project instructions.", "Test it with a real customer question from this week. If it misses, add a line to the instructions or a corrections note, then ask again."]
     },
     {
       "n": 3,
       "title": "One thing a customer will see, on brand",
       "goal": "Write a one-page brand file, then make one customer-facing thing with it: a price sheet, a one-pager or a social post.",
       "done": "You made it with the brand file loaded, and asked for a brand check on it.",
-      "prompts": ["Interview me to write a one-page brand file: colours, fonts, five nevers, three voice rules.", "Check this against brand.md. List every miss, then fix them."],
-      "openai": ["In your Project, start a new chat and paste the first prompt.", "Save the answer as brand.md in the Project files.", "Ask for the asset. If you have time, ask again in a chat outside the Project and compare the two.", "Paste the second prompt."],
-      "claude": ["In your Project, start a new chat and paste the first prompt.", "Save the answer as brand.md in Project knowledge.", "Ask for the asset. If you have time, ask again in a chat outside the Project and compare the two.", "Paste the second prompt."]
+      "prompts": ["Interview me to write a one-page brand file: colours, fonts, five nevers, three voice rules.", "Check this against my brand file. List anything that breaks it, then fix it."],
+      "openai": ["In your Project, start a new chat and paste the first prompt.", "Ask for it as a file you can download (brand.md is plain text), then add that file to the Project.", "Ask for the piece you picked. If you have time, ask again in a chat outside the Project and compare the two.", "Paste the second prompt."],
+      "claude": ["In your Project, start a new chat and paste the first prompt.", "Ask for it as a file you can download (brand.md is plain text), then add that file to Project knowledge.", "Ask for the piece you picked. If you have time, ask again in a chat outside the Project and compare the two.", "Paste the second prompt."]
     },
     {
       "n": 4,
       "title": "An admin job, done by an agent",
       "goal": "Hand an agent one real multi-step job on a folder of your own files: reconcile two lists, sort and rename a folder of documents, compile quotes from PDFs, or fill a form from a document.",
       "done": "It finished or stopped where you told it to, and you checked one result against the source before approving.",
-      "prompts": ["The job: \nWhere things are: \nWhat good means: \nWhat I want back: \nWhere to stop: "],
+      "prompts": ["The job: \nWhere things are: \nWhat good means: \nWhat I want back: \nWhere to stop: \nShow me your plan and wait for my okay."],
       "promptLabel": "A goal with all five parts",
-      "openai": ["ChatGPT desktop, Work. Pick the folder, or the connected app, it may use.", "Write the goal with all five parts.", "Read the plan before it starts. Correct it there; that is the cheapest moment.", "When it stops, check one item against the source. Then approve, or tell it what to fix."],
-      "claude": ["Claude desktop, Cowork. Pick the folder, or the connected app, it may use.", "Write the goal with all five parts.", "Read the plan before it starts. Correct it there; that is the cheapest moment.", "When it stops, check one item against the source. Then approve, or tell it what to fix."]
+      "openai": ["ChatGPT desktop, Work. Make a copy of the folder first, then pick the copy, or the connected app, it may use.", "Write the goal with all five parts.", "Read the plan before it starts. Correct it there; that is the cheapest moment.", "When it stops, check one item against the source. Then approve, or tell it what to fix."],
+      "claude": ["Claude desktop, Cowork. Make a copy of the folder first, then pick the copy, or the connected app, it may use.", "Write the goal with all five parts.", "Read the plan before it starts. Correct it there; that is the cheapest moment.", "When it stops, check one item against the source. Then approve, or tell it what to fix."]
     },
     {
       "n": 5,
@@ -55,7 +55,7 @@
       "done": "The skill ran on a new example, and you checked the result against what you would have done.",
       "prompts": ["Turn what we did into a skill. Name it, say when to use it, list the steps and the checks."],
       "openai": ["In the chat where the job went well, paste the prompt.", "Say: Save this as a skill. Confirm when it asks.", "New chat, new input. Does it use the skill without being told?", "Something wrong? Fix the skill, not the output. Run it again."],
-      "claude": ["In the chat where the job went well, paste the prompt.", "Save it under Settings, Capabilities, Skills.", "New chat, new input. Does it use the skill without being told?", "Something wrong? Fix the skill, not the output. Run it again."]
+      "claude": ["In the chat where the job went well, paste the prompt.", "Ask Claude to package it as a skill, then save it from the chat, or upload it in Settings, Capabilities, Skills.", "New chat, new input. Does it use the skill without being told?", "Something wrong? Fix the skill, not the output. Run it again."]
     },
     {
       "n": 6,
@@ -63,7 +63,7 @@
       "title": "Build your own glue (take-home, about 30 minutes)",
       "goal": "Pick the one place you copy and paste between two tools. Have the agent build the view or the connection, working on exports, not on your live systems.",
       "done": "It ran on your sample, and three rows you checked by hand match the source.",
-      "prompts": ["Every week I copy [what] from [tool A] into [tool B]. Exports of both are here. Build me [a one-page view of ... | a file I can import into ...]. Ask me three questions first.", "Write a README: what this reads, what it writes, and how I run it next week."],
+      "prompts": ["Every week I copy [what] from [tool A] into [tool B]. Exports of both are here. Build me [a one-page view of ... OR a file I can import into ...]. Ask me three questions first.", "Write a short instruction note (a README): what this reads, what it makes, and how I run it next week."],
       "openai": ["Make a folder called glue. Put in a small export from each tool: 10 to 20 rows, no bank or card details.", "Open the folder in Codex and paste the first prompt, with your own words in the brackets.", "Open what it made. Check three rows by hand against the source.", "Paste the second prompt."],
       "claude": ["Make a folder called glue. Put in a small export from each tool: 10 to 20 rows, no bank or card details.", "Open the folder in the Code tab and paste the first prompt, with your own words in the brackets.", "Open what it made. Check three rows by hand against the source.", "Paste the second prompt."]
     },

@@ -64,7 +64,7 @@ export function HeroRuns() {
           </li>
         ))}
       </ol>
-      <p className="hr-foot small muted">Real replies, copied word for word. The businesses are made up.</p>
+      <p className="hr-foot small muted">Real replies, copied word for word on 24 November 2026. The businesses are made up.</p>
     </div>
   );
 }

@@ -73,7 +73,7 @@
     const chips = [...demo.querySelectorAll('[data-go]')];
     chips.forEach((c) => c.addEventListener('click', () => {
       demo.dataset.step = c.dataset.go;
-      chips.forEach((x) => x.setAttribute('aria-selected', String(x === c)));
+      chips.forEach((x) => x.setAttribute('aria-pressed', String(x === c)));
     }));
   });
 
@@ -107,7 +107,8 @@
         }
       }
       staff.style.setProperty('--r', r.toFixed(3));
-      label.dataset.t = fmt(r);
+      // Name the block being read, not an in-between time that no block starts at.
+      label.dataset.t = onRow ? onRow.dataset.t : fmt(r);
     };
     const queue = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
     addEventListener('scroll', queue, { passive: true });

@@ -54,9 +54,9 @@
 
 .fw .b1-chart { position: absolute; left: 3.6cqw; right: 3.6cqw; top: 15.4cqw; bottom: 4.6cqw; }
 .fw .b1-chart svg { position: absolute; left: 0; top: 0; width: 62cqw; height: 100%; overflow: visible; }
-.fw .b1-chart .tk { font: 500 12px var(--f-mono); fill: var(--muted); }
+.fw .b1-chart .tk { font: 500 15px var(--f-mono); fill: var(--muted); }
 .fw .b1-chart .tk.e { fill: var(--muted); }
-.fw .b1-chart .ax { font: 500 13px var(--f-mono); fill: var(--ink); }
+.fw .b1-chart .ax { font: 500 15px var(--f-mono); fill: var(--ink); }
 .fw .b1-chart .draw { stroke-dasharray: 1; stroke-dashoffset: 0; transition: stroke-dashoffset 1.6s var(--ease) .2s; }
 .fw .b1-chart.pre .draw { stroke-dashoffset: 1; }
 .fw .b1-chart .end { transition: opacity .3s 1.6s, transform .4s var(--ease) 1.6s; transform-box: fill-box; transform-origin: center; }
@@ -73,13 +73,13 @@
 .fw .b1-two .dk-stat .dk-body { font-size: 1.4cqw; max-width: 38cqw; }
 
 .fw .b1-dots { position: absolute; left: 3.6cqw; top: 19.6cqw; display: grid; grid-template-columns: repeat(10, 2.3cqw); gap: .75cqw; }
-.fw .b1-dots i { width: 2.3cqw; height: 2.3cqw; border-radius: 50%; box-shadow: inset 0 0 0 .12cqw var(--alu); display: block; transition: background .25s, box-shadow .25s; transition-delay: calc(var(--i) * 14ms); }
+.fw .b1-dots i { width: 2.3cqw; height: 2.3cqw; border-radius: 50%; box-shadow: inset 0 0 0 .14cqw #9a9da3; display: block; transition: background .25s, box-shadow .25s; transition-delay: calc(var(--i) * 14ms); }
 .fw .b1-dots i.q { background: var(--ink); box-shadow: none; }
 .fw .b1-dots i.m { background: var(--accent); box-shadow: inset 0 0 0 .14cqw var(--ink); }
-.fw .b1-dots.pre i.q, .fw .b1-dots.pre i.m { background: transparent; box-shadow: inset 0 0 0 .12cqw var(--alu); }
+.fw .b1-dots.pre i.q, .fw .b1-dots.pre i.m { background: transparent; box-shadow: inset 0 0 0 .14cqw #9a9da3; }
 .fw .b1-dots-key { position: absolute; left: 44cqw; top: 21cqw; width: 46cqw; display: grid; gap: 1.3cqw; }
 .fw .b1-dots-key > div { display: grid; grid-template-columns: 2cqw 9cqw minmax(0,1fr); align-items: baseline; gap: 1cqw; border-bottom: .1cqw solid var(--rule); padding-bottom: 1cqw; }
-.fw .b1-dots-key i { width: 1.4cqw; height: 1.4cqw; border-radius: 50%; display: block; box-shadow: inset 0 0 0 .12cqw var(--alu); align-self: center; }
+.fw .b1-dots-key i { width: 1.4cqw; height: 1.4cqw; border-radius: 50%; display: block; box-shadow: inset 0 0 0 .12cqw #9a9da3; align-self: center; }
 .fw .b1-dots-key i.q { background: var(--ink); box-shadow: none; }
 .fw .b1-dots-key i.m { background: var(--accent); box-shadow: inset 0 0 0 .14cqw var(--ink); }
 .fw .b1-dots-key > div b { font: 600 2.4cqw/1 var(--f-sans); letter-spacing: -.04em; }
@@ -179,6 +179,8 @@
 .fw .b3-mail-key span { white-space: nowrap; }
 
 .fw .b3-proj { display: grid; grid-template-columns: 1.15fr 1fr 1fr; gap: .8cqw; height: 100%; }
+/* Let long file and chat names wrap instead of being cut mid-word in a narrow column. */
+.fw .b3-proj .file { white-space: normal; overflow-wrap: anywhere; }
 
 .fw .b3-pack { position: absolute; left: 3.6cqw; right: 3.6cqw; top: 16.6cqw; display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 1.2cqw; }
 .fw .b3-pack .dk-tile { padding: 1.3cqw 1.4cqw; display: grid; gap: .6cqw; align-content: start; min-height: 15cqw; }
@@ -423,10 +425,11 @@
 .fw .b6-skill .fh { font: 500 .92cqw/1 var(--f-mono); padding: .8cqw 1.2cqw; background: var(--soft); border-bottom: .1cqw solid var(--alu); }
 .fw .b6-skill pre { margin: 0; padding: 1.4cqw 1.6cqw; font: 400 1.18cqw/1.55 var(--f-mono); white-space: pre; display: grid; gap: .9cqw; }
 .fw .b6-skill .g { display: block; border-left: .35cqw solid; padding-left: 1.1cqw; }
-.fw .b6-skill .g.a, .fw .b6-skill .n.g-a { border-color: var(--accent); }
-.fw .b6-skill .g.b, .fw .b6-skill .n.g-b { border-color: var(--ink); }
-.fw .b6-skill .g.c, .fw .b6-skill .n.g-c { border-color: var(--ok); }
-.fw .b6-skill .g.d, .fw .b6-skill .n.g-d { border-color: var(--fn-blue); }
+/* Four parts told apart by line style, all in ink: yellow and blue hairlines vanish on paper. */
+.fw .b6-skill .g.a, .fw .b6-skill .n.g-a { border-color: var(--ink); }
+.fw .b6-skill .g.b, .fw .b6-skill .n.g-b { border-color: var(--muted); }
+.fw .b6-skill .g.c, .fw .b6-skill .n.g-c { border-color: var(--ink); border-left-style: dashed; }
+.fw .b6-skill .g.d, .fw .b6-skill .n.g-d { border-color: var(--ink); border-left-style: dotted; }
 .fw .b6-skill .notes { display: grid; gap: 1.5cqw; align-content: start; }
 .fw .b6-skill .n { border-left: .35cqw solid; padding-left: 1.1cqw; display: grid; gap: .45cqw; }
 .fw .b6-skill .n b { font: 600 1.7cqw/1.1 var(--f-sans); letter-spacing: -.025em; }
@@ -459,7 +462,7 @@
 .fw .b7-week .day { display: grid; grid-template-rows: 1.6cqw minmax(0,1fr); gap: .6cqw; }
 .fw .b7-week .cl { position: relative; background: var(--white) linear-gradient(var(--rule) .1cqw, transparent .1cqw) 0 0 / 100% 25%; border: .1cqw solid var(--alu); transition: border-color .3s; }
 .fw .b7-week .day.cur .cl { border-color: var(--ink); }
-.fw .b7-week .rn { all: unset; box-sizing: border-box; cursor: pointer; position: absolute; left: .3cqw; right: .3cqw; height: 2.35cqw; padding: .3cqw .45cqw; display: grid; gap: .15cqw; align-content: center; font: 500 .88cqw/1.05 var(--f-sans); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--muted); background: var(--paper); border: .1cqw dashed var(--alu); transition: background .25s, color .25s, border-color .25s; }
+.fw .b7-week .rn { all: unset; box-sizing: border-box; cursor: pointer; position: absolute; left: .3cqw; right: .3cqw; height: 2.35cqw; padding: .3cqw .45cqw; display: grid; gap: .15cqw; align-content: center; font: 500 .98cqw/1.05 var(--f-sans); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--muted); background: var(--paper); border: .1cqw dashed var(--alu); transition: background .25s, color .25s, border-color .25s; }
 .fw .b7-week .rn i { font: 500 .8cqw/1 var(--f-mono); font-style: normal; letter-spacing: .04em; }
 .fw .b7-week .rn.ran { color: var(--ink); background: var(--white); border: .1cqw solid var(--ink); }
 .fw .b7-week .rn.ran i::after { content: " ✓"; }
@@ -572,12 +575,12 @@
 .fw .b8-table .tr.blank span:first-child { border: 0; color: var(--muted); }
 
 .fw .b8-days { position: absolute; left: 3.6cqw; right: 3.6cqw; top: 17.4cqw; display: grid; grid-template-columns: repeat(30, minmax(0,1fr)); gap: .35cqw; }
-.fw .b8-days i { font: 500 .8cqw/1 var(--f-mono); font-style: normal; height: 2.6cqw; display: grid; place-items: end start; padding: .3cqw; box-sizing: border-box; background: var(--alu); color: var(--ink); transition: opacity .3s, transform .3s var(--ease); transition-delay: calc(var(--i) * 28ms); }
+.fw .b8-days i { font: 500 1.05cqw/1 var(--f-mono); font-style: normal; height: 2.6cqw; display: grid; place-items: end start; padding: .3cqw; box-sizing: border-box; background: var(--alu); color: var(--ink); transition: opacity .3s, transform .3s var(--ease); transition-delay: calc(var(--i) * 28ms); }
 .fw .b8-days i.w0 { background: var(--alu); }
 .fw .b8-days i.w1 { background: rgba(20,21,24,.4); color: var(--paper); }
 .fw .b8-days i.w2 { background: rgba(20,21,24,.7); color: var(--paper); }
 .fw .b8-days i.w3 { background: var(--ink); color: var(--paper); }
-.fw .b8-days i.mk { box-shadow: inset 0 -.35cqw 0 var(--accent); }
+.fw .b8-days i.mk { box-shadow: inset 0 -.35cqw 0 var(--ink); }
 .fw .b8-days.pre i { opacity: 0; transform: scaleY(.3); }
 .fw .b8-weeks { position: absolute; left: 3.6cqw; right: 3.6cqw; top: 23cqw; display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 2.4cqw; }
 .fw .b8-weeks > div { border-top: .15cqw solid var(--ink); padding-top: 1cqw; display: grid; gap: .8cqw; align-content: start; }
@@ -687,7 +690,7 @@
 .fw .b6-pipe-nums { position: absolute; left: 3.6cqw; right: 3.6cqw; top: 33.5cqw; display: grid; grid-template-columns: 18cqw 18cqw minmax(0,1fr); gap: 3cqw; align-items: end; }
 .fw .b6-pipe-nums .dk-body { font-size: 1.5cqw; line-height: 1.35; }
 
-.fw .b8-lines { position: absolute; left: 3.6cqw; right: 3.6cqw; top: 16.4cqw; display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 2.2cqw 3.6cqw; }
+.fw .b8-lines { position: absolute; left: 3.6cqw; right: 3.6cqw; top: 16.4cqw; display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 2.2cqw 3.6cqw; }
 .fw .b8-lines > div { border-top: .15cqw solid var(--ink); padding-top: 1.1cqw; display: grid; gap: .7cqw; align-content: start; }
 .fw .b8-lines p { font: 500 1.75cqw/1.28 var(--f-sans); letter-spacing: -.02em; text-wrap: balance; }
 .fw .b8-lines .w { font-size: 1.1cqw; line-height: 1.4; color: var(--muted); }
@@ -799,3 +802,22 @@
 .fw .b8-read { position: absolute; right: 3.6cqw; bottom: 2cqw; margin: 0; font-size: 1.05cqw; line-height: 1.3; color: var(--muted); }
 .fw .b8-read .dk-k { margin-right: .8cqw; }
 .fw .b8-read b { color: var(--ink); font-weight: 600; }
+
+/* Secondary text on ink fills. --muted (#6a6d74) is for paper; on ink it drops to about 3:1 and
+   fades on a projector, so dark tiles get a lighter muted. */
+.fw .b2-sort .zone.z-never,
+.fw .b3-dial button.on,
+.fw .b4-prompt,
+.fw .b5-mx .q-human,
+.fw .b6-fix,
+.fw .b7-rules .never,
+.fw .b7-team .lead,
+.fw .callout { --muted: #b4b7bd; }
+.fw .b2-sort .zone.z-never > span,
+.fw .b3-dial button.on span,
+.fw .b3-dial button.on i,
+.fw .b7-rules .never .dk-k { color: var(--muted); }
+
+/* Page 10: the screen recording starts with Windows browser bars and a local file path.
+   Our own browser frame already shows the address, so crop those bars off the top. */
+.fw .dk-shot.vid > video { height: 110%; margin-top: -5.6%; }

@@ -77,9 +77,9 @@ export function BothApps() {
   const dates = [...new Set([BOTH_APPS_RUNS.ChatGPT.captured, BOTH_APPS_RUNS.Claude.captured].filter((d): d is string => Boolean(d)))].sort();
   return (
     <div className="ba" data-demo data-step="1">
-      <div className="ba-chips" role="tablist" aria-label="Steps">
+      <div className="ba-chips" role="group" aria-label="Steps">
         {BOTH_APPS_STEPS.map((s, i) => (
-          <button key={i} type="button" role="tab" className="ba-chip" data-go={i + 1} aria-selected={i === 0}>
+          <button key={i} type="button" className="ba-chip" data-go={i + 1} aria-pressed={i === 0}>
             <i>{i + 1}</i>
             <span>
               <b>{s.k}</b>

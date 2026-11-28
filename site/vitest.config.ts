@@ -1,7 +1,9 @@
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
-  resolve: { alias: { '@': new URL('./src', import.meta.url).pathname } },
+  // fileURLToPath, not .pathname: the latter keeps %20 and breaks in folders with spaces.
+  resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
   test: {
     environment: 'node',
     // The database tests share one database, so run files one at a time.

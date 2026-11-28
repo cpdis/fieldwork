@@ -20,7 +20,7 @@ const NextWord: Page = () => {
   return (
     <Frame label="How it works: one word at a time">
       <BeatSteps count={WORDS - 1} onBeat={onBeat} />
-      <Head eb={eb('context', 'Context · how it works, in ten minutes')} title="It writes one likely word at a time" />
+      <Head eb={eb('context', 'Context · how it works')} title="It writes one likely word at a time" />
       <PageNo />
       <div className="b3-nw-stage" data-osd-interactive>
         <NextWordRun beat={beat} take={take} live={active} go={pick} />
@@ -99,7 +99,7 @@ const ProjBody = ({ files, inst }: { files: string; inst: string }) => (
     </div>
     <div className="col">
       <div className="mlab">Chats in this project</div>
-      {['Follow-up: 14 Ashby Rd', 'Quote: feature survey, Mandurah', 'Reply to strata manager'].map((c) => (
+      {['Follow-up: Ashby Rd', 'Quote: Mandurah survey', 'Reply: strata manager'].map((c) => (
         <div key={c} className="file">
           {c}
         </div>
@@ -108,9 +108,9 @@ const ProjBody = ({ files, inst }: { files: string; inst: string }) => (
   </div>
 );
 const PROJ_HOTS: Hotspot[] = [
-  { x: 26, y: 40, k: 'Instructions', t: 'How it should write and what it must always or never do. Five lines is plenty.' },
-  { x: 57, y: 45, k: 'Files', t: 'Your price list, services, FAQs, good past emails. It reads these before it answers.' },
-  { x: 86, y: 34, k: 'Chats', t: 'Every new chat inside the project starts knowing all of the above.' },
+  { x: 35, y: 91, k: 'Instructions', t: 'How it should write and what it must always or never do. Five lines is plenty.' },
+  { x: 62, y: 91, k: 'Files', t: 'Your price list, services, FAQs, good past emails. It reads these before it answers.' },
+  { x: 86, y: 91, k: 'Chats', t: 'Every new chat inside the project starts knowing all of the above.' },
 ];
 const WhereContext: Page = () => (
   <Frame label="Where context lives">
@@ -289,14 +289,14 @@ const Lab2 = lab({
   title: 'Build your business Project',
   goal: 'Set up a Project that knows your business, so every chat from now on starts from you.',
   done: 'You asked it a question a customer asked you this week, and the answer used your prices and sounded like you.',
-  keep: 'The Project. Every lab after this one runs inside it.',
+  keep: 'The Project. You build on it before lunch, and use it every working day after today.',
   openai: [
     <>
       Sidebar → <b>New project</b>. Name it after your business.
     </>,
     'Add what you brought: your price list, services page and a few good past emails. Photos of paper are fine.',
     'Instructions, five lines: who you are, who your customers are, how you talk, one thing it must always do, one it must never do.',
-    'Test it with a real customer question from this week. Fix the files, not the question.',
+    'Test it with a real customer question from this week. If it misses, add a line to the instructions or a corrections note, then ask again.',
   ],
   claude: [
     <>
@@ -304,7 +304,7 @@ const Lab2 = lab({
     </>,
     'Add what you brought to Project knowledge: your price list, services page and a few good past emails.',
     'Project instructions, five lines: who you are, your customers, how you talk, one always, one never.',
-    'Test it with a real customer question from this week. Fix the files, not the question.',
+    'Test it with a real customer question from this week. If it misses, add a line to the instructions or a corrections note, then ask again.',
   ],
   hand: 'a page each is plenty',
 });

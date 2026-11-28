@@ -41,8 +41,20 @@ export const Eyebrow = ({ children }: { children: ReactNode }) => <div className
 export const Title = ({ children }: { children: ReactNode }) => <h2 className="title">{children}</h2>;
 
 /** Highlighter: the only sanctioned way to put the accent behind words on paper. */
+/** Highlighter. A short phrase never breaks across lines (no stranded "a" or "ask" at a line end). */
 export const Hl = ({ children }: { children: ReactNode }) => (
-  <span style={{ background: 'var(--accent)', color: 'var(--ink)', padding: '0 .12em' }}>{children}</span>
+  <span
+    style={{
+      background: 'var(--accent)',
+      color: 'var(--ink)',
+      padding: '0 .12em',
+      boxDecorationBreak: 'clone',
+      WebkitBoxDecorationBreak: 'clone',
+      whiteSpace: typeof children === 'string' && children.length <= 28 ? 'nowrap' : undefined,
+    }}
+  >
+    {children}
+  </span>
 );
 
 /**

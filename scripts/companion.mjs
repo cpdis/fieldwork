@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 /*
  * Builds the attendee companion page: every lab prompt, the homework, the 30-day plan and more cases.
- *   node scripts/companion.mjs fieldwork-day            # writes dist-companion/index.html
+ *   node scripts/companion.mjs fieldwork-day            # writes site/public/companion.html (served at /companion)
  *   node scripts/companion.mjs fieldwork-day out.html   # writes somewhere else
  * Reads slides/<deck>/companion.json. One self-contained HTML file, no dependencies.
- * Host it anywhere, then put the address in COURSE.companion (course.ts). The deck links to
+ * The site serves it at fieldworkperth.com/companion; COURSE.companion (course.ts) points there. The deck links to
  * #lab1 … #lab7, #policy and #plan, so keep those ids.
  */
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 
 const deck = process.argv[2] || 'fieldwork-day';
-const out = process.argv[3] || join('dist-companion', 'index.html');
+const out = process.argv[3] || join('site', 'public', 'companion.html');
 const d = JSON.parse(readFileSync(join('slides', deck, 'companion.json'), 'utf8'));
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');

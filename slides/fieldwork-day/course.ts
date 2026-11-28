@@ -5,11 +5,11 @@
 export const COURSE = {
   name: 'Fieldwork',
   cohort: 'Pilot 1',
-  when: 'December 2026',
+  when: 'Date TBA',
   where: 'Perth',
   instructor: 'Colin',
   /** Shown on the close page when set, for example 'colin@yourdomain.com.au'. */
-  contact: '',
+  contact: 'hello@fieldworkperth.com',
   /** Shown on the housekeeping page when set. */
   wifi: { name: '', password: '' },
   /**
@@ -17,9 +17,9 @@ export const COURSE = {
    * Build it with `node scripts/companion.mjs`, host it, and put the short link here (no https://).
    * Lab pages, the 30-day plan and the close show it when set.
    */
-  companion: '',
+  companion: 'fieldworkperth.com/companion',
   /** The feedback form (five questions, filled in before people leave). Shown on the close when set. */
-  feedback: '',
+  feedback: 'fieldworkperth.com/feedback',
   /** The day both apps' menus and plan names were last checked against this deck, for example '28 Nov 2026'. */
   menusChecked: '',
 };
@@ -33,6 +33,7 @@ export const PLANS = {
   openai: {
     personal: [
       { name: 'Free', price: '' },
+      { name: 'Go', price: '' },
       { name: 'Plus', price: '' },
       { name: 'Pro', price: '' },
     ],
@@ -46,6 +47,7 @@ export const PLANS = {
       { name: 'Free', price: '' },
       { name: 'Pro', price: '' },
       { name: 'Max', price: '' },
+      { name: 'Ultra', price: '' },
     ],
     work: [
       { name: 'Team', price: '' },
@@ -69,7 +71,7 @@ export const DAY: DaySlot[] = [
   { kind: 'block', id: 'map', n: 2, start: '9:30', end: '10:00', title: 'The map of the apps', short: 'The map', level: 1, out: 'Your first useful task' },
   { kind: 'block', id: 'context', n: 3, start: '10:00', end: '10:45', title: 'Context is everything', short: 'Context', level: 2, out: 'Your business Project' },
   { kind: 'break', id: 'break1', start: '10:45', end: '11:00', title: 'Break' },
-  { kind: 'block', id: 'make', n: 4, start: '11:00', end: '12:00', title: 'Making things that look good', short: 'Making things', level: 3, out: 'A brand file and one asset' },
+  { kind: 'block', id: 'make', n: 4, start: '11:00', end: '12:00', title: 'Making things that look good', short: 'Making things', level: 3, out: 'A brand file and one customer piece' },
   { kind: 'break', id: 'lunch', start: '12:00', end: '13:00', title: 'Lunch' },
   { kind: 'block', id: 'agents', n: 5, start: '13:00', end: '14:00', title: 'Agents and computer use', short: 'Agents', level: 4, out: 'An admin job done by an agent' },
   { kind: 'block', id: 'repeat', n: 6, start: '14:00', end: '14:45', title: 'Make it repeatable', short: 'Repeatable', level: 5, out: 'Your first skill' },

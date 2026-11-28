@@ -30,9 +30,9 @@ const OUT: Record<Kind, { title: string; lines: ['did' | 'ask', string][] }> = {
   brief: {
     title: 'Your week at Ridgeline',
     lines: [
-      ['did', 'Three site visits: Tue boundary at Ashby Rd, Wed feature survey at Baldivis, Thu strata job in Mount Lawley.'],
+      ['did', 'Three site visits: Tue boundary at Ashby Rd, Wed feature survey in Mount Lawley, Thu subdivision set-out at Baldivis.'],
       ['ask', 'Thursday reaches 34°. Start Baldivis at 6:00 instead? Say yes and I will move the booking.'],
-      ['ask', 'Two quotes are waiting on you: the Coastal subdivision and Westside Electrical.'],
+      ['ask', 'Two quotes are waiting on you: the Seabreeze subdivision and Westside Electrical.'],
       ['did', 'INV-2207 is 18 days overdue ($2,450). Reminder drafted, not sent.'],
     ],
   },
@@ -278,7 +278,7 @@ const ApprovalRules: Page = () => {
       <div className="b7-rules-foot">
         <div>
           <span className="dk-k">ChatGPT</span>
-          <span>Dots have Custom Rules that allow an action, require approval, or block it.</span>
+          <span>ChatGPT’s always-on agents (Dots, next page) have Custom Rules that allow an action, ask first, or block it.</span>
         </div>
         <div>
           <span className="dk-k">Claude</span>
@@ -308,12 +308,12 @@ const WhereItLives: Page = () => (
       top="16.4cqw"
       left={
         <>
-          <SideLabel name="OpenAI · ChatGPT" sub="check names each cohort" />
+          <SideLabel name="OpenAI · ChatGPT" sub="scheduled and always-on" />
           <div className="b2-conn">
             {[
               ['Scheduled tasks', 'Ask in any chat: “every Monday at 6:30, brief me on…”. Plus and up.'],
               ['Manage', 'Scheduled, in the sidebar: see, pause, edit or delete each task.'],
-              ['Dots', 'An always-on agent with its own cloud computer. Pro and Business Premium.'],
+              ['Dots', 'An always-on agent with its own cloud computer. Pro, and Business premium seats.'],
               ['Rules', 'Custom Rules: allow, ask first, or block, action by action.'],
             ].map(([k, v]) => (
               <div key={k}>
@@ -326,7 +326,7 @@ const WhereItLives: Page = () => (
       }
       right={
         <>
-          <SideLabel name="Claude" sub="check names each cohort" />
+          <SideLabel name="Claude" sub="scheduled tasks" />
           <div className="b2-conn">
             {[
               ['Scheduled tasks', 'Scheduled, in the sidebar → New task → Create with Claude. All paid plans.'],
@@ -358,7 +358,7 @@ const WhereItLives: Page = () => (
 const HELPERS = [
   { t: 'Put cars, trains, weather and night on the map.', r: 'Trains on the real Transperth timetable', d: 2.6 },
   { t: 'Snap the cars onto the drawn roads.', r: 'Six versions. 17 of 18 spots right by eye', d: 3.2 },
-  { t: 'Let AI agents drive the map: links, an API, a guide.', r: '132 of 132 views unchanged after', d: 2.1 },
+  { t: 'Let AI agents drive the map: direct links, data access and a guide.', r: '132 of 132 views unchanged after', d: 2.1 },
 ];
 const TeamOfAgents: Page = () => {
   const active = useIsActivePage();
@@ -376,7 +376,7 @@ const TeamOfAgents: Page = () => {
       <Head
         eb={eb('background', 'Background · levels 7 and 8')}
         title="A team of agents, for real"
-        sum="One day on the map project from this morning. Seven agent threads worked at once, each on its own part. The person in the middle wrote the rules and reviewed what came back."
+        sum="One day on the map project from this morning. Seven agents worked at once, each on its own part. The person in the middle wrote the rules and reviewed what came back."
       />
       <PageNo />
       <div className="b7-team real" data-ph={ph}>
@@ -391,11 +391,11 @@ const TeamOfAgents: Page = () => {
         <div className="lead">
           <span className="dk-k">One person · 18 Nov</span>
           <b>Tiny Perth: make the map move</b>
-          <span className="st2">{ph === 0 ? 'Writing the jobs' : ph < 4 ? 'Threads working' : 'Reviewing'}</span>
+          <span className="st2">{ph === 0 ? 'Writing the jobs' : ph < 4 ? 'Agents working' : 'Reviewing'}</span>
         </div>
         {HELPERS.map((h, i) => (
           <div key={h.t} className={`helper ${ph >= 3 ? 'fin' : ph >= 2 ? 'busy' : ''}`} style={{ top: `${ys[i] / 10 - 4}cqw`, ['--d' as string]: `${h.d}s` }}>
-            <span className="dk-k">Thread {i + 1} of 7</span>
+            <span className="dk-k">Agent {i + 1} of 7</span>
             <span className="t">{h.t}</span>
             <span className="bar">
               <i />
@@ -405,7 +405,7 @@ const TeamOfAgents: Page = () => {
         ))}
         <div className={`result ${ph >= 5 ? 'on' : ''}`}>
           <span className="dk-k">By the end of the day</span>
-          <b>18 pieces of work reviewed and merged</b>
+          <b>18 pieces of work reviewed and added</b>
           <span className="st2">Each one arrived as a proposed change to read, check and approve. Nothing went live on its own.</span>
         </div>
         <button className="rb" type="button" onClick={() => setRun((x) => x + 1)}>

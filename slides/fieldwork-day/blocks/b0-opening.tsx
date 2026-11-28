@@ -21,7 +21,7 @@ const Cover: Page = () => {
           <span className="wm">Fieldwork</span>
         </div>
         <p className={`b0-tag ${on ? '' : 'pre'}`}>
-          The Claude and ChatGPT desktop apps, for people who run a business.
+          The ChatGPT and Claude desktop apps, for people who run a business.
         </p>
         <div className="cover-list">
           <div>
@@ -292,7 +292,7 @@ export const pages: [Page, string][] = [
   ],
   [
     Instructor,
-    '2 min. Keep it short. The point is "peer, not guru": you are an engineer who uses this every day, at a scale they can copy. Tiny Perth is the one build you name today; Blocks 7 and 8 come back to how it was made, not to the map. Say the hook in one line: "I had never trained a model or rented a GPU. Ten days and about the price of a decent bike." If there is a minute, open tinyperth.com live on the landmark nearest the venue. Pilot 1 only: the A-frame boards outside Filament cafés are a nod to Aaron; leave them out of public cohorts (real company name). Add a photo at slides/fieldwork-day/assets/instructor.jpg.',
+    '2 min. Keep it short. The point is "peer, not guru": you are an engineer who uses this every day, at a scale they can copy. Tiny Perth is the one build you name today; Blocks 7 and 8 come back to how it was made, not to the map. Say the hook in one line: "I had never trained a model or rented a GPU. Ten days and about the price of a decent bike." If there is a minute, open tinyperth.com live on the landmark nearest the venue. Pilot 1 only: the A-frame boards outside Filament cafés are a nod to Aaron; leave them out of public cohorts (real company name).',
   ],
   [
     HowToday,

@@ -17,13 +17,13 @@ const FIND: Finding[] = [
   ['F01', 'Emergency contact still lists the old site supervisor', 3, true, 'ok'],
   ['F02', 'Muster point differs between the map and the text', 5, true, 'bad'],
   ['F03', 'Exclusion zone is 10 m in the text, 15 m in the figure', 7, true, 'ok'],
-  ['F04', 'No traffic plan for the north gate', 8, false, 'bad'],
+  ['F04', 'No traffic plan for the north gate', 8, true, 'bad'],
   ['F05', 'Permit number has a typo', 9, true, 'ok'],
   ['F06', 'PPE table leaves out hearing protection near the drill rig', 11, true, 'warn'],
   ['F07', 'Revision log not updated for Rev B', 2, true, 'ok'],
   ['F08', 'Two different dates for the site induction', 4, true, 'bad'],
-  ['F09', 'First-aid officer not named', 12, false, 'ok'],
-  ['F10', 'Weather stop rule uses an old wind limit', 14, false, 'warn'],
+  ['F09', 'First-aid officer not named', 12, true, 'ok'],
+  ['F10', 'Weather stop rule uses an old wind limit', 14, true, 'warn'],
 ];
 const LABEL = { ok: 'Fixed', bad: 'Still wrong', warn: 'Partly fixed' };
 
@@ -420,7 +420,7 @@ const Regrade: Page = () => (
 
 /* ---------- 30 days ---------- */
 const WEEKS: [string, string][] = [
-  ['Use it every day', 'Open your Project every working day for the task from Lab 2. Each time it misses, add one line to the instructions.'],
+  ['Use it every day', 'Open your Project every working day for the task from Lab 2. Each time it misses, add one line to corrections.md.'],
   ['Test the skill', 'Run your skill on five real jobs. When one fails, fix the skill, not the answer.'],
   ['Leave one job running', 'Let your scheduled task run. Read every result. Tighten the rules where it guessed.'],
   ['Measure, then ask again', 'Time the job again and write the measured number beside your estimate. Pick the next job to hand over, and retry one ask from your try-again list.'],
@@ -490,7 +490,7 @@ const Close: Page = () => {
           </p>
           {COURSE.feedback && (
             <p className="ct fb">
-              <span className="dk-k">Before you go · ten quick questions, five minutes</span>
+              <span className="dk-k">Before you go · five quick questions, two minutes</span>
               <b>{COURSE.feedback}</b>
             </p>
           )}
@@ -520,7 +520,7 @@ const Close: Page = () => {
           </ol>
         </div>
         <div className="st-wrap">
-          <Staff level={6} from={1} h={34} names={false} target={[4, 5, 'Today']} />
+          <Staff level={5} from={1} h={34} names={false} target={[4, 5, 'Today']} />
         </div>
       </div>
     </Frame>
@@ -535,7 +535,7 @@ export const pages: [Page, string][] = [
   ],
   [
     LogLied,
-    '1.5 min. The same lesson from your own project, so it does not sound like theory. Read the title, let the picture land, then the three lines. Land on the bottom line: "done" is a claim, one view of everything is the evidence. To pay for this page, skip "Where owners drew the line", which is already the optional page in this block.',
+    '1.5 min. Optional: skip it if the block is behind; page 79 makes the same point. The same lesson from your own project, so it does not sound like theory. Read the title, let the picture land, then the three lines. Land on the bottom line: "done" is a claim, one view of everything is the evidence. To pay for this page, skip "Where owners drew the line", which is already the optional page in this block.',
   ],
   [
     HiddenInstruction,
