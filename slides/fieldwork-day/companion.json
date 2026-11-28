@@ -91,7 +91,13 @@
       ["Leave one job running", "Let your scheduled task run. Read every result. Tighten the rules where it guessed."],
       ["Measure, then ask again", "Time the job again and write the measured number beside your estimate. Pick the next job to hand over, and retry one ask from your try-again list."]
     ],
-    "day30": "Day 30: write down your measured number."
+    "day30": "Day 30: write down your measured number.",
+    "read": {
+      "lead": "One long read for the weekend:",
+      "title": "How one person drew Perth with AI",
+      "url": "https://www.tinyperth.com/how/",
+      "why": "The instructor's write-up of Tiny Perth. Ten days, US$726, and lessons that apply to any job you hand to an agent: look at all of the result at once, make failures loud, and spend your first dollar on the scariest question."
+    }
   },
   "tryAgain": {
     "title": "Your try-again list",

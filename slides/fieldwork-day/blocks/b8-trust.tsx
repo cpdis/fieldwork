@@ -460,6 +460,9 @@ const ThirtyDays: Page = () => {
         Day 30: <Hl>write down your measured number.</Hl>
         {COURSE.contact ? ` Then send it to ${COURSE.contact}. I read every one.` : ' It is where your next 30 days start.'}
       </p>
+      <p className="b8-read">
+        <span className="dk-k">Weekend reading</span> How the map from this morning was made, and what broke: <b>tinyperth.com/how</b>
+      </p>
     </Frame>
   );
 };
@@ -552,6 +555,6 @@ export const pages: [Page, string][] = [
     '5 min. Nobody has a measured "after" yet, so do not ask for one. Set the sliders to one person’s numbers: what the job costs each week today (from their intake form) and their honest estimate. Then go round the table: job, today, estimate. Twenty seconds each. The measured number is due on day 30, and you will ask for it.',
   ],
   [Regrade, '3 min. Count hands level by level, as at 9:00. The marks show this morning’s count beside this afternoon’s; the morning count is saved on this laptop, so it is still there after a reload. Keep it light: one agent run is a start, not a grade.'],
-  [ThirtyDays, '3 min. Ask everyone to copy the plan from the companion page into their Project now and fill in their own job names, so it is there tomorrow. Then ask for the try-again lists: who has something on it? Read one out. Week 4 is when they retry it.'],
+  [ThirtyDays, '3 min. Ask everyone to copy the plan from the companion page into their Project now and fill in their own job names, so it is there tomorrow. Then ask for the try-again lists: who has something on it? Read one out. Week 4 is when they retry it. The weekend-reading line points at the Tiny Perth write-up, which is also linked on the companion page; one sentence, no more.'],
   [Close, '16:00, with four minutes kept for the form. Say the one line on the page out loud: it is the whole day in a sentence. Then ask everyone to fill in the feedback form before they stand up: five questions, two minutes. Say what happens next: you will write to them in two weeks to ask what they still use, and again on day 30 for their number. Thank them. Leave this up while people pack.'],
 ];

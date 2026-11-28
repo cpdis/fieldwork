@@ -328,7 +328,7 @@ const TestIt: Page = () => {
       <Head
         eb={eb('repeat', 'Repeatable · test it')}
         title="Keep five past jobs with the right answers"
-        sum="Before you trust a skill, run it on five old jobs where you know what good looks like. When one fails, fix the skill, not the answer."
+        sum="Before you trust a skill, run it on five old jobs where you know what good looks like. When one fails, fix the skill, not the answer, and keep that job in the list so the same mistake can never come back."
       />
       <PageNo />
       <div className="b6-tests">
@@ -729,7 +729,7 @@ export const pages: [Page, string][] = [
   ],
   [
     TestIt,
-    '3 min. Run the tests, let test 2 fail, press "Fix the skill", then run again. The lesson: fix the method, not the output, and keep a small test list.',
+    '3 min. Run the tests, let test 2 fail, press "Fix the skill", then run again. The lesson: fix the method, not the output, and keep a small test list. Every failure becomes a test that stays: the map project from this morning has a check for every way a result once went wrong.',
   ],
   [
     Live,

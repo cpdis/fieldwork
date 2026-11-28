@@ -118,6 +118,7 @@ ${labs}
   <p>${esc(d.plan.lead)}</p>
   <div class="weeks">${d.plan.weeks.map(([k, t], i) => `<div><span class="k">Week ${i + 1}</span><span><b>${esc(k)}</b>${esc(t)}</span></div>`).join('')}</div>
   <p class="done"><b>${esc(d.plan.day30)}</b></p>
+  ${d.plan.read ? `<p>${esc(d.plan.read.lead)} <a href="${esc(d.plan.read.url)}"><b>${esc(d.plan.read.title)}</b></a>. ${esc(d.plan.read.why)}</p>` : ''}
   ${prompt(planText, 'The plan as text')}
 </section>
 <section id="try-again">
